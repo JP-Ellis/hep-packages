@@ -1,7 +1,7 @@
 (*
 	Initialize.m
 		Functions for the initialization of models
-		last modified 15 Mar 18 th
+		last modified 23 Oct 18 th
 *)
 
 Begin["`Initialize`"]
@@ -124,19 +124,28 @@ FindDiff[ {c_, d___}, old_, diff_, add_ ] :=
 FindDiff[ {}, r__ ] := Replace[Flatten/@ {r}, x_ == _ :> x, {2}]
 
 
-General::genmiss =
-"Definition missing in generic model file."
+General::undefinedgen =
+"No or incomplete generic model loaded."
 
-LoadGenericModel[ genmod_, ext_String:".gen" ] :=
-Block[ {olditems = 0},
+ResetGenericModel[] := (
   M$GenericPropagators := (
-    Message[M$GenericPropagators::genmiss];
+    Message[M$GenericPropagators::undefinedgen];
     Abort[]; );
   M$GenericCouplings := (
-    Message[M$GenericCouplings::genmiss];
+    Message[M$GenericCouplings::undefinedgen];
     Abort[]; );
   M$FlippingRules = M$TruncationRules = M$LastGenericRules = {};
+)
 
+ResetGenericModel[]
+
+LoadGenericModel[ args__ ] := (
+  ResetGenericModel[];
+  ReadGenericModel[args]
+)
+
+ReadGenericModel[ genmod_, ext_String:".gen" ] :=
+Block[ {olditems = 0},
   ReadModelFile[
     {M$GenericPropagators, M$GenericCouplings,
       M$FlippingRules, M$TruncationRules, M$LastGenericRules},
@@ -144,19 +153,28 @@ Block[ {olditems = 0},
 ]
 
 
-General::modmiss =
-"Definition missing in classes model file."
+General::undefinedmod =
+"No or incomplete classes model loaded."
 
-LoadModel[ mod_, ext_String:".mod" ] :=
-Block[ {olditems = 0},
+ResetModel[] := (
   M$ClassesDescription := (
-    Message[M$ClassesDescription::modmiss];
+    Message[M$ClassesDescription::undefinedmod];
     Abort[]; );
   M$CouplingMatrices := (
-    Message[M$CouplingMatrices::modmiss];
+    Message[M$CouplingMatrices::undefinedmod];
     Abort[]; );
   M$LastModelRules = {};
+)
 
+ResetModel[]
+
+LoadModel[ args__ ] := (
+  ResetModel[];
+  ReadModel[args]
+)
+
+ReadModel[ mod_, ext_String:".mod" ] :=
+Block[ {olditems = 0},
   ReadModelFile[
     {M$ClassesDescription, M$CouplingMatrices, M$LastModelRules},
     "classes", ext ]/@ ToModelName[mod]
@@ -298,7 +316,7 @@ Block[ {savecp = $ContextPath},
 
   Clear[AnalyticalPropagator, AnalyticalCoupling, KinematicVector,
     PermutationSymmetry, PossibleFields, CheckFieldPoint, Combinations,
-    Compatibles, MixingPartners];
+    Compatibles, MixingPartners, CloseCouplingVector];
   $ExcludedFPs = $ExcludedParticleFPs = {};
 
   $FermionLines = True;
@@ -506,6 +524,27 @@ KinIndices[ f_, ki_ ] := (
 On[RuleDelayed::rhs]
 
 
+CloseKinematicVector[ cpl_AnalyticalCoupling == g_ . kin_List ] :=
+Block[ {pattcpl, perm, inv, clokin, i},
+  pattcpl = PropFieldPattern/@ cpl;
+  perm = Sort[MapIndexed[Apply, ToGeneric[cpl]]];
+  inv = InversePermutation[Level[perm, {2}]];
+  perm = Permutations[Level[#, {2}]]&/@ SplitBy[perm, Head];
+  perm = Flatten[ Outer[cpl[[ Join[##][[inv]] ]]&, Sequence@@ perm, 1] ];
+  clokin = Replace[perm, {pattcpl :> kin, _ :> Seq[]}, {1}];
+  clokin = Union@@ Replace[clokin, _Integer x_ :> x, {2}];
+  With[ {c = C@@ ToClasses[pattcpl],
+         v = Replace[clokin, Append[
+           Thread[(i_Integer:1) kin -> i Array[Slot, Length[kin]]],
+           _ -> NewComp[#1] ], {1}]},
+    CloseCouplingVector[ (lhs:c) == {rhs___} ] := lhs == (v&)[rhs] ];
+  cpl == g . clokin
+]
+
+
+NewComp[ c_List ] := Table[0, {Length[c]}]
+
+
 AllFields[ fi:_Mix[_] ] := 
   If[ SelfConjugate[fi], #, {#, -#} ]&[ {fi, 2 fi} ]
 
@@ -653,6 +692,14 @@ ToPatt[ s_. f:P$Generic[__] ] :=
 ToPatt[ other_ ] := other
 
 patt = Pattern[#, _]&
+
+
+ctoCoup[ n_ ][ c_ ] := If[ Length[c] < n, 0, c[[n]] ]
+
+Couplings[ cto_, All ] :=
+  MapAt[ctoCoup[cto + 1], M$CouplingMatrices, {All, 2, All} ]
+
+Couplings[ cto_:0 ] := DeleteCases[Couplings[cto, All], _ == {0..}]
 
 
 GetCouplings[ c__C ] := Cases[M$CouplingMatrices, ToPatt[c] == _]
@@ -921,7 +968,10 @@ Indices[ fi_[i_, __] ] := Indices[fi[i]]
 _Indices = {}
 
 
-IndexSum[0, _] = 0
+IndexSum[ 0, _ ] = 0
+
+	(* need this for CloseKinematicVector: *)
+IndexSum[ n_Integer r_, i___ ] := n IndexSum[r, i]
 
 IndexSum[ IndexDelta[i_, j_] r_., {i_, _} ] := r /. (i -> j)
 
@@ -1248,7 +1298,6 @@ ExcludedQ[ vertlist_ ] :=
     Outer[ If[FieldPointMatchQ[##], Throw[True]]&,
       VSort/@ vertlist, $ExcludedParticleFPs ];
     False ]
-
 
 End[]
 
