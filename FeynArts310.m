@@ -1,8 +1,8 @@
 (*
 
 This is FeynArts, Version 3.10
-Copyright by Sepp Kueblbeck, Hagen Eck, and Thomas Hahn 1991-2018
-last modified 23 Oct 18 by Thomas Hahn
+Copyright by Sepp Kueblbeck, Hagen Eck, and Thomas Hahn 1991-2019
+last modified 21 Jan 19 by Thomas Hahn
 
 Release notes:
 
@@ -1423,7 +1423,13 @@ and has the same format as FindShapeSources."
 (* FeynArts system constants *)
 
 $FeynArts::usage =
-"$FeynArts contains the version of FeynArts."
+"$FeynArts gives the FeynArts version as integers {major, minor}."
+
+$FeynArtsVersionNumber::usage =
+"$FeynArtsVersionNumber gives the FeynArts version as a real number."
+
+$FeynArtsVersion::usage =
+"$FeynArtsVersion gives the FeynArts version as human-readable string."
 
 $FAVerbose::usage =
 "$FAVerbose is an integer that determines the extent of run-time messages
@@ -1480,9 +1486,11 @@ P$InsertionObjects = G[_][_][__][__] | _Mass | _GaugeXi |
 P$Options = (_Rule | _RuleDelayed)...
 
 
-$FeynArts = 3.10
+$FeynArts = {3, 10}
 
-$FeynArtsVersion = "FeynArts 3.10 (23 Oct 2018)"
+$FeynArtsVersionNumber = 3.10
+
+$FeynArtsVersion = "FeynArts 3.10 (21 Jan 2019)"
 
 $FeynArtsDir = DirectoryName[
   $InputFileName /. HoldPattern[$InputFileName] :>
