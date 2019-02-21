@@ -1,0 +1,367 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[Cell[BoxData[
+     ActionMenuBox[
+      FrameBox["\<\"URL \[RightGuillemet]\"\>",
+       StripOnInput->False], {"\<\"Susyno/ref/IrrepInProduct\"\>":>
+      None, "\<\"Copy Mathematica url\"\>":>
+      Module[{DocumentationSearch`Private`nb$},
+       DocumentationSearch`Private`nb$ = NotebookPut[
+          Notebook[{
+            Cell["Susyno/ref/IrrepInProduct"]}, Visible -> False]];
+       SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+       FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+       NotebookClose[DocumentationSearch`Private`nb$]; Null],
+      Delimiter, "\<\"Copy web url\"\>":>
+      Module[{DocumentationSearch`Private`nb$},
+       DocumentationSearch`Private`nb$ = NotebookPut[
+          Notebook[{
+            Cell[
+             BoxData[
+              MakeBoxes[
+               Hyperlink[
+               "http://reference.wolfram.com/mathematica/Susyno/ref/\
+IrrepInProduct.html"], StandardForm]], "Input", TextClipboardType ->
+             "PlainText"]}, Visible -> False]];
+       SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+       FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+       NotebookClose[DocumentationSearch`Private`nb$];
+       Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+        NotebookLocate[{
+          URL[
+           StringJoin[
+           "http://reference.wolfram.com/mathematica/",
+            "Susyno/ref/IrrepInProduct", ".html"]], None}]}]},
+      Appearance->None,
+      MenuAppearance->Automatic]],
+     LineSpacing->{1.4, 0}]], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}},
+   "RowsIndexed" -> {}}},
+ CellID->1],
+
+Cell["IrrepInProduct", "ObjectName",
+ CellID->1224892054],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"IrrepInProduct", "[",
+       RowBox[{"group", ",", " ",
+        RowBox[{"{",
+         RowBox[{"rep1", ",", " ", "rep2", ",", " ", "rep3"}], "}"}]}],
+       "]"}]], "InlineFormula"],
+     " \[LineSeparator]Computes generalized Clebsch-Gordon coefficients; it \
+computes the combinations of ",
+     Cell[BoxData["rep1"], "InlineFormula"],
+     " x ",
+     Cell[BoxData["rep2"], "InlineFormula"],
+     " which transform as a ",
+     Cell[BoxData["rep3"], "InlineFormula"],
+     " of the gauge group."
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->486636237],
+
+Cell[TextData[{
+ Cell[BoxData["group"], "InlineFormula"],
+ " should be the ",
+ ButtonBox["Cartan matrix",
+  BaseStyle->"Link",
+  ButtonData->"paclet:Susyno/ref/CartanMatrix"],
+ " of the intended group."
+}], "Notes",
+ CellID->1067943069],
+
+Cell[TextData[{
+ "Each representation ",
+ Cell[BoxData["rep"], "InlineFormula"],
+ " should be a list of non-negative integers (Dynkin coefficients)."
+}], "Notes",
+ CellID->41030773],
+
+Cell["\<\
+There is no limit to the number of representations being multiplied, although \
+the calculation becomes slower as their number increases.\
+\>", "Notes",
+ CellID->221237370],
+
+Cell[TextData[{
+ "The optional input ",
+ Cell[BoxData[
+  RowBox[{"Conjugations", "->",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"conjugate", " ", "rep1"}], ",", " ",
+     RowBox[{"conjugate", " ", "rep2"}], ",", " ",
+     RowBox[{"conjugate", " ", "rep3"}]}], "}"}]}]], "InlineFormula"],
+ "  can be passed to this function, where ",
+ Cell[BoxData[
+  RowBox[{"conjugate", " ", "repI"}]], "InlineFormula"],
+ " can be either ",
+ Cell[BoxData["True"], "InlineFormula"],
+ " or ",
+ Cell[BoxData["False"], "InlineFormula"],
+ ". If ",
+ Cell[BoxData["True"], "InlineFormula"],
+ ", the conjugate representation of ",
+ Cell[BoxData["repI"], "InlineFormula"],
+ " will be considered instead of ",
+ Cell[BoxData["repI"], "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->400920173],
+
+Cell[TextData[{
+ "There is also the possibility of ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " being a list ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{"group1", ",", "group2", ",", "..."}], "}"}]], "InlineFormula"],
+ " and each ",
+ Cell[BoxData["rep"], "InlineFormula"],
+ " a list ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{"rep_group1", ",", "rep_group2", ",", "..."}], "}"}]],
+  "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->75953507],
+
+Cell[TextData[{
+ "The output of this method is a list ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{"combination1", ",", "combination2", ",", "..."}], "}"}]],
+  "InlineFormula"],
+ " where it is assumed that ",
+ Cell[BoxData["a"], "InlineFormula"],
+ " is a field transforming as ",
+ Cell[BoxData["rep1"], "InlineFormula"],
+ ",  ",
+ Cell[BoxData["b"], "InlineFormula"],
+ " as ",
+ Cell[BoxData["rep2"], "InlineFormula"],
+ ". Each of the ",
+ Cell[BoxData["combinationI"], "InlineFormula"],
+ " transforms as ",
+ Cell[BoxData["rep3"], "InlineFormula"],
+ ". The fields  ",
+ Cell[BoxData["a"], "InlineFormula"],
+ "  and  ",
+ Cell[BoxData["b"], "InlineFormula"],
+ " have group indices: ",
+ Cell[BoxData[
+  RowBox[{"a", "[",
+   RowBox[{"ind_group1", ",", " ", "ind_group2", ",", "..."}], "]"}]],
+  "InlineFormula"],
+ ", ",
+ Cell[BoxData[
+  RowBox[{"b", "[",
+   RowBox[{"ind_group1", ",", " ", "ind_group2", ",", "..."}], "]"}]],
+  "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->10758554],
+
+Cell[TextData[{
+ "If  ",
+ Cell[BoxData["rep1"], "InlineFormula"],
+ " x ",
+ Cell[BoxData["rep2"], "InlineFormula"],
+ " does not contain any copy of ",
+ Cell[BoxData["rep3"], "InlineFormula"],
+ ",  ",
+ Cell[BoxData[
+  RowBox[{"{", "}"}]], "InlineFormula"],
+ " is returned."
+}], "Notes",
+ CellID->335181877],
+
+Cell["\<\
+Clearly this method must assume a particular basis for each representation so \
+the results are basis dependent.\
+\>", "Notes",
+ CellID->898809850],
+
+Cell[TextData[{
+ "This method is similar to ",
+ Cell[BoxData[
+  ButtonBox["Invariants",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/Invariants"]], "InlineFormula"],
+ ": it gives generalized Clebsch-Gordon coefficients, as it works for any \
+gauge group (not just SU(2))."
+}], "Notes",
+ CellID->329977022]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->625561808],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(1)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->329731734],
+
+Cell["\<\
+Two SU(2) doublets (={1}) contain a singlet (={0}) and a triplet (={2}). The \
+explicit form of these combinations can be checked with this method:\
+\>", "Notes",
+ CellID->315923061],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Print", "[", "\"\<Gauge singlet in {1}x{1}:\>\"", "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"IrrepInProduct", "[",
+    RowBox[{"SU2", ",",
+     RowBox[{"{",
+      RowBox[{
+       RowBox[{"{", "1", "}"}], ",",
+       RowBox[{"{", "1", "}"}], ",",
+       RowBox[{"{", "0", "}"}]}], "}"}]}], "]"}], "[",
+   RowBox[{"[", "1", "]"}], "]"}], "//",
+  "MatrixForm"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[", "\"\<\>\"", "]"}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[", "\"\<Gauge triplet in {1}x{1}:\>\"", "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"IrrepInProduct", "[",
+     RowBox[{"SU2", ",",
+      RowBox[{"{",
+       RowBox[{
+        RowBox[{"{", "1", "}"}], ",",
+        RowBox[{"{", "1", "}"}], ",",
+        RowBox[{"{", "2", "}"}]}], "}"}]}], "]"}], "[",
+    RowBox[{"[", "1", "]"}], "]"}], "//", "MatrixForm"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+  "Print", "[",
+   "\"\< ... or (multiply by \!\(\*SuperscriptBox[\(3\), \(1/4\)]\)) ...\>\"",
+    "]"}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Expand", "[",
+   RowBox[{"Normal", "[",
+    RowBox[{
+     SuperscriptBox["3",
+      RowBox[{"1", "/", "4"}]],
+     RowBox[{
+      RowBox[{"IrrepInProduct", "[",
+       RowBox[{"SU2", ",",
+        RowBox[{"{",
+         RowBox[{
+          RowBox[{"{", "1", "}"}], ",",
+          RowBox[{"{", "1", "}"}], ",",
+          RowBox[{"{", "2", "}"}]}], "}"}]}], "]"}], "[",
+      RowBox[{"[", "1", "]"}], "]"}]}], "]"}], "]"}], "//",
+  "MatrixForm"}]}], "Input",
+ CellID->275367989],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["RELATED LINKS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "RelatedLinksSection",
+ CellID->1584193535],
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox["Invariants",
+  BaseStyle->"Link",
+  ButtonData->
+   "paclet:Susyno/ref/Invariants"]], "InlineFormula"]], "RelatedLinks",
+ CellID->1038487239]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

@@ -1,0 +1,294 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[{
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"Tutorials \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno Tutorial\"\>":>
+       Documentation`HelpLookup["paclet:Susyno/tutorial/SusynoTutorial"]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"URL \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno/ref/SnClassOrder\"\>":>
+       None, "\<\"Copy Mathematica url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["Susyno/ref/SnClassOrder"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$]; Null],
+       Delimiter, "\<\"Copy web url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/mathematica/Susyno/ref/\
+SnClassOrder.html"], StandardForm]], "Input", TextClipboardType ->
+              "PlainText"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$];
+        Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[
+            StringJoin[
+            "http://reference.wolfram.com/mathematica/",
+             "Susyno/ref/SnClassOrder", ".html"]], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}]
+    }], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}},
+   "RowsIndexed" -> {}}},
+ CellID->1],
+
+Cell["SnClassOrder", "ObjectName",
+ CellID->1224892054],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"SnClassOrder", "[",
+       RowBox[{"conjugacy", " ", "class"}], "]"}]], "InlineFormula"],
+     " \[LineSeparator]Calculates the order/size of a conjugacy class of ",
+     Cell[BoxData[
+      SubscriptBox["S", "n"]], "InlineFormula"]
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->4521214],
+
+Cell[TextData[{
+ Cell[BoxData[
+  RowBox[{"conjugacy", " ", "class"}]], "InlineFormula"],
+ " must be a partition of some integer n."
+}], "Notes",
+ CellID->613073599],
+
+Cell[TextData[{
+ "Recall that each conjugacy class of ",
+ Cell[BoxData[
+  SubscriptBox["S", "n"]], "InlineFormula"],
+ " is specified by its cycle structure \
+(\[CenterEllipsis])(\[CenterEllipsis])(\[CenterEllipsis])\[CenterEllipsis]"
+}], "Notes",
+ CellID->106345268],
+
+Cell[TextData[{
+ "Denoting each cycle's length by ",
+ Cell[BoxData[
+  SubscriptBox["\[Lambda]", "1"]], "InlineFormula"],
+ ", ",
+ Cell[BoxData[
+  SubscriptBox["\[Lambda]", "2"]], "InlineFormula"],
+ ", ... with ",
+ Cell[BoxData[
+  SubscriptBox["\[Lambda]", "1"]], "InlineFormula"],
+ " \[GreaterEqual] ",
+ Cell[BoxData[
+  SubscriptBox["\[Lambda]", "2"]], "InlineFormula"],
+ " \[GreaterEqual] \[CenterEllipsis], then each conjugacy class is given by \
+the partition {",
+ Cell[BoxData[
+  SubscriptBox["\[Lambda]", "1"]], "InlineFormula"],
+ ", ",
+ Cell[BoxData[
+  SubscriptBox["\[Lambda]", "2"]], "InlineFormula"],
+ ", \[CenterEllipsis]} of n, with ",
+ Cell[BoxData[
+  SubscriptBox["\[Lambda]", "1"]], "InlineFormula"],
+ "+",
+ Cell[BoxData[
+  SubscriptBox["\[Lambda]", "2"]], "InlineFormula"],
+ "+\[CenterEllipsis]=n."
+}], "Notes",
+ CellID->235158835]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->566045229],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(1)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->230412486],
+
+Cell[TextData[{
+ Cell[BoxData[
+  SubscriptBox["S", "3"]], "InlineFormula"],
+ " has 6 elements, distributed in 3 conjugacy classes\[LongDash]class1: \
+{(1)(2)(3)}; class2: {(12)(3),(13)(2),(23)(1)}; class3: {(123),(132)}. Their \
+sizes could have been calculated as follows:"
+}], "ExampleText",
+ CellID->32979335],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"SnClassOrder", "[",
+  RowBox[{"{",
+   RowBox[{"1", ",", "1", ",", "1"}], "}"}], "]"}], "\[IndentingNewLine]",
+ RowBox[{"SnClassOrder", "[",
+  RowBox[{"{",
+   RowBox[{"2", ",", "1"}], "}"}], "]"}], "\[IndentingNewLine]",
+ RowBox[{"SnClassOrder", "[",
+  RowBox[{"{", "3", "}"}], "]"}]}], "Input",
+ CellID->298933796]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["SEE ALSO",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "SeeAlsoSection",
+ CellID->1255426704],
+
+Cell[TextData[StyleBox[ButtonBox["Susyno Tutorial",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/tutorial/SusynoTutorial"],
+ FontFamily->"Verdana"]], "Tutorials",
+ CellID->26828648]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["MORE ABOUT",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "MoreAboutSection",
+ CellID->38303248],
+
+Cell[TextData[{
+ Cell[BoxData[
+  ButtonBox["HookContentFormula",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/HookContentFormula"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["DecomposeSnProduct",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/DecomposeSnProduct"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["SnClassCharacter",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/SnClassCharacter"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["SnIrrepDim",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/SnIrrepDim"]], "InlineFormula"],
+ " ",
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["SnIrrepGenerators",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/SnIrrepGenerators"]], "InlineFormula"]
+}], "RelatedLinks",
+ CellID->461483061]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

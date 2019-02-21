@@ -1,0 +1,263 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[{
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"Tutorials \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno Tutorial\"\>":>
+       Documentation`HelpLookup["paclet:Susyno/tutorial/SusynoTutorial"]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"URL \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno/ref/RepsUpToDimN\"\>":>
+       None, "\<\"Copy Mathematica url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["Susyno/ref/RepsUpToDimN"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$]; Null],
+       Delimiter, "\<\"Copy web url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/mathematica/Susyno/ref/\
+RepsUpToDimN.html"], StandardForm]], "Input", TextClipboardType ->
+              "PlainText"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$];
+        Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[
+            StringJoin[
+            "http://reference.wolfram.com/mathematica/",
+             "Susyno/ref/RepsUpToDimN", ".html"]], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}]
+    }], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}},
+   "RowsIndexed" -> {}}},
+ CellID->1],
+
+Cell["RepsUpToDimN", "ObjectName",
+ CellID->1224892054],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"RepsUpToDimN", "[",
+       RowBox[{"group", ",", " ", "maxDim"}], "]"}]], "InlineFormula"],
+     " \[LineSeparator]Lists all representations of ",
+     Cell[BoxData["group"], "InlineFormula"],
+     " with dimension smaller or equal to ",
+     Cell[BoxData["maxDim"], "InlineFormula"],
+     " "
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->970403919],
+
+Cell[TextData[{
+ "Argument ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " should be the ",
+ ButtonBox["Cartan matrix",
+  BaseStyle->"Link",
+  ButtonData->"paclet:Susyno/ref/CartanMatrix"],
+ " of the group."
+}], "Notes",
+ CellID->416274567],
+
+Cell[TextData[{
+ "This method outputs a list o representations, each given by its Dynkin \
+coefficients. The option ",
+ Cell[BoxData[
+  RowBox[{"UseName", "->", "True"}]], "InlineFormula"],
+ " can be used to get the names of the representations instead (as given by \
+the ",
+ Cell[BoxData[
+  ButtonBox["RepName",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RepName"]], "InlineFormula"],
+ " function)."
+}], "Notes",
+ CellID->1067943069]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->337016685],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(1)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->85970087],
+
+Cell[TextData[{
+ "List all representations of ",
+ Cell[BoxData[
+  SubscriptBox["E", "6"]], "InlineFormula"],
+ " with dimensions smaller than or equal to 10000:"
+}], "ExampleText",
+ CellID->283112903],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RepsUpToDimN", "[",
+  RowBox[{"E6", ",", "10000"}], "]"}]], "Input",
+ CellID->473091279]
+}]],
+
+Cell["Get the names instead:", "ExampleText",
+ CellID->23985300],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RepsUpToDimN", "[",
+  RowBox[{"E6", ",", "10000", ",",
+   RowBox[{"UseName", "\[Rule]", "True"}]}], "]"}]], "Input",
+ CellID->205549982]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["TUTORIALS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "TutorialsSection",
+ CellID->250839057],
+
+Cell[TextData[ButtonBox["Susyno Tutorial",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/tutorial/SusynoTutorial"]], "Tutorials",
+ CellID->341631938]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["RELATED LINKS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "RelatedLinksSection",
+ CellID->1584193535],
+
+Cell[TextData[{
+ Cell[BoxData[
+  ButtonBox["DimR",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/DimR"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["RepName",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RepName"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["RepsUpToDimNNoConjugates",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RepsUpToDimNNoConjugates"]], "InlineFormula"]
+}], "RelatedLinks",
+ CellID->56765791]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

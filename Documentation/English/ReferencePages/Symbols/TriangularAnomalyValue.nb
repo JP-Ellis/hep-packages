@@ -1,0 +1,517 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[{
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"Tutorials \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno Tutorial\"\>":>
+       Documentation`HelpLookup["paclet:Susyno/tutorial/SusynoTutorial"]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"See Also \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Phys.Rev. D6 (1972) 429\"\>":>
+       Documentation`HelpLookup[
+        If[
+         StringMatchQ[{
+           URL["http://dx.doi.org/10.1103/PhysRevD.6.429"], None}, "paclet*"],
+         Part[
+          Part[{{"Phys.Rev. D6 (1972) 429", {
+              URL["http://dx.doi.org/10.1103/PhysRevD.6.429"], None}}}, 1],
+          2],
+         StringJoin["paclet:",
+          Part[
+           Part[{{"Phys.Rev. D6 (1972) 429", {
+               URL["http://dx.doi.org/10.1103/PhysRevD.6.429"], None}}}, 1],
+           2]]]]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"URL \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno/ref/TriangularAnomalyValue\"\>":>
+       None, "\<\"Copy Mathematica url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["Susyno/ref/TriangularAnomalyValue"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$]; Null],
+       Delimiter, "\<\"Copy web url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/mathematica/Susyno/ref/\
+TriangularAnomalyValue.html"], StandardForm]], "Input", TextClipboardType ->
+              "PlainText"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$];
+        Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[
+            StringJoin[
+            "http://reference.wolfram.com/mathematica/",
+             "Susyno/ref/TriangularAnomalyValue", ".html"]], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}]
+    }], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ CellID->1],
+
+Cell["TriangularAnomalyValue", "ObjectName",
+ CellID->1224892054],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"TriangularAnomalyValue", "[",
+       RowBox[{"group", ",", "representation"}], "]"}]], "InlineFormula"],
+     " \[LineSeparator]Contribution to gauge anomalies from a given ",
+     Cell[BoxData["representation"], "InlineFormula"]
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->257814512],
+
+Cell[TextData[{
+ Cell[BoxData["group"], "InlineFormula"],
+ " should be a ",
+ ButtonBox["Cartan matrix",
+  BaseStyle->"Link",
+  ButtonData->"paclet:Susyno/ref/CartanMatrix"],
+ "."
+}], "Notes",
+ CellID->1067943069],
+
+Cell[TextData[{
+ "Each representation ",
+ Cell[BoxData["rep"], "InlineFormula"],
+ " should be a list of non-negative integers (Dynkin coefficients)."
+}], "Notes",
+ CellID->125196071],
+
+Cell[TextData[{
+ "The output of this functions is a list of anomaly values. Assuming a gauge \
+group ",
+ Cell[BoxData[
+  RowBox[{
+   SubscriptBox["G", "1"], "x", " ",
+   SubscriptBox["G", "2"], "x", " ", "\[CenterEllipsis]"}]], "InlineFormula"],
+ ", where some of the ",
+ Cell[BoxData[
+  SubscriptBox["G", "i"]], "InlineFormula"],
+ " are U(1)'s and/or SU(n)'s, then the output is the anomalies associated to ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{"U",
+    RowBox[{"(", "1", ")"}],
+    SuperscriptBox[
+     SubscriptBox["G", "1"], "2"]}]}]], "InlineFormula"],
+ ", ",
+ Cell[BoxData[
+  RowBox[{"U",
+   RowBox[{"(", "1", ")"}],
+   SuperscriptBox[
+    SubscriptBox["G", "2"], "2"]}]], "InlineFormula"],
+ ", \[CenterEllipsis], ",
+ Cell[BoxData[
+  RowBox[{"U",
+   RowBox[{
+    RowBox[{"(", "1", ")"}], "'"}],
+   SuperscriptBox[
+    SubscriptBox["G", "1"], "2"]}]], "InlineFormula"],
+ ", ",
+ Cell[BoxData[
+  RowBox[{"U",
+   RowBox[{
+    RowBox[{"(", "1", ")"}], "'"}],
+   SuperscriptBox[
+    SubscriptBox["G", "2"], "2"]}]], "InlineFormula"],
+ ", \[CenterEllipsis], ",
+ Cell[BoxData[
+  RowBox[{"U",
+   RowBox[{
+    RowBox[{"(", "1", ")"}], "''"}],
+   SuperscriptBox[
+    SubscriptBox["G", "1"], "2"]}]], "InlineFormula"],
+ ", ",
+ Cell[BoxData[
+  RowBox[{"U",
+   RowBox[{
+    RowBox[{"(", "1", ")"}], "''"}],
+   SuperscriptBox[
+    SubscriptBox["G", "2"], "2"]}]], "InlineFormula"],
+ ",  \[CenterEllipsis], ",
+ Cell[BoxData[
+  RowBox[{"SU",
+   SuperscriptBox[
+    RowBox[{"(", "n", ")"}], "3"]}]], "InlineFormula"],
+ ", ",
+ Cell[BoxData[
+  RowBox[{"SU",
+   SuperscriptBox[
+    RowBox[{"(",
+     RowBox[{"n", "'"}], ")"}], "3"]}]], "InlineFormula"],
+ ", ",
+ Cell[BoxData[
+  RowBox[{"SU",
+   SuperscriptBox[
+    RowBox[{"(",
+     RowBox[{"n", "''"}], ")"}], "3"]}]], "InlineFormula"],
+ ", \[CenterEllipsis]}."
+}], "Notes",
+ CellID->205761631],
+
+Cell["\<\
+In a gauge anomaly free theory, the sum of the triangular anomaly values of \
+all representations (taking into account the number of flavors of each) adds \
+up to zero.\
+\>", "Notes",
+ CellID->19148277]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->619773801],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(1)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->93971810],
+
+Cell[TextData[{
+ "Contribution of one generation of left-handed quarks (Q) to the gauge \
+anomalies {",
+ Cell[BoxData[
+  RowBox[{"U",
+   SuperscriptBox[
+    RowBox[{"(", "1", ")"}], "3"]}]], "InlineFormula"],
+ ", ",
+ Cell[BoxData[
+  RowBox[{"U",
+   RowBox[{"(", "1", ")"}], "\[Times]", "SU",
+   SuperscriptBox[
+    RowBox[{"(", "2", ")"}], "2"]}]], "InlineFormula"],
+ ", ",
+ Cell[BoxData[
+  RowBox[{"U",
+   RowBox[{"(", "1", ")"}], "\[Times]", "SU",
+   SuperscriptBox[
+    RowBox[{"(", "3", ")"}], "2"]}]], "InlineFormula"],
+ ", ",
+ Cell[BoxData[
+  RowBox[{"SU",
+   SuperscriptBox[
+    RowBox[{"(", "3", ")"}], "3"]}]], "InlineFormula"],
+ "}:"
+}], "ExampleText",
+ CellID->283112903],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Q", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"1", "/", "6"}], " ", ",",
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"1", ",", "0"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{"TriangularAnomalyValue", "[",
+  RowBox[{
+   RowBox[{"{",
+    RowBox[{"U1", ",", "SU2", ",", "SU3"}], "}"}], ",",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"1", "/", "6"}], " ", ",",
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"1", ",", "0"}], "}"}]}], "}"}]}], "]"}]}], "Input",
+ CellID->473091279]
+}]],
+
+Cell["\<\
+Summing all contributions from the MSSM fields (taking into account the \
+flavor multiplicity of each one), there is no gauge anomalies:\
+\>", "ExampleText",
+ CellID->34514],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"u", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", "2"}], "/", "3"}], " ", ",",
+     RowBox[{"{", "0", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"0", ",", "1"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"d", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"1", "/", "3"}], " ", ",",
+     RowBox[{"{", "0", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"0", ",", "1"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Q", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"1", "/", "6"}], " ", ",",
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"1", ",", "0"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"e", "=",
+   RowBox[{"{",
+    RowBox[{"1", ",",
+     RowBox[{"{", "0", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"0", ",", "0"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"L", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", "1"}], "/", "2"}], " ", ",",
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"0", ",", "0"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Hu", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"1", "/", "2"}], " ", ",",
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"0", ",", "0"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"Hd", "=",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{
+       RowBox[{"-", "1"}], "/", "2"}], " ", ",",
+      RowBox[{"{", "1", "}"}], ",",
+      RowBox[{"{",
+       RowBox[{"0", ",", "0"}], "}"}]}], "}"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+  "Print", "[",
+   "\"\<Gauge anomalies {\!\(\*SuperscriptBox[\(U1\), \(3\)]\), \
+U1\[Times]\!\(\*SuperscriptBox[\(SU2\), \(2\)]\), \
+U1\[Times]\!\(\*SuperscriptBox[\(SU3\), \(2\)]\), \
+\!\(\*SuperscriptBox[\(SU3\), \(3\)]\)}:\>\"", "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"{",
+   RowBox[{"3", ",", "3", ",", "3", ",", "3", ",", "3", ",", "1", ",", "1"}],
+   "}"}], ".",
+  RowBox[{"(",
+   RowBox[{
+    RowBox[{
+     RowBox[{"TriangularAnomalyValue", "[",
+      RowBox[{
+       RowBox[{"{",
+        RowBox[{"U1", ",", "SU2", ",", "SU3"}], "}"}], ",", "#"}], "]"}],
+     "&"}], "/@",
+    RowBox[{"{",
+     RowBox[{
+     "u", ",", "d", ",", "Q", ",", "e", ",", "L", ",", "Hu", ",", "Hd"}],
+     "}"}]}], ")"}]}], "\[IndentingNewLine]"}], "Input",
+ CellID->101047489]
+}]],
+
+Cell[TextData[{
+ "In general, with ",
+ Cell[BoxData[
+  SubscriptBox["n", "Hu"]], "InlineFormula"],
+ " (",
+ Cell[BoxData[
+  SubscriptBox["n", "Hd"]], "InlineFormula"],
+ ") Higgs doublets Hu (Hd) one can see that anomaly cancellation requires  ",
+ Cell[BoxData[
+  SubscriptBox["n", "Hu"]], "InlineFormula"],
+ "= ",
+ Cell[BoxData[
+  SubscriptBox["n", "Hd"]], "InlineFormula"],
+ ":"
+}], "ExampleText",
+ CellID->415445203],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+  "Print", "[",
+   "\"\<Gauge anomalies {\!\(\*SuperscriptBox[\(U1\), \(3\)]\), \
+U1\[Times]\!\(\*SuperscriptBox[\(SU2\), \(2\)]\), \
+U1\[Times]\!\(\*SuperscriptBox[\(SU3\), \(2\)]\), \
+\!\(\*SuperscriptBox[\(SU3\), \(3\)]\)}:\>\"", "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"{",
+   RowBox[{"3", ",", "3", ",", "3", ",", "3", ",", "3", ",",
+    SubscriptBox["n", "\"\<Hu\>\""], ",",
+    SubscriptBox["n", "\"\<Hd\>\""]}], "}"}], ".",
+  RowBox[{"(",
+   RowBox[{
+    RowBox[{
+     RowBox[{"TriangularAnomalyValue", "[",
+      RowBox[{
+       RowBox[{"{",
+        RowBox[{"U1", ",", "SU2", ",", "SU3"}], "}"}], ",", "#"}], "]"}],
+     "&"}], "/@",
+    RowBox[{"{",
+     RowBox[{
+     "u", ",", "d", ",", "Q", ",", "e", ",", "L", ",", "Hu", ",", "Hd"}],
+     "}"}]}], ")"}]}]}], "Input",
+ CellID->98461483]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["SEE ALSO",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "SeeAlsoSection",
+ CellID->1255426704],
+
+Cell[TextData[{
+ "H. Georgi and S. L. Glashow, ",
+ StyleBox[ButtonBox["Phys.Rev. D6 (1972) 429",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://dx.doi.org/10.1103/PhysRevD.6.429"], None}],
+  FontFamily->"Verdana"]
+}], "SeeAlso",
+ CellID->929782353],
+
+Cell[TextData[{
+ "S. Okubo, ",
+ StyleBox[ButtonBox["Phys.Rev. D16 (1977) 3528",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://link.aps.org/doi/10.1103/PhysRevD.16.3528"], None}],
+  FontFamily->"Verdana"]
+}], "SeeAlso",
+ CellID->87449871],
+
+Cell[BoxData[Cell[BoxData[
+  ButtonBox["",
+   BaseStyle->"Link"]], "InlineFormula"]], "SeeAlso",
+ CellID->772792248]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["TUTORIALS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "TutorialsSection",
+ CellID->250839057],
+
+Cell[TextData[ButtonBox["Susyno Tutorial",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/tutorial/SusynoTutorial"]], "Tutorials",
+ CellID->341631938]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

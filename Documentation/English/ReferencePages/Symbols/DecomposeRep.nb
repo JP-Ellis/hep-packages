@@ -1,0 +1,792 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[{
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"Tutorials \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno Tutorial\"\>":>
+       Documentation`HelpLookup["paclet:Susyno/tutorial/SusynoTutorial"]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"More About \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"R. Slansky, Phys.Rept. 79 (1981)\"\>":>
+       Documentation`HelpLookup[
+        If[
+         StringMatchQ[
+          StringReplace[{
+            URL["http://dx.doi.org/10.1016/0370-1573(81)90092-2"], None},
+           "paclet:" :> ""], "paclet*"],
+         Part[
+          Part[{{"R. Slansky, Phys.Rept. 79 (1981)",
+             StringReplace[{
+               URL["http://dx.doi.org/10.1016/0370-1573(81)90092-2"], None},
+              "paclet:" :> ""]}}, 1], 2],
+         StringJoin["paclet:",
+          Part[
+           Part[{{"R. Slansky, Phys.Rept. 79 (1981)",
+              StringReplace[{
+                URL["http://dx.doi.org/10.1016/0370-1573(81)90092-2"], None},
+               "paclet:" :> ""]}}, 1], 2]]]]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"URL \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno/ref/DecomposeRep\"\>":>
+       None, "\<\"Copy Mathematica url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["Susyno/ref/DecomposeRep"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$]; Null],
+       Delimiter, "\<\"Copy web url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/mathematica/Susyno/ref/\
+DecomposeRep.html"], StandardForm]], "Input", TextClipboardType ->
+              "PlainText"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$];
+        Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[
+            StringJoin[
+            "http://reference.wolfram.com/mathematica/",
+             "Susyno/ref/DecomposeRep", ".html"]], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}]
+    }], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ CellID->1],
+
+Cell["DecomposeRep", "ObjectName",
+ CellID->1224892054],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"DecomposeRep", "[",
+       RowBox[{
+       "group", ",", "representation", ",", "subgroup", ",",
+        "projectionMatrix"}], "]"}]], "InlineFormula"],
+     " \[LineSeparator]Decomposes the given irreducible ",
+     Cell[BoxData["representation"], "InlineFormula"],
+     " of ",
+     Cell[BoxData["group"], "InlineFormula"],
+     " in a list of irreducible representations of ",
+     Cell[BoxData["subgroup"], "InlineFormula"],
+     ", using ",
+     Cell[BoxData["projectionMatrix"], "InlineFormula"]
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->51004765],
+
+Cell[TextData[{
+ Cell[BoxData["group"], "InlineFormula"],
+ " must be a list of simple/U(1) factor groups:   ",
+ Cell[BoxData[
+  RowBox[{"group", "=",
+   RowBox[{"{",
+    RowBox[{"G1", ",", "G2", ",", "..."}], "}"}]}]], "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->1067943069],
+
+Cell[TextData[{
+ Cell[BoxData["representation"], "InlineFormula"],
+ " must be of the form   ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{"repG1", ",", "repG2", ",", "..."}], "}"}]], "InlineFormula"],
+ " where ",
+ Cell[BoxData["repGi"], "InlineFormula"],
+ " should be the representation (its Dynkin coefficients) under the factor \
+group ",
+ Cell[BoxData["Gi"], "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->235096846],
+
+Cell[TextData[{
+ Cell[BoxData["subgroup"], "InlineFormula"],
+ " must be a list of simple/U(1) factor groups:   ",
+ Cell[BoxData[
+  RowBox[{"group", "=",
+   RowBox[{"{",
+    RowBox[{"H1", ",", "H2", ",", "..."}], "}"}]}]], "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->13684811],
+
+Cell[TextData[{
+ Cell[BoxData["projectionMatrix"], "InlineFormula"],
+ " must be an m x n matrix, where n is the rank of ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " and m is the rank of ",
+ Cell[BoxData["subgroup"], "InlineFormula"],
+ ". This matrix specifies how to convert the weights of  ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " into those of ",
+ Cell[BoxData["subgroup"], "InlineFormula"],
+ ": once it has been computed, it can be used to repeatedly decompose any \
+representation of  ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " into representations of ",
+ Cell[BoxData["subgroup"], "InlineFormula"],
+ ". See ",
+ ButtonBox["R. Slansky, Phys.Rept. 79 (1981)",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://dx.doi.org/10.1016/0370-1573(81)90092-2"], None}],
+ " for more details and examples. Below there are also some examples. In most \
+cases, ",
+ Cell[BoxData[
+  ButtonBox["RegularSubgroupProjectionMatrix",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RegularSubgroupProjectionMatrix"]],
+  "InlineFormula"],
+ " can be used to obtain such a matrix in a simple way."
+}], "Notes",
+ CellID->133396587],
+
+Cell[TextData[{
+ "The ",
+ Cell[BoxData["DecomposeRep"], "InlineFormula"],
+ " function outputs a list of representations of ",
+ Cell[BoxData["subgroup"], "InlineFormula"],
+ ". Use ",
+ Cell[BoxData[
+  ButtonBox["RepName",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RepName"]], "InlineFormula"],
+ " to convert the Dynkin coefficients into names of representations (the \
+option ",
+ Cell[BoxData[
+  RowBox[{"UseName", "->", "True"}]], "InlineFormula"],
+ " of  ",
+ Cell[BoxData["DecomposeRep"], "InlineFormula"],
+ " has the same effect)."
+}], "Notes",
+ CellID->529032095]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->7542455],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(5)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->448338883],
+
+Cell["\<\
+Consider the projection of the octet of SU(3) into SU(2)xU(1):\
+\>", "ExampleText",
+ CellID->432963277],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"group", "=",
+   RowBox[{"{", "SU3", "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"rep", "=",
+    RowBox[{"{",
+     RowBox[{"{",
+      RowBox[{"1", ",", "1"}], "}"}], "}"}]}], ";"}], " ",
+  RowBox[{"(*", " ",
+   RowBox[{"8", " ", "of", " ", "SU",
+    RowBox[{"(", "3", ")"}]}], " ", "*)"}]}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"subgroup", "=",
+   RowBox[{"{",
+    RowBox[{"SU2", ",", "U1"}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"prjMat", "=",
+    TagBox[
+     RowBox[{"(", "\[NoBreak]", GridBox[{
+        {"1", "0"},
+        {"1", "2"}
+       },
+       GridBoxAlignment->{
+        "Columns" -> {{Center}}, "ColumnsIndexed" -> {},
+         "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+       GridBoxSpacings->{"Columns" -> {
+           Offset[0.27999999999999997`], {
+            Offset[0.7]},
+           Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+           Offset[0.2], {
+            Offset[0.4]},
+           Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+     Function[BoxForm`e$,
+      MatrixForm[BoxForm`e$]]]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{"decomposition", "=",
+  RowBox[{"DecomposeRep", "[",
+   RowBox[{"group", ",", "rep", ",", "subgroup", ",", "prjMat"}],
+   "]"}]}]}], "Input",
+ CellID->493559987]
+}]],
+
+Cell[TextData[{
+ "Use ",
+ Cell[BoxData[
+  ButtonBox["RepName",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RepName"]], "InlineFormula"],
+ " to convert the Dynkin coefficients in the output into names of \
+representations:"
+}], "ExampleText",
+ CellID->310296201],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"RepName", "[",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{"SU2", ",", "U1"}], "}"}], ",", "#"}], "]"}], "&"}], "/@",
+  "decomposition"}]], "Input",
+ CellID->290919793]
+}]],
+
+Cell["or simply", "ExampleText",
+ CellID->692859983],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"DecomposeRep", "[",
+  RowBox[{"group", ",", "rep", ",", "subgroup", ",", "prjMat", ",",
+   RowBox[{"UseName", "\[Rule]", "True"}]}], "]"}]], "Input",
+ CellID->19392506]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->100462869],
+
+Cell["\<\
+Projection all SU(5) representation smaller than size 100 into \
+SU(3)xSU(2)xU(1):\
+\>", "ExampleText",
+ CellID->525215179],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"group", "=",
+   RowBox[{"{", "SU5", "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"subgroup", "=",
+   RowBox[{"{",
+    RowBox[{"SU3", ",", "SU2", ",", "U1"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"prjMatrix", "=",
+   TagBox[
+    TagBox[
+     RowBox[{"(", "\[NoBreak]", GridBox[{
+        {"1", "0", "0", "0"},
+        {"0", "1", "0", "0"},
+        {"0", "0", "0", "1"},
+        {"2", "4", "6", "3"}
+       },
+       GridBoxAlignment->{
+        "Columns" -> {{Center}}, "ColumnsIndexed" -> {},
+         "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+       GridBoxSpacings->{"Columns" -> {
+           Offset[0.27999999999999997`], {
+            Offset[0.7]},
+           Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+           Offset[0.2], {
+            Offset[0.4]},
+           Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+     Function[BoxForm`e$,
+      MatrixForm[BoxForm`e$]]],
+    Function[BoxForm`e$,
+     MatrixForm[BoxForm`e$]]]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"SU5reps", "=",
+   RowBox[{"RepsUpToDimN", "[",
+    RowBox[{"SU5", ",", "100"}], "]"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"data", "=",
+   RowBox[{"Table", "[",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{
+       RowBox[{"Style", "[",
+        RowBox[{
+         RowBox[{"RepName", "[",
+          RowBox[{
+           RowBox[{"group", "[",
+            RowBox[{"[", "1", "]"}], "]"}], ",", "rep"}], "]"}], ",",
+         RowBox[{"Darker", "[", "Red", "]"}]}], "]"}], ",",
+       RowBox[{"DecomposeRep", "[",
+        RowBox[{"group", ",",
+         RowBox[{"{", "rep", "}"}], ",", "subgroup", ",", "prjMatrix", ",",
+         RowBox[{"UseName", "\[Rule]", "True"}]}], "]"}]}], "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"rep", ",", "SU5reps"}], "}"}]}], "]"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{"Grid", "[",
+  RowBox[{
+   RowBox[{"Prepend", "[",
+    RowBox[{"data", ",",
+     RowBox[{
+      RowBox[{
+       RowBox[{"Style", "[",
+        RowBox[{"#", ",", "Bold"}], "]"}], "&"}], "/@",
+      RowBox[{"{",
+       RowBox[{
+       "\"\<SU(5) rep\>\"", ",", "\"\<SU(3) x SU(2) x U(1) content\>\""}],
+       "}"}]}]}], "]"}], ",",
+   RowBox[{"Frame", "\[Rule]", "All"}], ",",
+   RowBox[{"FrameStyle", "\[Rule]", "LightGray"}]}], "]"}]}], "Input",
+ CellID->437977129]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->436225016],
+
+Cell["\<\
+Projection of the 16 of SO(10) into SU(3)xSU(2)xU(1)xU(1) representations:\
+\>", "ExampleText",
+ CellID->34920518],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"group", "=",
+   RowBox[{"{", "SO10", "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"rep", "=",
+   RowBox[{"{",
+    RowBox[{"{",
+     RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"subgroup", "=",
+   RowBox[{"{",
+    RowBox[{"SU3", ",", "SU2", ",", "U1", ",", "U1"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"prjMatrix", "=",
+    TagBox[
+     TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+         {"0", "1", "0", "0", "0"},
+         {"1", "0", "0", "0", "0"},
+         {"0", "0", "0", "1", "0"},
+         {"0", "0", "0", "0", "1"},
+         {"2", "4", "6", "3", "0"}
+        },
+        GridBoxAlignment->{
+         "Columns" -> {{Center}}, "ColumnsIndexed" -> {},
+          "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+        GridBoxSpacings->{"Columns" -> {
+            Offset[0.27999999999999997`], {
+             Offset[0.7]},
+            Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+            Offset[0.2], {
+             Offset[0.4]},
+            Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+      Function[BoxForm`e$,
+       MatrixForm[BoxForm`e$]]],
+     Function[BoxForm`e$,
+      MatrixForm[BoxForm`e$]]]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{"DecomposeRep", "[",
+  RowBox[{"group", ",", "rep", ",", "subgroup", ",", "prjMatrix", ",",
+   RowBox[{"UseName", "\[Rule]", "True"}]}], "]"}]}], "Input",
+ CellID->250371063]
+}]],
+
+Cell["\<\
+A possible projection of the 16 of SO(10) directly into SU(3)xSU(2)xU(1) \
+representations could (for example) be as follows:\
+\>", "ExampleText",
+ CellID->883638537],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"group", "=",
+   RowBox[{"{", "SO10", "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"rep", "=",
+   RowBox[{"{",
+    RowBox[{"{",
+     RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"subgroup", "=",
+   RowBox[{"{",
+    RowBox[{"SU3", ",", "SU2", ",", "U1"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"prjMatrix", "=",
+    TagBox[
+     TagBox[
+      TagBox[
+       TagBox[
+        RowBox[{"(", "\[NoBreak]", GridBox[{
+           {"0", "1", "0", "0", "0"},
+           {"1", "0", "0", "0", "0"},
+           {"0", "0", "0", "1", "0"},
+           {
+            FractionBox["1", "3"],
+            FractionBox["2", "3"], "1",
+            FractionBox["1", "2"], "0"}
+          },
+
+          GridBoxAlignment->{
+           "Columns" -> {{Center}}, "ColumnsIndexed" -> {},
+            "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+          GridBoxSpacings->{"Columns" -> {
+              Offset[0.27999999999999997`], {
+               Offset[0.7]},
+              Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+              Offset[0.2], {
+               Offset[0.4]},
+              Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+        Function[BoxForm`e$,
+         MatrixForm[BoxForm`e$]]],
+       Function[BoxForm`e$,
+        MatrixForm[BoxForm`e$]]],
+      Function[BoxForm`e$,
+       MatrixForm[BoxForm`e$]]],
+     Function[BoxForm`e$,
+      MatrixForm[BoxForm`e$]]]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{"DecomposeRep", "[",
+  RowBox[{"group", ",", "rep", ",", "subgroup", ",", "prjMatrix", ",",
+   RowBox[{"UseName", "\[Rule]", "True"}]}], "]"}]}], "Input",
+ CellID->8167165]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->48269021],
+
+Cell["\<\
+Projection of the 4x2x1 of SU(4)xSU(2)xSU(2) into SU(3)xSU(2)xU(1) \
+representations:\
+\>", "ExampleText",
+ CellID->173983053],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"group", "=",
+   RowBox[{"{",
+    RowBox[{"SU4", ",", "SU2", ",", "SU2"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"rep", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{"1", ",", "0", ",", "0"}], "}"}], ",",
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{", "0", "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"subgroup", "=",
+   RowBox[{"{",
+    RowBox[{"SU3", ",", "SU2", ",", "U1"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"prjMatrix", "=",
+    TagBox[
+     RowBox[{"(", "\[NoBreak]", GridBox[{
+        {"1", "0", "0", "0", "0"},
+        {"0", "1", "0", "0", "0"},
+        {"0", "0", "0", "1", "0"},
+        {
+         FractionBox["1", "6"],
+         FractionBox["1", "3"],
+         FractionBox["1", "2"], "0", "0"}
+       },
+       GridBoxAlignment->{
+        "Columns" -> {{Center}}, "ColumnsIndexed" -> {},
+         "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+       GridBoxSpacings->{"Columns" -> {
+           Offset[0.27999999999999997`], {
+            Offset[0.7]},
+           Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+           Offset[0.2], {
+            Offset[0.4]},
+           Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+     Function[BoxForm`e$,
+      MatrixForm[BoxForm`e$]]]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{"DecomposeRep", "[",
+  RowBox[{"group", ",", "rep", ",", "subgroup", ",", "prjMatrix", ",",
+   RowBox[{"UseName", "\[Rule]", "True"}]}], "]"}]}], "Input",
+ CellID->22480244]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->460208631],
+
+Cell[TextData[{
+ "Consider the example given in ",
+ ButtonBox["arXiv:1403.4604 [hep-th]",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://arxiv.org/abs/arXiv:1403.4603"], None}],
+ ", where the 51975-dimensional representation of E(6) is broken into \
+representations of SU(2) x G(2) using the ",
+ ButtonBox["LieART",
+  BaseStyle->"Hyperlink",
+  ButtonData->{
+    URL["http://lieart.hepforge.org"], None}],
+ " package. Given the difference in definition of the Cartan matrix of G(2), \
+the last two rows of the projection matrices given in this article must be \
+permuted:"
+}], "ExampleText",
+ CellID->249036679],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"group", "=",
+   RowBox[{"{", "E6", "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"rep", "=",
+   RowBox[{"{",
+    RowBox[{"{",
+     RowBox[{"1", ",", "0", ",", "1", ",", "0", ",", "0", ",", "0"}], "}"}],
+    "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"subgroup", "=",
+   RowBox[{"{",
+    RowBox[{"SU2", ",", "G2"}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"prjMatrix", "=",
+    TagBox[
+     TagBox[
+      RowBox[{"(", "\[NoBreak]", GridBox[{
+         {"4", "6", "8", "6", "4", "4"},
+         {"0", "0", "1", "0", "0", "0"},
+         {"0", "1", "0", "1", "0", "1"}
+        },
+        GridBoxAlignment->{
+         "Columns" -> {{Center}}, "ColumnsIndexed" -> {},
+          "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+        GridBoxSpacings->{"Columns" -> {
+            Offset[0.27999999999999997`], {
+             Offset[0.7]},
+            Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+            Offset[0.2], {
+             Offset[0.4]},
+            Offset[0.2]}, "RowsIndexed" -> {}}], "\[NoBreak]", ")"}],
+      Function[BoxForm`e$,
+       MatrixForm[BoxForm`e$]]],
+     Function[BoxForm`e$,
+      MatrixForm[BoxForm`e$]]]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"decomposition", "=",
+   RowBox[{"DecomposeRep", "[",
+    RowBox[{"group", ",", "rep", ",", "subgroup", ",", "prjMatrix", ",",
+     RowBox[{"UseName", "\[Rule]", "True"}]}], "]"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{"Tally", "[", "decomposition", "]"}]}], "Input",
+ CellID->672760807]
+}]]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["TUTORIALS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "TutorialsSection",
+ CellID->250839057],
+
+Cell[TextData[ButtonBox["Susyno Tutorial",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/tutorial/SusynoTutorial"]], "Tutorials",
+ CellID->341631938]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["MORE ABOUT",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "MoreAboutSection",
+ CellID->38303248],
+
+Cell[TextData[ButtonBox["R. Slansky, Phys.Rept. 79 (1981)",
+ BaseStyle->"Hyperlink",
+ ButtonData->{
+   URL["http://dx.doi.org/10.1016/0370-1573(81)90092-2"], None}]], "MoreAbout",
+ CellID->1665078683]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["RELATED LINKS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "RelatedLinksSection",
+ CellID->1584193535],
+
+Cell[TextData[{
+ Cell[BoxData[
+  ButtonBox["RepName",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RepName"]], "InlineFormula"],
+ " ",
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ " ",
+ Cell[BoxData[
+  ButtonBox["RegularSubgroupProjectionMatrix",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RegularSubgroupProjectionMatrix"]],
+  "InlineFormula"]
+}], "RelatedLinks",
+ CellID->1038487239]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

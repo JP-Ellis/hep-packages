@@ -1,0 +1,271 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[{
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"Tutorials \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno Tutorial\"\>":>
+       Documentation`HelpLookup["paclet:Susyno/tutorial/SusynoTutorial"]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"URL \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno/ref/SnIrrepDim\"\>":>
+       None, "\<\"Copy Mathematica url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["Susyno/ref/SnIrrepDim"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$]; Null],
+       Delimiter, "\<\"Copy web url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/mathematica/Susyno/ref/\
+SnIrrepDim.html"], StandardForm]], "Input", TextClipboardType ->
+              "PlainText"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$];
+        Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[
+            StringJoin[
+            "http://reference.wolfram.com/mathematica/",
+             "Susyno/ref/SnIrrepDim", ".html"]], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}]
+    }], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}},
+   "RowsIndexed" -> {}}},
+ CellID->1],
+
+Cell["SnIrrepDim", "ObjectName",
+ CellID->1224892054],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"SnIrrepDim", "[", "representation", "]"}]], "InlineFormula"],
+     " \[LineSeparator]Calculates the dimension of a representation of the ",
+     Cell[BoxData[
+      SubscriptBox["S", "n"]], "InlineFormula"],
+     " group"
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->482013691],
+
+Cell[TextData[{
+ Cell[BoxData["representation"], "InlineFormula"],
+ " must be a partition of some integer n, as irreducible representations of  ",
+ Cell[BoxData[
+  SubscriptBox["S", "n"]], "InlineFormula"],
+ " are specified in this way;"
+}], "Notes",
+ CellID->613073599],
+
+Cell[TextData[{
+ Cell[BoxData[
+  RowBox[{"SnIrrepDim", "[", "representation", "]"}]], "InlineFormula"],
+ " gives the same result as ",
+ Cell[BoxData[
+  RowBox[{"SnClassCharacter", "[",
+   RowBox[{"representation", ",", " ",
+    RowBox[{"{",
+     RowBox[{
+     "1", ",", " ", "1", ",", " ", "\[CenterEllipsis]", ",", " ", "1"}],
+     "}"}]}], "]"}]], "InlineFormula"],
+ ", even though the calculations performed are different (",
+ Cell[BoxData["SnIrrepDim"], "InlineFormula"],
+ " uses the  Hook length formula)."
+}], "Notes",
+ CellID->182112945]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->9048814],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(1)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->389094025],
+
+Cell[TextData[{
+ Cell[BoxData[
+  SubscriptBox["S", "3"]], "InlineFormula"],
+ " has 3 irreducible representations: {3}, {2,1}, {1,1,1}. Their dimensions \
+are the following:"
+}], "ExampleText",
+ CellID->32979335],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"SnIrrepDim", "[",
+  RowBox[{"{", "3", "}"}], "]"}], "\[IndentingNewLine]",
+ RowBox[{"SnIrrepDim", "[",
+  RowBox[{"{",
+   RowBox[{"2", ",", "1"}], "}"}], "]"}], "\[IndentingNewLine]",
+ RowBox[{"SnIrrepDim", "[",
+  RowBox[{"{",
+   RowBox[{"1", ",", "1", ",", "1"}], "}"}], "]"}]}], "Input",
+ CellID->298933796]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["TUTORIALS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "TutorialsSection",
+ CellID->250839057],
+
+Cell[TextData[ButtonBox["Susyno Tutorial",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/tutorial/SusynoTutorial"]], "Tutorials",
+ CellID->26828648]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["RELATED LINKS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "RelatedLinksSection",
+ CellID->1584193535],
+
+Cell[TextData[{
+ Cell[BoxData[
+  ButtonBox["HookContentFormula",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/HookContentFormula"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["DecomposeSnProduct",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/DecomposeSnProduct"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["SnClassCharacter",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/SnClassCharacter"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["SnClassOrder",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/SnClassOrder"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["SnIrrepGenerators",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/SnIrrepGenerators"]], "InlineFormula"]
+}], "RelatedLinks",
+ CellID->1038487239]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

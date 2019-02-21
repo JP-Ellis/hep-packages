@@ -1,0 +1,299 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[{
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"Tutorials \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno Tutorial\"\>":>
+       Documentation`HelpLookup["paclet:Susyno/tutorial/SusynoTutorial"]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"URL \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno/ref/Adjoint\"\>":>
+       None, "\<\"Copy Mathematica url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["Susyno/ref/Adjoint"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$]; Null],
+       Delimiter, "\<\"Copy web url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/mathematica/Susyno/ref/Adjoint.\
+html"], StandardForm]], "Input", TextClipboardType -> "PlainText"]}, Visible ->
+            False]]; SelectionMove[
+         DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$];
+        Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[
+            StringJoin[
+            "http://reference.wolfram.com/mathematica/", "Susyno/ref/Adjoint",
+              ".html"]], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}]
+    }], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}},
+   "RowsIndexed" -> {}}},
+ CellID->1],
+
+Cell["Adjoint", "ObjectName",
+ CellID->1224892054],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"Adjoint", "[", "group", "]"}]], "InlineFormula"],
+     " \n\tReturns the adjoint representation of  ",
+     Cell[BoxData["group"], "InlineFormula"]
+    }]]},
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"Adjoint", "[",
+       RowBox[{"{",
+        RowBox[{"group1", ",", "group2", ",", "..."}], "}"}], "]"}]],
+      "InlineFormula"],
+     " \n\tReturns the adjoint representations of the ",
+     Cell[BoxData["group1"], "InlineFormula"],
+     ", ",
+     Cell[BoxData["group2"], "InlineFormula"],
+     ", ..."
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {None, {None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->101244157],
+
+Cell[TextData[{
+ "Argument ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " should be the ",
+ ButtonBox["Cartan matrix",
+  BaseStyle->"Link",
+  ButtonData->"paclet:Susyno/ref/CartanMatrix"],
+ " of the group."
+}], "Notes",
+ CellID->416274567],
+
+Cell[TextData[{
+ "This method outputs the Dynkin coefficients of the adjoint representation \
+of ",
+ Cell[BoxData["group"], "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->1067943069],
+
+Cell[TextData[{
+ "A list of Cartan matrices ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{"group1", ",", " ", "group2", ",", "..."}], "}"}]],
+  "InlineFormula"],
+ " can also be used as input. The output is the list of adjoint \
+representations of the given groups."
+}], "Notes",
+ CellID->68145961]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->624311651],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(3)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->437218431],
+
+Cell["\<\
+The adjoint representation of SU(2) is the triplet representation [={2} in \
+Dynkin coefficients]:\
+\>", "ExampleText",
+ CellID->283112903],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Adjoint", "[", "SU2", "]"}]], "Input",
+ CellID->473091279]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->76102934],
+
+Cell["Two more examples:", "ExampleText",
+ CellID->753055023],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Adjoint", "[", "SU5", "]"}]], "Input",
+ CellID->297272364]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Adjoint", "[", "SO10", "]"}]], "Input",
+ CellID->130136287]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->213248056],
+
+Cell["\<\
+If a list of simple groups is given, a list of representations is returned.\
+\>", "ExampleText",
+ CellID->167344756],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Adjoint", "[",
+  RowBox[{"{",
+   RowBox[{"SU2", ",", "SU5", ",", "SO10"}], "}"}], "]"}]], "Input",
+ CellID->72297960]
+}]]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["TUTORIALS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "TutorialsSection",
+ CellID->250839057],
+
+Cell[TextData[ButtonBox["Susyno Tutorial",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/tutorial/SusynoTutorial"]], "Tutorials",
+ CellID->341631938]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["RELATED LINKS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "RelatedLinksSection",
+ CellID->1584193535],
+
+Cell[TextData[{
+ Cell[BoxData[
+  ButtonBox["CartanMatrix",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/CartanMatrix"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["PositiveRoots",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/PositiveRoots"]], "InlineFormula"]
+}], "RelatedLinks",
+ CellID->56765791]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

@@ -1,0 +1,1316 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[{
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"Tutorials \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno Tutorial\"\>":>
+       Documentation`HelpLookup["paclet:Susyno/tutorial/SusynoTutorial"]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"URL \[RightGuillemet]\"\>",
+        StripOnInput->
+         False], {"\<\"Susyno/ref/SubgroupEmbeddingCoefficients\"\>":>
+       None, "\<\"Copy Mathematica url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["Susyno/ref/SubgroupEmbeddingCoefficients"]}, Visible ->
+            False]]; SelectionMove[
+         DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$]; Null],
+       Delimiter, "\<\"Copy web url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/mathematica/Susyno/ref/\
+SubgroupEmbeddingCoefficients.html"], StandardForm]], "Input",
+              TextClipboardType -> "PlainText"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$];
+        Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[
+            StringJoin[
+            "http://reference.wolfram.com/mathematica/",
+             "Susyno/ref/SubgroupEmbeddingCoefficients", ".html"]], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}]
+    }], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}},
+   "RowsIndexed" -> {}}},
+ CellID->1],
+
+Cell["SubgroupEmbeddingCoefficients", "ObjectName",
+ CellID->1224892054],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"SubgroupEmbeddingCoefficients", "[",
+       RowBox[{
+       "group", ",", " ", "representationsList", ",", "subgroup", ",",
+        "breakingInfo"}], "]"}]], "InlineFormula"],
+     " \[LineSeparator]For some ",
+     Cell[BoxData["subgroup"], "InlineFormula"],
+     " of ",
+     Cell[BoxData["group"], "InlineFormula"],
+     ", and for the product of representations of ",
+     Cell[BoxData["group"], "InlineFormula"],
+     " in ",
+     Cell[BoxData["representationsList"], "InlineFormula"],
+     ", this functions calculates the relation amongst the \
+invariants/Clebsch-Gordon coefficients of ",
+     Cell[BoxData["subgroup"], "InlineFormula"],
+     " imposed by the remaining symmetry generators of ",
+     Cell[BoxData["group"], "InlineFormula"],
+     " which are not part of ",
+     Cell[BoxData["subgroup"], "InlineFormula"],
+     ".\[LineSeparator]\[LineSeparator]Quick example: the 16 and 10 of SO(10) \
+form the a trilinear invariant (16 x 16 x 10). Under the subgroup ",
+     Cell[BoxData[
+      SubscriptBox["G", "SM"]], "InlineFormula"],
+     "=SU(3)xSU(2)xU(1) of SO(10), these representations break into various \
+irreducible representations of  ",
+     Cell[BoxData[
+      SubscriptBox["G", "SM"]], "InlineFormula"],
+     ", and a total of 17 terms invariant only under  ",
+     Cell[BoxData[
+      SubscriptBox["G", "SM"]], "InlineFormula"],
+     " can be written with these  ",
+     Cell[BoxData[
+      SubscriptBox["G", "SM"]], "InlineFormula"],
+     "-representations. Since there is only one invariant under the full \
+group, SO(10), the coefficients of these 17 ",
+     Cell[BoxData[
+      SubscriptBox["G", "SM"]], "InlineFormula"],
+     "-invariant terms must be related in an SO(10)-symmetric scenario. ",
+     Cell[BoxData["SubgroupEmbeddingCoefficients"], "InlineFormula"],
+     " returns such relations."
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->45508745],
+
+Cell[TextData[{
+ Cell[BoxData["group"], "InlineFormula"],
+ " and ",
+ Cell[BoxData["subgroup"], "InlineFormula"],
+ " must be lists of simple/U(1) factor groups:   ",
+ Cell[BoxData[
+  RowBox[{"group", "=",
+   RowBox[{"{",
+    RowBox[{"G1", ",", "G2", ",", "..."}], "}"}]}]], "InlineFormula"],
+ ",  ",
+ Cell[BoxData[
+  RowBox[{"subgroup", "=",
+   RowBox[{"{",
+    RowBox[{"H1", ",", "H2", ",", "..."}], "}"}]}]], "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->810218094],
+
+Cell[TextData[{
+ Cell[BoxData["representationsList"], "InlineFormula"],
+ " must be a list ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{"R1", ",", "R2", ",", "..."}], "}"}]], "InlineFormula"],
+ " of representations of ",
+ Cell[BoxData["group"], "InlineFormula"],
+ ", such that ",
+ Cell[BoxData[
+  RowBox[{
+   RowBox[{"R1", " ", "x", " ", "R2", " ", "x"}], " ", "..."}]],
+  "InlineFormula"],
+ " contains one or more ",
+ " ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " singlets."
+}], "Notes",
+ CellID->31258817],
+
+Cell[TextData[{
+ Cell[BoxData["breakingInformation"], "InlineFormula"],
+ " should contain the information about which dots of the Dynkin diagram of ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " are to be dropped and if the diagram is to be extended or not. It is the \
+same as in the function ",
+ Cell[BoxData[
+  ButtonBox["RegularSubgroupProjectionMatrix",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RegularSubgroupProjectionMatrix"]],
+  "InlineFormula"],
+ " \[LongDash] see the examples contained in its documentation.  "
+}], "Notes",
+ CellID->232483187],
+
+Cell[TextData[{
+ "The output of this function is complicated and is better explained by \
+example \[LongDash] see below. However, the general picture is the following.\
+\[LineSeparator]\[LineSeparator]For each representation R of ",
+ Cell[BoxData["group"], "InlineFormula"],
+ ", the representation matrices are known in an explicit basis (with ",
+ Cell[BoxData[
+  ButtonBox["RepMatrices",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RepMatrices"]], "InlineFormula"],
+ "). We can call them ",
+ Cell[BoxData[
+  SuperscriptBox["T", "a"]], "InlineFormula"],
+ "(R). The decomposition of R into irreducible representations ",
+ Cell[BoxData[
+  SubscriptBox[
+   RowBox[{"(",
+    RowBox[{"R", "'"}], ")"}], "i"]], "InlineFormula"],
+ " of ",
+ Cell[BoxData["subgroup"], "InlineFormula"],
+ " is also know (with ",
+ Cell[BoxData[
+  ButtonBox["DecomposeRep",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/DecomposeRep"]], "InlineFormula"],
+ ") and the explicit basis for these matrices can be obtained (again, with ",
+ Cell[BoxData[
+  ButtonBox["RepMatrices",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RepMatrices"]], "InlineFormula"],
+ "): we get the  ",
+ Cell[BoxData[
+  SuperscriptBox["T", "b"]], "InlineFormula"],
+ "(",
+ Cell[BoxData[
+  SubscriptBox[
+   RowBox[{"(",
+    RowBox[{"R", "'"}], ")"}], "i"]], "InlineFormula"],
+ ") matrices. We may place these  ",
+ Cell[BoxData[
+  SuperscriptBox["T", "b"]], "InlineFormula"],
+ "(",
+ Cell[BoxData[
+  SubscriptBox[
+   RowBox[{"(",
+    RowBox[{"R", "'"}], ")"}], "1"]], "InlineFormula"],
+ "), ",
+ Cell[BoxData[
+  SuperscriptBox["T", "b"]], "InlineFormula"],
+ "(",
+ Cell[BoxData[
+  SubscriptBox[
+   RowBox[{"(",
+    RowBox[{"R", "'"}], ")"}], "2"]], "InlineFormula"],
+ "), ... matrices as diagonal blocks of matrices ",
+ Cell[BoxData[
+  SuperscriptBox["T", "b"]], "InlineFormula"],
+ "(R') which have the same dimensions as the ",
+ Cell[BoxData[
+  SuperscriptBox["T", "a"]], "InlineFormula"],
+ "(R).\[LineSeparator]\[LineSeparator]How are the matrices  ",
+ Cell[BoxData[
+  SuperscriptBox["T", "a"]], "InlineFormula"],
+ "(R) related to  ",
+ Cell[BoxData[
+  SuperscriptBox["T", "b"]], "InlineFormula"],
+ "(R')? We need to a) take a linear combination ",
+ Cell[BoxData[
+  SubscriptBox["c", "ba"]], "InlineFormula"],
+ " of the  ",
+ Cell[BoxData[
+  SuperscriptBox["T", "a"]], "InlineFormula"],
+ "(R) matrices (the same for any representation R) and b) change the basis of \
+the  ",
+ Cell[BoxData[
+  SuperscriptBox["T", "a"]], "InlineFormula"],
+ "(R) with a unitary matrix ",
+ Cell[BoxData[
+  RowBox[{"B",
+   RowBox[{"(", "R", ")"}]}]], "InlineFormula"],
+ " such that these matrices become block diagonal, with the blocks given by \
+the ",
+ Cell[BoxData[
+  SuperscriptBox["T", "b"]], "InlineFormula"],
+ "(",
+ Cell[BoxData[
+  SubscriptBox[
+   RowBox[{"(",
+    RowBox[{"R", "'"}], ")"}], "i"]], "InlineFormula"],
+ "). In other words,\[LineSeparator]\[LineSeparator]",
+ Cell[BoxData[
+  SuperscriptBox["T", "b"]], "InlineFormula"],
+ "(",
+ Cell[BoxData[
+  RowBox[{"R", "'"}]], "InlineFormula"],
+ ")=",
+ Cell[BoxData[
+  SubscriptBox["c", "ba"]], "InlineFormula"],
+ " ",
+ Cell[BoxData[
+  RowBox[{"B",
+   SuperscriptBox[
+    RowBox[{"(", "R", ")"}], "\[Dagger]"]}]], "InlineFormula"],
+ ".",
+ Cell[BoxData[
+  SuperscriptBox["T", "a"]], "InlineFormula"],
+ "(R).B(R)  (sum over b).\[LineSeparator]\[LineSeparator]Susyno can calculate \
+both ",
+ Cell[BoxData[
+  SubscriptBox["c", "ba"]], "InlineFormula"],
+ " for any regular group embedding, and the matrix B(R) for any \
+representation. As such, the program is aware of how the sub-representations \
+are exactly/explicitly embedded in each representation of ",
+ Cell[BoxData["group"], "InlineFormula"],
+ ". \[LineSeparator]\[LineSeparator]Thus, given a list of representations R1, \
+R2, ... of  ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " such that R1 x R2 x ... contains group invariants, it can compute all the ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " invariants/Clebsch-Gordon coefficients ",
+ Cell[BoxData[
+  SubscriptBox[
+   SuperscriptBox["c", "a"],
+   RowBox[{"i1", ",", "i2", ",", "..."}]]], "InlineFormula"],
+ " such that\[LineSeparator]\[LineSeparator] ",
+ Cell[BoxData[
+  SubscriptBox[
+   SuperscriptBox["c", "a"],
+   RowBox[{"i1", ",", "i2", ",", "..."}]]], "InlineFormula"],
+ " R1[i1] R2[i2] ... (sum over the components i1, i2,...)\[LineSeparator]\
+\[LineSeparator]are ",
+ Cell[BoxData["group"], "InlineFormula"],
+ "-invariants. Here, Rj[i] refers to the component i of the \
+field/representation Rj. Also, because there might be more than one \
+invariant, the index a=1,2,... was added.\[LineSeparator]\[LineSeparator]But \
+Susyno can also calculate the ",
+ Cell[BoxData["subgroup"], "InlineFormula"],
+ " invariants/Clebsch-Gordon coefficients of the form \[LineSeparator]\
+\[LineSeparator] ",
+ Cell[BoxData[
+  SubscriptBox[
+   SuperscriptBox[
+    RowBox[{"c", "'"}], "b"],
+   RowBox[{"i1", ",", "i2", ",", "..."}]]], "InlineFormula"],
+ "(x1,x2,...) ",
+ Cell[BoxData[
+  SubscriptBox[
+   RowBox[{"(",
+    RowBox[{"R1", "'"}], ")"}], "x1"]], "InlineFormula"],
+ "[i1] ",
+ Cell[BoxData[
+  SubscriptBox[
+   RowBox[{"(",
+    RowBox[{"R2", "'"}], ")"}], "x2"]], "InlineFormula"],
+ "[i1]  ... (sum over the components i1, i2,...)\[LineSeparator]\
+\[LineSeparator]in the basis where the fields ",
+ Cell[BoxData[
+  SubscriptBox[
+   RowBox[{"(",
+    RowBox[{"Ri", "'"}], ")"}], "xi"]], "InlineFormula"],
+ " are rotated by the ",
+ Cell[BoxData[
+  RowBox[{"B",
+   SuperscriptBox[
+    RowBox[{"(", "Ri", ")"}], "\[Dagger]"]}]], "InlineFormula"],
+ " matrices (as opposed to rotating the Ri by  ",
+ Cell[BoxData[
+  RowBox[{"B",
+   RowBox[{"(", "Ri", ")"}]}]], "InlineFormula"],
+ "). Note that we get in general many of these invariants ",
+ Cell[BoxData[
+  RowBox[{"c", "'"}]], "InlineFormula"],
+ " because we have to consider all combinations of the x1, x2, ... which will \
+form ",
+ Cell[BoxData["subgroup"], "InlineFormula"],
+ " invariants (in other words, the representations of ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " break into many pieces/representations of ",
+ Cell[BoxData["subgroup"], "InlineFormula"],
+ ", and we have to look for all invariants formed from these pieces).\
+\[LineSeparator]\[LineSeparator]So, for each  ",
+ Cell[BoxData[
+  SubscriptBox[
+   SuperscriptBox["c", "a"],
+   RowBox[{"i1", ",", "i2", ",", "..."}]]], "InlineFormula"],
+ " (symmetric under ",
+ Cell[BoxData["group"], "InlineFormula"],
+ "), there are many  ",
+ Cell[BoxData[
+  SubscriptBox[
+   SuperscriptBox[
+    RowBox[{"c", "'"}], "b"],
+   RowBox[{"i1", ",", "i2", ",", "..."}]]], "InlineFormula"],
+ "(x1,x2,...)  (symmetric under just ",
+ Cell[BoxData["subgroup"], "InlineFormula"],
+ "). Clearly the coefficients  ",
+ Cell[BoxData[
+  SubscriptBox[
+   SuperscriptBox["c", "a"],
+   RowBox[{"i1", ",", "i2", ",", "..."}]]], "InlineFormula"],
+ " and ",
+ Cell[BoxData[
+  SubscriptBox[
+   SuperscriptBox[
+    RowBox[{"c", "'"}], "b"],
+   RowBox[{"i1", ",", "i2", ",", "..."}]]], "InlineFormula"],
+ "(x1,x2,...) are related by the group generators of ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " which are not part of  ",
+ Cell[BoxData["subgroup"], "InlineFormula"],
+ ", and so we get:\[LineSeparator]\[LineSeparator]",
+ Cell[BoxData[
+  SubscriptBox[
+   SuperscriptBox["c", "a"],
+   RowBox[{"i1", ",", "i2", ",", "..."}]]], "InlineFormula"],
+ "=",
+ Cell[BoxData[
+  SubscriptBox[
+   SuperscriptBox["k", "ab"],
+   RowBox[{
+    RowBox[{"x1", " ", "x2"}], " ", "..."}]]], "InlineFormula"],
+ " ",
+ Cell[BoxData[
+  SubscriptBox[
+   SuperscriptBox[
+    RowBox[{"c", "'"}], "b"],
+   RowBox[{"i1", ",", "i2", ",", "..."}]]], "InlineFormula"],
+ "(x1,x2,...) (sum over x1,x2...)\[LineSeparator]\[LineSeparator]for some \
+embedding coefficients ",
+ Cell[BoxData[
+  SubscriptBox[
+   SuperscriptBox["k", "ab"],
+   RowBox[{
+    RowBox[{"x1", " ", "x2"}], " ", "..."}]]], "InlineFormula"],
+ ". These numbers ",
+ Cell[BoxData[
+  SubscriptBox[
+   SuperscriptBox["k", "ab"],
+   RowBox[{
+    RowBox[{"x1", " ", "x2"}], " ", "..."}]]], "InlineFormula"],
+ " are the main output of this function ",
+ Cell[BoxData["SubgroupEmbeddingCoefficients"], "InlineFormula"],
+ ". Indeed the output of the function is of the form\[LineSeparator]\
+\[LineSeparator]{{",
+ Cell[BoxData["Inv"], "InlineFormula"],
+ ",{",
+ Cell[BoxData[
+  RowBox[{"B",
+   RowBox[{"(", "R1", ")"}]}]], "InlineFormula"],
+ ",",
+ Cell[BoxData[
+  RowBox[{"B",
+   RowBox[{"(", "R2", ")"}]}]], "InlineFormula"],
+ ",...}},{group,projectionMatrix,{<list of ",
+ Cell[BoxData[
+  SubscriptBox[
+   RowBox[{"(",
+    RowBox[{"R1", "'"}], ")"}], "i"]], "InlineFormula"],
+ " in R1>, <list of ",
+ Cell[BoxData[
+  SubscriptBox[
+   RowBox[{"(",
+    RowBox[{"R2", "'"}], ")"}], "i"]], "InlineFormula"],
+ " in R2>, ...},<list with the information of which combinations of ",
+ Cell[BoxData[
+  SubscriptBox[
+   RowBox[{"(",
+    RowBox[{"Rj", "'"}], ")"}], "i"]], "InlineFormula"],
+ " form ",
+ Cell[BoxData["subgroup"], "InlineFormula"],
+ " invariants>, ",
+ Cell[BoxData[
+  SubscriptBox["k",
+   RowBox[{"ij", "..."}]]], "InlineFormula"],
+ "}."
+}], "Notes",
+ CellID->45496372],
+
+Cell["Output format of this function may change in the future.", "Notes",
+ CellID->421525536]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->158588049],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(2)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->5853172],
+
+Cell["\<\
+Consider how the product 16 x 16 x 10 in SO(10) looks under the subgroup \
+SU(3)xSU(2)xU(1):\
+\>", "ExampleText",
+ CellID->19615827],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"group", "=",
+   RowBox[{"{", "SO10", "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"rep16", "=",
+   RowBox[{"{",
+    RowBox[{"{",
+     RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"rep10", "=",
+   RowBox[{"{",
+    RowBox[{"{",
+     RowBox[{"1", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"subgroup", "=",
+   RowBox[{"{",
+    RowBox[{"SU3", ",", "SU2", ",", "U1"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"breakInfo", "=",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"{",
+       RowBox[{"1", ",",
+        RowBox[{"{",
+         RowBox[{"2", ",", "1"}], "}"}]}], "}"}], ",",
+      RowBox[{"{",
+       RowBox[{"1", ",",
+        RowBox[{"{", "4", "}"}]}], "}"}], ",",
+      RowBox[{"{",
+       RowBox[{"1", ",",
+        RowBox[{"1", "/", "6"}]}], "}"}]}], "}"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"result", "=",
+   RowBox[{"SubgroupEmbeddingCoefficients", "[",
+    RowBox[{"group", ",",
+     RowBox[{"{",
+      RowBox[{"rep16", ",", "rep16", ",", "rep10"}], "}"}], ",", "subgroup",
+     ",", "breakInfo"}], "]"}]}], ";"}]}], "Input",
+ CellID->85442412],
+
+Cell[TextData[{
+ "The output was saved to the variable ",
+ Cell[BoxData["result"], "InlineFormula"],
+ ". Let us look at its important parts:  ",
+ Cell[BoxData[
+  RowBox[{"result", "[",
+   RowBox[{"[",
+    RowBox[{"1", ",", "1"}], "]"}], "]"}]], "InlineFormula"],
+ " contains just the invariants/Clebsch-Gordon coefficients (one in this \
+case) of 16 x 16 x 10 in SO(10), exactly as given by the ",
+ Cell[BoxData[
+  ButtonBox["Invariants",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/Invariants"]], "InlineFormula"],
+ " function:"
+}], "ExampleText",
+ CellID->147360266],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"result", "[",
+  RowBox[{"[",
+   RowBox[{"1", ",", "1"}], "]"}], "]"}]], "Input",
+ CellID->276648439]
+}]],
+
+Cell["Notice the normalization of the coefficients:", "ExampleText",
+ CellID->240482480],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"result", "[",
+     RowBox[{"[",
+      RowBox[{"1", ",", "1"}], "]"}], "]"}], ".",
+    RowBox[{"Array", "[",
+     RowBox[{"c", ",", "10"}], "]"}], ".",
+    RowBox[{"Array", "[",
+     RowBox[{"b", ",", "16"}], "]"}], ".",
+    RowBox[{"Array", "[",
+     RowBox[{"a", ",", "16"}], "]"}]}], "//", "Expand"}], "//",
+  RowBox[{
+   RowBox[{"Short", "[",
+    RowBox[{"#", ",", "4"}], "]"}], "&"}]}]], "Input",
+ CellID->259293861]
+}]],
+
+Cell[TextData[{
+ "Now, ",
+ Cell[BoxData[
+  RowBox[{"result", "[",
+   RowBox[{"[",
+    RowBox[{"1", ",", "2"}], "]"}], "]"}]], "InlineFormula"],
+ " is more interesting: it contains the rotations matrices needed to block \
+diagonalize the representations 16, 16, 10 of SO(10) (as given by ",
+ Cell[BoxData[
+  ButtonBox["RepMatrices",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RepMatrices"]], "InlineFormula"],
+ "), with the blocks being the representation matrices under SU(3)xSU(2)xU(1) \
+(as given by ",
+ Cell[BoxData[
+  ButtonBox["RepMatrices",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RepMatrices"]], "InlineFormula"],
+ ") after suitable linear combinations of the SO(10) [not shown in the \
+output] are taken:"
+}], "ExampleText",
+ CellID->490834723],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"MatrixForm", "/@",
+  RowBox[{"result", "[",
+   RowBox[{"[",
+    RowBox[{"1", ",", "2"}], "]"}], "]"}]}]], "Input",
+ CellID->27134387]
+}]],
+
+Cell[TextData[{
+ Cell[BoxData[
+  RowBox[{"result", "[",
+   RowBox[{"[",
+    RowBox[{"2", ",", "1"}], "]"}], "]"}]], "InlineFormula"],
+ " just returns the group given as input, and ",
+ Cell[BoxData[
+  RowBox[{"result", "[",
+   RowBox[{"[",
+    RowBox[{"2", ",", "2"}], "]"}], "]"}]], "InlineFormula"],
+ " is the projection matrix derived by the program (see ",
+ Cell[BoxData[
+  ButtonBox["RegularSubgroupProjectionMatrix",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RegularSubgroupProjectionMatrix"]],
+  "InlineFormula"],
+ "). So we move on to ",
+ Cell[BoxData[
+  RowBox[{"result", "[",
+   RowBox[{"[",
+    RowBox[{"2", ",", "3"}], "]"}], "]"}]], "InlineFormula"],
+ ":"
+}], "ExampleText",
+ CellID->985435234],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"result", "[",
+  RowBox[{"[",
+   RowBox[{"2", ",", "3"}], "]"}], "]"}]], "Input",
+ CellID->148666411]
+}]],
+
+Cell[TextData[{
+ "This is the list of representations of the subgroup found in the \
+representations {16,16,10} of SO(10), respectively (see ",
+ Cell[BoxData[
+  ButtonBox["DecomposeRep",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/DecomposeRep"]], "InlineFormula"],
+ " for details). To better see it, use ",
+ Cell[BoxData[
+  ButtonBox["RepName",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/RepName"]], "InlineFormula"]
+}], "ExampleText",
+ CellID->4552369],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Map", "[",
+  RowBox[{
+   RowBox[{
+    RowBox[{"RepName", "[",
+     RowBox[{"subgroup", ",", "#"}], "]"}], "&"}], ",",
+   RowBox[{"result", "[",
+    RowBox[{"[",
+     RowBox[{"2", ",", "3"}], "]"}], "]"}], ",",
+   RowBox[{"{", "2", "}"}]}], "]"}]], "Input",
+ CellID->522541032]
+}]],
+
+Cell[TextData[{
+ "The position of the sub-representations shown is important in the \
+following:\[LineSeparator]the #1 subrep of the 16 is 3x2x1/6, #2 is ",
+ Cell[BoxData[
+  OverscriptBox["3", "_"]], "InlineFormula"],
+ "x1x-2/3, etc...\[LineSeparator]the #1 subrep of the 16 is 3x2x1/6, #2 is ",
+ Cell[BoxData[
+  OverscriptBox["3", "_"]], "InlineFormula"],
+ "x1x-2/3, etc...\[LineSeparator]the #1 subrep of the 10 is 3x1x-1/3, #2 is ",
+ Cell[BoxData[
+  OverscriptBox["3", "_"]], "InlineFormula"],
+ "x1x1/3, etc...\[LineSeparator]\[LineSeparator]Now, we look at ",
+ Cell[BoxData[
+  RowBox[{"result", "[",
+   RowBox[{"[",
+    RowBox[{"2", ",", "4"}], "]"}], "]"}]], "InlineFormula"],
+ ", or, without loosing information, just at"
+}], "ExampleText",
+ Deletable->True,
+ CellID->49186995],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"result", "[",
+  RowBox[{"[",
+   RowBox[{"2", ",", "4", ",", "All", ",",
+    RowBox[{"{",
+     RowBox[{"1", ",", "3"}], "}"}]}], "]"}], "]"}]], "Input",
+ CellID->97988462]
+}]],
+
+Cell[TextData[{
+ "What this tells is that the ...\[LineSeparator]- (",
+ StyleBox["#1",
+  FontColor->RGBColor[1, 0, 0]],
+ " subrep of the first rep [the 16]) x (",
+ StyleBox["#1",
+  FontColor->RGBColor[1, 0, 0]],
+ " subrep of the second rep [the 16]) x (",
+ StyleBox["#1",
+  FontColor->RGBColor[1, 0, 0]],
+ " subrep of the third rep [the 10]) contains ",
+ StyleBox["one",
+  FontColor->RGBColor[0.5, 0, 0.5]],
+ " subgroup [SU3xSU2xU1] invariant\[LineSeparator]- (",
+ StyleBox["#1",
+  FontColor->RGBColor[1, 0, 0]],
+ " subrep of the first rep [the 16]) x (",
+ StyleBox["#2",
+  FontColor->RGBColor[1, 0, 0]],
+ " subrep of the second rep [the 16]) x (",
+ StyleBox["#3",
+  FontColor->RGBColor[1, 0, 0]],
+ " subrep of the third rep [the 10]) contains ",
+ StyleBox["one",
+  FontColor->RGBColor[0.5, 0, 0.5]],
+ " subgroup [SU3xSU2xU1] invariant\[LineSeparator]- (",
+ StyleBox["#1",
+  FontColor->RGBColor[1, 0, 0]],
+ " subrep of the first rep [the 16]) x (",
+ StyleBox["#3",
+  FontColor->RGBColor[1, 0, 0]],
+ " subrep of the second rep [the 16]) x (",
+ StyleBox["#4",
+  FontColor->RGBColor[1, 0, 0]],
+ " subrep of the third rep [the 10]) contains ",
+ StyleBox["one",
+  FontColor->RGBColor[0.5, 0, 0.5]],
+ " subgroup [SU3xSU2xU1] invariant\[LineSeparator]...\[LineSeparator]- (",
+ StyleBox["#6",
+  FontColor->RGBColor[1, 0, 0]],
+ " subrep of the first rep [the 16]) x (",
+ StyleBox["#4",
+  FontColor->RGBColor[1, 0, 0]],
+ " subrep of the second rep [the 16]) x (",
+ StyleBox["#4",
+  FontColor->RGBColor[1, 0, 0]],
+ " subrep of the third rep [the 10]) contains ",
+ StyleBox["one",
+  FontColor->RGBColor[0.5, 0, 0.5]],
+ " subgroup [SU3xSU2xU1] invariant\[LineSeparator]\[LineSeparator]In total \
+then, there are 17 SU(3)xSU(2)xU(1) invariants in the 16 x 16 x 10 SO(10) \
+invariant. To see more clearly the SU(3)xSU(2)xU(1) representations involved \
+in each, we can write the following:"
+}], "ExampleText",
+ Deletable->True,
+ CellID->137870151],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Map", "[",
+  RowBox[{
+   RowBox[{
+    RowBox[{"RepName", "[",
+     RowBox[{"subgroup", ",", "#"}], "]"}], "&"}], ",",
+   RowBox[{
+    RowBox[{
+     RowBox[{"Extract", "[",
+      RowBox[{
+       RowBox[{"result", "[",
+        RowBox[{"[",
+         RowBox[{"2", ",", "3"}], "]"}], "]"}], ",", "#"}], "]"}], "&"}], "/@",
+    RowBox[{"result", "[",
+     RowBox[{"[",
+      RowBox[{"2", ",", "4", ",", "All", ",", "2"}], "]"}], "]"}]}], ",",
+   RowBox[{"{", "2", "}"}]}], "]"}]], "Input",
+ CellID->55378935]
+}]],
+
+Cell[TextData[{
+ "All these 17 products provide just a single SU(3)xSU(2)xU(1) invariant (see \
+",
+ Cell[BoxData[
+  RowBox[{"result", "[",
+   RowBox[{"[",
+    RowBox[{"2", ",", "4"}], "]"}], "]"}]], "InlineFormula"],
+ " above), but in general this is might not be the case. So the following, \
+more complicated code is safer, as it will take into account this potential \
+multiplicity:"
+}], "ExampleText",
+ Deletable->True,
+ CellID->332102819],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Map", "[",
+  RowBox[{
+   RowBox[{
+    RowBox[{"RepName", "[",
+     RowBox[{"subgroup", ",", "#"}], "]"}], "&"}], ",",
+   RowBox[{"Flatten", "[",
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"ConstantArray", "[",
+        RowBox[{
+         RowBox[{"Extract", "[",
+          RowBox[{
+           RowBox[{"result", "[",
+            RowBox[{"[",
+             RowBox[{"2", ",", "3"}], "]"}], "]"}], ",",
+           RowBox[{"#", "[",
+            RowBox[{"[", "1", "]"}], "]"}]}], "]"}], ",",
+         RowBox[{"#", "[",
+          RowBox[{"[", "2", "]"}], "]"}]}], "]"}], "&"}], "/@",
+      RowBox[{"result", "[",
+       RowBox[{"[",
+        RowBox[{"2", ",", "4", ",", "All", ",",
+         RowBox[{"{",
+          RowBox[{"2", ",", "3"}], "}"}]}], "]"}], "]"}]}], ",", "1"}], "]"}],
+    ",",
+   RowBox[{"{", "2", "}"}]}], "]"}]], "Input",
+ CellID->52206020]
+}]],
+
+Cell[TextData[{
+ "Finally, we are in a position to interpret the main part of output we got: ",
+ Cell[BoxData[
+  RowBox[{"result", "[",
+   RowBox[{"[",
+    RowBox[{"2", ",", "5"}], "]"}], "]"}]], "InlineFormula"],
+ ". Each SO(10) invariant of the form 16 x 16 x 10 [there is just one in this \
+case], is a linear combination of the 17 invariants of SU(3)xSU(2)xU(1), and \
+the coefficients are"
+}], "ExampleText",
+ Deletable->True,
+ CellID->27014175],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"result", "[",
+  RowBox[{"[",
+   RowBox[{"2", ",", "5"}], "]"}], "]"}]], "Input",
+ CellID->49277989]
+}]],
+
+Cell[TextData[{
+ "[Note: in the present case, we see from ",
+ Cell[BoxData[
+  RowBox[{"result", "[",
+   RowBox[{"[",
+    RowBox[{"2", ",", "4"}], "]"}], "]"}]], "InlineFormula"],
+ " that all 17 products of representations provide just a single \
+SU(3)xSU(2)xU(1) invariant each. If this is not the case, we would have more \
+than 17 coefficients in  ",
+ Cell[BoxData[
+  RowBox[{"result", "[",
+   RowBox[{"[",
+    RowBox[{"2", ",", "5"}], "]"}], "]"}]], "InlineFormula"],
+ ". For the sake of simplicity, consider this situation: if ",
+ Cell[BoxData[
+  RowBox[{"result", "[",
+   RowBox[{"[",
+    RowBox[{"2", ",", "4", ",", "All", ",",
+     RowBox[{"{",
+      RowBox[{"1", ",", "3"}], "}"}]}], "]"}], "]"}]], "InlineFormula"],
+ " was {{{1,1,1},2},{{1,2,3},3},{{1,3,4},1}}, then  ",
+ Cell[BoxData[
+  RowBox[{"result", "[",
+   RowBox[{"[",
+    RowBox[{"2", ",", "5"}], "]"}], "]"}]], "InlineFormula"],
+ " would be of the form {{c1,c2,c3,c4,c5,c6}} with c1,c2 corresponding to \
+{{1,1,1},2}, c3,c4,c5 to {{1,2,3},3}, and c6 to {{1,3,4},1}}]."
+}], "ExampleText",
+ Deletable->True,
+ CellID->377252352],
+
+Cell["We can put it in a more readable form as follows", "ExampleText",
+ Deletable->True,
+ CellID->409441931],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"coefficients", "=",
+    RowBox[{"result", "[",
+     RowBox[{"[",
+      RowBox[{"2", ",", "5", ",", "1"}], "]"}], "]"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"productFields", "=",
+    RowBox[{"Map", "[",
+     RowBox[{
+      RowBox[{
+       RowBox[{"RepName", "[",
+        RowBox[{"subgroup", ",", "#"}], "]"}], "&"}], ",",
+      RowBox[{"Flatten", "[",
+       RowBox[{
+        RowBox[{
+         RowBox[{
+          RowBox[{"ConstantArray", "[",
+           RowBox[{
+            RowBox[{"Extract", "[",
+             RowBox[{
+              RowBox[{"result", "[",
+               RowBox[{"[",
+                RowBox[{"2", ",", "3"}], "]"}], "]"}], ",",
+              RowBox[{"#", "[",
+               RowBox[{"[", "1", "]"}], "]"}]}], "]"}], ",",
+            RowBox[{"#", "[",
+             RowBox[{"[", "2", "]"}], "]"}]}], "]"}], "&"}], "/@",
+         RowBox[{"result", "[",
+          RowBox[{"[",
+           RowBox[{"2", ",", "4", ",", "All", ",",
+            RowBox[{"{",
+             RowBox[{"2", ",", "3"}], "}"}]}], "]"}], "]"}]}], ",", "1"}],
+       "]"}], ",",
+      RowBox[{"{", "2", "}"}]}], "]"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"Print", "[",
+    RowBox[{"\"\<The product of \>\"", ",",
+     RowBox[{"Style", "[",
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{"RepName", "[",
+          RowBox[{"group", ",", "#"}], "]"}], "&"}], "/@",
+        RowBox[{"{",
+         RowBox[{"rep16", ",", "rep16", ",", "rep10"}], "}"}]}], ",",
+       RowBox[{"Darker", "[", "Red", "]"}]}], "]"}], ",",
+     "\"\< of SO(1O) is the same as\>\""}], "]"}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"aux", "=",
+   RowBox[{"Table", "[",
+    RowBox[{
+     RowBox[{"Row", "[",
+      RowBox[{"{",
+       RowBox[{
+        RowBox[{"Style", "[",
+         RowBox[{
+          RowBox[{"coefficients", "[",
+           RowBox[{"[", "i", "]"}], "]"}], ",",
+          RowBox[{"Darker", "[", "Gray", "]"}]}], "]"}], ",",
+        RowBox[{"Style", "[",
+         RowBox[{
+          RowBox[{"productFields", "[",
+           RowBox[{"[", "i", "]"}], "]"}], ",",
+          RowBox[{"Darker", "[", "Red", "]"}]}], "]"}]}], "}"}], "]"}], ",",
+     RowBox[{"{",
+      RowBox[{"i", ",",
+       RowBox[{"Length", "[", "coefficients", "]"}]}], "}"}]}], "]"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[",
+   RowBox[{"Row", "[",
+    RowBox[{"aux", ",", "\"\< + \>\""}], "]"}], "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[", "\"\<in SU(3)xSU(2)xU(1)\>\"", "]"}], ";"}]}], "Input",
+ CellID->325694542],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]],
+
+Cell[TextData[{
+ "These coefficients in gray have been computed by Susyno by explicitly \
+embedding each and all sub-representations of SU(3)xSU(2)xU(1) in the \
+corresponding representation of SO(10), computing the \
+invariants/Clebsch-Gordon coefficients with both symmetry groups, and \
+matching them. The fact that coefficients we returned at all (i.e., no error \
+was produced) means that such matching was achieved successfully, and \
+therefore is a very strong sign that the computation chain and the final \
+output are correct.\[LineSeparator]\[LineSeparator]A potential question is: \
+why are the coefficients so complicated (with quartic roots for example)? The \
+answer is simple: it is due to the normalization convention of Susyno for all \
+invariants/Clebsch-Gordon coefficients, which in this case affects both those \
+at the SO(10) level as well as those at the SU(3)xSU(2)xU(1) level. These \
+invariants are calculated with the ",
+ Cell[BoxData[
+  ButtonBox["Invariants",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/Invariants"]], "InlineFormula"],
+ " function (see the normalization convention in the documentation of this \
+function).\[LineSeparator]\[LineSeparator]Note however that at the \
+SU(3)xSU(2)xU(1) level, most invariants are normalized as it is usually done. \
+For example, the invariants/Clebsch-Gordon coefficients of the products"
+}], "ExampleText",
+ Deletable->True,
+ CellID->40659380],
+
+Cell["\<\
+are as in the Minimal Supersymmetric Standard Model, so we can compare the \
+coefficients of each without further worries. To factor out the normalization \
+choice of the 16 x 16 x 10 SO(10) invariant we can look at the ratio of these \
+coefficients. Above, we can see that in all 4 cases the coefficients are\
+\>", "ExampleText",
+ Deletable->True,
+ CellID->83166596],
+
+Cell[BoxData[
+ StyleBox[
+  SuperscriptBox[
+   RowBox[{"(",
+    FractionBox["2", "5"], ")"}],
+   RowBox[{"1", "/", "4"}]],
+  StripOnInput->False,
+  LineColor->RGBColor[
+   0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
+  FrontFaceColor->RGBColor[
+   0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
+  BackFaceColor->RGBColor[
+   0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
+  GraphicsColor->RGBColor[
+   0.33333333333333337`, 0.33333333333333337`, 0.33333333333333337`],
+  FontColor->RGBColor[
+   0.33333333333333337`, 0.33333333333333337`,
+    0.33333333333333337`]]], "Input",
+ CellID->897575960],
+
+Cell["\<\
+we conclude that the MSSM Yukawa couplings would have the relation Yu=Yd=Ye=Y\
+\[Nu] in an SO(10) model where they come from an 16 x 16 x 10 coupling.\
+\>", "ExampleText",
+ Deletable->True,
+ CellID->216184249],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->197771987],
+
+Cell["\<\
+Let us repeat the previous example, but with the other possible Higgs H that \
+couple in a term 16 x 16 x H, namely the 120 ({0,0,1,0,0}) and the 126 \
+({0,0,0,2,0}):\
+\>", "ExampleText",
+ CellID->26134510],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"ConjugateIrrep", "[",
+       RowBox[{"SO10", ",", "#1"}], "]"}], ",", "#2"}], "}"}], "&"}], "@@@",
+   RowBox[{"ReduceRepProduct", "[",
+    RowBox[{"SO10", ",",
+     RowBox[{"{",
+      RowBox[{
+       RowBox[{"{",
+        RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}], ",",
+       RowBox[{"{",
+        RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}],
+      "}"}]}], "]"}]}], "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"RepName", "[",
+      RowBox[{"SO10", ",",
+       RowBox[{"ConjugateIrrep", "[",
+        RowBox[{"SO10", ",", "#1"}], "]"}]}], "]"}], ",", "#2"}], "}"}],
+   "&"}], "@@@",
+  RowBox[{"ReduceRepProduct", "[",
+   RowBox[{"SO10", ",",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"{",
+       RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}], ",",
+      RowBox[{"{",
+       RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}],
+     "}"}]}], "]"}]}]}], "Input",
+ CellID->691511790]
+}]],
+
+Cell["Let us consider just H={0,0,0,2,0}:", "ExampleText",
+ CellID->281445517],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"group", "=",
+   RowBox[{"{", "SO10", "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"rep16", "=",
+   RowBox[{"{",
+    RowBox[{"{",
+     RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"rep126", "=",
+   RowBox[{"{",
+    RowBox[{"{",
+     RowBox[{"0", ",", "0", ",", "0", ",", "2", ",", "0"}], "}"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"subgroup", "=",
+   RowBox[{"{",
+    RowBox[{"SU3", ",", "SU2", ",", "U1"}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"breakInfo", "=",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"{",
+       RowBox[{"1", ",",
+        RowBox[{"{",
+         RowBox[{"2", ",", "1"}], "}"}]}], "}"}], ",",
+      RowBox[{"{",
+       RowBox[{"1", ",",
+        RowBox[{"{", "4", "}"}]}], "}"}], ",",
+      RowBox[{"{",
+       RowBox[{"1", ",",
+        RowBox[{"1", "/", "6"}]}], "}"}]}], "}"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"result", "=",
+   RowBox[{"SubgroupEmbeddingCoefficients", "[",
+    RowBox[{"group", ",",
+     RowBox[{"{",
+      RowBox[{"rep16", ",", "rep16", ",", "rep126"}], "}"}], ",", "subgroup",
+     ",", "breakInfo"}], "]"}]}], ";"}]}], "Input",
+ CellID->1908845],
+
+Cell["The result can be summarized as follows:", "ExampleText",
+ CellID->154247179],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"coefficients", "=",
+    RowBox[{"result", "[",
+     RowBox[{"[",
+      RowBox[{"2", ",", "5", ",", "1"}], "]"}], "]"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"productFields", "=",
+    RowBox[{"Map", "[",
+     RowBox[{
+      RowBox[{
+       RowBox[{"RepName", "[",
+        RowBox[{"subgroup", ",", "#"}], "]"}], "&"}], ",",
+      RowBox[{"Flatten", "[",
+       RowBox[{
+        RowBox[{
+         RowBox[{
+          RowBox[{"ConstantArray", "[",
+           RowBox[{
+            RowBox[{"Extract", "[",
+             RowBox[{
+              RowBox[{"result", "[",
+               RowBox[{"[",
+                RowBox[{"2", ",", "3"}], "]"}], "]"}], ",",
+              RowBox[{"#", "[",
+               RowBox[{"[", "1", "]"}], "]"}]}], "]"}], ",",
+            RowBox[{"#", "[",
+             RowBox[{"[", "2", "]"}], "]"}]}], "]"}], "&"}], "/@",
+         RowBox[{"result", "[",
+          RowBox[{"[",
+           RowBox[{"2", ",", "4", ",", "All", ",",
+            RowBox[{"{",
+             RowBox[{"2", ",", "3"}], "}"}]}], "]"}], "]"}]}], ",", "1"}],
+       "]"}], ",",
+      RowBox[{"{", "2", "}"}]}], "]"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"Print", "[",
+    RowBox[{"\"\<The product of \>\"", ",",
+     RowBox[{"Style", "[",
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{"RepName", "[",
+          RowBox[{"group", ",", "#"}], "]"}], "&"}], "/@",
+        RowBox[{"{",
+         RowBox[{"rep16", ",", "rep16", ",", "rep126"}], "}"}]}], ",",
+       RowBox[{"Darker", "[", "Red", "]"}]}], "]"}], ",",
+     "\"\< of SO(1O) is the same as\>\""}], "]"}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"aux", "=",
+   RowBox[{"Table", "[",
+    RowBox[{
+     RowBox[{"Row", "[",
+      RowBox[{"{",
+       RowBox[{
+        RowBox[{"Style", "[",
+         RowBox[{
+          RowBox[{"coefficients", "[",
+           RowBox[{"[", "i", "]"}], "]"}], ",",
+          RowBox[{"Darker", "[", "Gray", "]"}]}], "]"}], ",",
+        RowBox[{"Style", "[",
+         RowBox[{
+          RowBox[{"productFields", "[",
+           RowBox[{"[", "i", "]"}], "]"}], ",",
+          RowBox[{"Darker", "[", "Red", "]"}]}], "]"}]}], "}"}], "]"}], ",",
+     RowBox[{"{",
+      RowBox[{"i", ",",
+       RowBox[{"Length", "[", "coefficients", "]"}]}], "}"}]}], "]"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[",
+   RowBox[{"Row", "[",
+    RowBox[{"aux", ",", "\"\< + \>\""}], "]"}], "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[", "\"\<in SU(3)xSU(2)xU(1)\>\"", "]"}], ";"}]}], "Input",
+ CellID->28459257],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]],
+
+Cell["The important terms are the following:", "ExampleText",
+ CellID->16234398],
+
+Cell["\<\
+Clearly, by looking at the ratio of the numerical coefficients in gray, we \
+conclude that the MSSM Yukawa couplings would have the relation Yu=Yd=-1/3 \
+Ye=-1/3 Y\[Nu] in an SO(10) model where they come from an 16 x 16 x 126 \
+coupling.\
+\>", "ExampleText",
+ CellID->53541657]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["TUTORIALS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "TutorialsSection",
+ CellID->250839057],
+
+Cell[TextData[ButtonBox["Susyno Tutorial",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/tutorial/SusynoTutorial"]], "Tutorials",
+ CellID->341631938]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

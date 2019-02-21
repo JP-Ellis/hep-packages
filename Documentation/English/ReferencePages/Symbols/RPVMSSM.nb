@@ -1,0 +1,335 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[{
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"Tutorials \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno Tutorial\"\>":>
+       Documentation`HelpLookup["paclet:Susyno/tutorial/SusynoTutorial"]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"URL \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno/ref/Weights\"\>":>
+       None, "\<\"Copy Mathematica url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["Susyno/ref/Weights"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$]; Null],
+       Delimiter, "\<\"Copy web url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/mathematica/Susyno/ref/Weights.\
+html"], StandardForm]], "Input", TextClipboardType -> "PlainText"]}, Visible ->
+            False]]; SelectionMove[
+         DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$];
+        Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[
+            StringJoin[
+            "http://reference.wolfram.com/mathematica/", "Susyno/ref/Weights",
+              ".html"]], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}]
+    }], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}},
+   "RowsIndexed" -> {}}},
+ CellID->1],
+
+Cell["RPVMSSM", "ObjectName",
+ CellID->1224892054],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData["RPVMSSM"], "InlineFormula"],
+     " \[LineSeparator]Variable with all the data of the R-parity violating \
+MSSM"
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->387869716],
+
+Cell[TextData[{
+ Cell[BoxData["RPVMSSM"], "InlineFormula"],
+ "  is ready to be used with ",
+ ButtonBox["GenerateModel",
+  BaseStyle->"Link",
+  ButtonData->"paclet:Susyno/ref/GenerateModel"],
+ "."
+}], "Notes",
+ CellID->1067943069]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->265938769],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(1)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->96875259],
+
+Cell[TextData[{
+ Cell[BoxData["RPVMSSM"], "InlineFormula"],
+ " is defined as having the following gauge group, representations, field \
+names, number of flavors, and discrete symmetry:"
+}], "Notes",
+ CellID->315923061],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"group", "[", "RPVMSSM", "]"}], "^=",
+    RowBox[{"{",
+     RowBox[{"U1", ",", "SU2", ",", "SU3"}], "}"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"normalization", "=",
+   RowBox[{"Sqrt", "[",
+    RowBox[{"3", "/", "5"}], "]"}]}], ";"}], "\n",
+ RowBox[{
+  RowBox[{"u", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"-", "2"}], "/", "3"}], " ", "normalization"}], ",",
+     RowBox[{"{", "0", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"0", ",", "1"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"d", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{
+      RowBox[{"1", "/", "3"}], " ", "normalization"}], ",",
+     RowBox[{"{", "0", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"0", ",", "1"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Q", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{
+      RowBox[{"1", "/", "6"}], " ", "normalization"}], ",",
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"1", ",", "0"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"e", "=",
+   RowBox[{"{",
+    RowBox[{"normalization", ",",
+     RowBox[{"{", "0", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"0", ",", "0"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"L", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"-", "1"}], "/", "2"}], " ", "normalization"}], ",",
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"0", ",", "0"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Hu", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{
+      RowBox[{"1", "/", "2"}], " ", "normalization"}], ",",
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"0", ",", "0"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"Hd", "=",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{
+       RowBox[{
+        RowBox[{"-", "1"}], "/", "2"}], " ", "normalization"}], ",",
+      RowBox[{"{", "1", "}"}], ",",
+      RowBox[{"{",
+       RowBox[{"0", ",", "0"}], "}"}]}], "}"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"reps", "[", "RPVMSSM", "]"}], "^=",
+   RowBox[{"{",
+    RowBox[{
+    "u", ",", "d", ",", "Q", ",", "e", ",", "L", ",", "Hu", ",", "Hd"}],
+    "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"fieldNames", "[", "RPVMSSM", "]"}], "^=",
+    RowBox[{"{",
+     RowBox[{
+     "\"\<u\>\"", ",", "\"\<d\>\"", ",", "\"\<Q\>\"", ",", "\"\<e\>\"", ",",
+      "\"\<L\>\"", ",", "\"\<Hu\>\"", ",", "\"\<Hd\>\""}], "}"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"nFlavs", "[", "RPVMSSM", "]"}], "^=",
+   RowBox[{"{",
+    RowBox[{"3", ",", "3", ",", "3", ",", "3", ",", "3", ",", "1", ",", "1"}],
+     "}"}]}], ";",
+  RowBox[{
+   RowBox[{"discreteSym", "[", "RPVMSSM", "]"}], "^=",
+   RowBox[{"{",
+    RowBox[{"1", ",", "1", ",", "1", ",", "1", ",", "1", ",", "1", ",", "1"}],
+     "}"}]}], ";"}]}], "Input",
+ CellID->295978785],
+
+Cell["Compute the RGEs of this model:", "Notes",
+ CellID->215478229],
+
+Cell[BoxData[
+ RowBox[{"GenerateModel", "[", "RPVMSSM", "]"}]], "Input",
+ CellID->762564837]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["TUTORIALS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "TutorialsSection",
+ CellID->250839057],
+
+Cell[TextData[ButtonBox["Susyno Tutorial",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/tutorial/SusynoTutorial"]], "Tutorials",
+ CellID->341631938]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["RELATED LINKS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "RelatedLinksSection",
+ CellID->1584193535],
+
+Cell[TextData[{
+ Cell[BoxData[
+  ButtonBox["GenerateModel",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/GenerateModel"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["MSSM",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/MSSM"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["NMSSM",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/NMSSM"]], "InlineFormula"]
+}], "RelatedLinks",
+ CellID->1038487239]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

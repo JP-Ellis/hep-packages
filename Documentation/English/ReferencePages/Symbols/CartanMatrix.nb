@@ -1,0 +1,400 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[{
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"Tutorials \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno Tutorial\"\>":>
+       Documentation`HelpLookup["paclet:Susyno/tutorial/SusynoTutorial"]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"URL \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno/ref/CartanMatrix\"\>":>
+       None, "\<\"Copy Mathematica url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["Susyno/ref/CartanMatrix"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$]; Null],
+       Delimiter, "\<\"Copy web url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/mathematica/Susyno/ref/\
+CartanMatrix.html"], StandardForm]], "Input", TextClipboardType ->
+              "PlainText"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$];
+        Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[
+            StringJoin[
+            "http://reference.wolfram.com/mathematica/",
+             "Susyno/ref/CartanMatrix", ".html"]], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}]
+    }], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}},
+   "RowsIndexed" -> {}}},
+ CellID->1],
+
+Cell["CartanMatrix", "ObjectName",
+ CellID->1224892054],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"CartanMatrix", "[",
+       RowBox[{"\"\<group name\>\"", ",",
+        RowBox[{"family", " ", "index"}]}], "]"}]], "InlineFormula"],
+     " \[LineSeparator]Returns the Cartan matrix of a simple group, given its \
+name"
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->16945568],
+
+Cell[TextData[{
+ Cell[BoxData["\"\<group name\>\""], "InlineFormula"],
+ " can be ",
+ Cell[BoxData["\"\<SU\>\""], "InlineFormula"],
+ ", ",
+ Cell[BoxData["\"\<SO\>\""], "InlineFormula"],
+ ", ",
+ Cell[BoxData["\"\<SP\>\""], "InlineFormula"],
+ ", ",
+ Cell[BoxData["\"\<E\>\""], "InlineFormula"],
+ ", ",
+ Cell[BoxData["\"\<F\>\""], "InlineFormula"],
+ " or ",
+ Cell[BoxData["\"\<G\>\""], "InlineFormula"],
+ " (the method is not case sensitive)."
+}], "Notes",
+ CellID->1067943069],
+
+Cell[TextData[{
+ Cell[BoxData[
+  RowBox[{"family", " ", "index"}]], "InlineFormula"],
+ " should be an integer describing the group's index in its family: SU(n) | \
+n=2,3,...; SO(n) | n=3,5,6,7,... [SO(4) is not simple]; SP(n) | \
+n=2,4,6,8,...; F(n) | n=4 only; G(n) | n=2 only; E(n) | n=6,7,8."
+}], "Notes",
+ CellID->42278994],
+
+Cell[TextData[{
+ "In Susyno, a simple Lie group is specified by its Cartan matrix. To avoid \
+repeated use of this ",
+ Cell[BoxData["CartanMatrix"], "InlineFormula"],
+ " method, the program automatically assigns to some variables with names of \
+groups the corresponding Cartan matrix. For example the variable ",
+ Cell[BoxData["SU3"], "InlineFormula"],
+ " is equal to ",
+ Cell[BoxData[
+  RowBox[{"CartanMatrix", "[",
+   RowBox[{"\"\<SU\>\"", ",", "3"}], "]"}]], "InlineFormula"],
+ " which is a 2x2 matrix."
+}], "Notes",
+ CellID->139516995],
+
+Cell[TextData[{
+ "The complete list of variable that are set by Susyno is: ",
+ Cell[BoxData["SU2"], "InlineFormula"],
+ ", ",
+ Cell[BoxData["SU3"], "InlineFormula"],
+ ",...; ",
+ Cell[BoxData["SO3"], "InlineFormula"],
+ ", ",
+ Cell[BoxData["SO5"], "InlineFormula"],
+ ",",
+ Cell[BoxData["SO6"], "InlineFormula"],
+ ",",
+ Cell[BoxData["SO7"], "InlineFormula"],
+ ",...; ",
+ Cell[BoxData["SP2"], "InlineFormula"],
+ ",",
+ Cell[BoxData["SP4"], "InlineFormula"],
+ ",",
+ Cell[BoxData["SP6"], "InlineFormula"],
+ ",...; ",
+ Cell[BoxData["G2"], "InlineFormula"],
+ ",",
+ Cell[BoxData["F4"], "InlineFormula"],
+ ",",
+ Cell[BoxData["E6"], "InlineFormula"],
+ ",",
+ Cell[BoxData["E7"], "InlineFormula"],
+ ",",
+ Cell[BoxData["E8"], "InlineFormula"],
+ ". Variations such as ",
+ Cell[BoxData["Su3"], "InlineFormula"],
+ ", ",
+ Cell[BoxData["su3"], "InlineFormula"],
+ " (but not ",
+ Cell[BoxData["sU3"], "InlineFormula"],
+ ") have also been assigned."
+}], "Notes",
+ CellID->52353557],
+
+Cell[TextData[{
+ "While U(1) is not a simple group, the program defines ",
+ Cell[BoxData[
+  RowBox[{"CartanMatrix", "[",
+   RowBox[{"\"\<U\>\"", ",", "1"}], "]"}]], "InlineFormula"],
+ " ",
+ Cell[BoxData[
+  RowBox[{"=",
+   RowBox[{
+    RowBox[{"CartanMatrix", "[",
+     RowBox[{"\"\<u\>\"", ",", "1"}], "]"}], " ", "=", " ",
+    RowBox[{"U1", " ", "=", " ",
+     RowBox[{"u1", " ", "=", " ",
+      RowBox[{"{", "}"}]}]}]}]}]], "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->548704027],
+
+Cell["\<\
+Rigorously, a Cartan matrix defines a complex simple Lie \
+algebra\[LongDash]not a group. However, to keep things simple this abuse of \
+terminology is carried out here and throughout Susyno (and throughout the \
+field of Particle Physics).\
+\>", "Notes",
+ CellID->5162272]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->88351478],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(2)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->376608457],
+
+Cell["The SU(3) group is defined by its 2x2 Cartan matrix ...", "ExampleText",
+ CellID->513681956],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"CartanMatrix", "[",
+   RowBox[{"\"\<SU\>\"", ",", "3"}], "]"}], " ", "//",
+  "MatrixForm"}]], "Input",
+ CellID->158313393]
+}]],
+
+Cell["... which is the same as any of these variables:", "ExampleText",
+ CellID->205981777],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"SU3", "//", "MatrixForm"}], "\[IndentingNewLine]",
+ RowBox[{"Su3", "//", "MatrixForm"}], "\[IndentingNewLine]",
+ RowBox[{"su3", "//", "MatrixForm"}]}], "Input",
+ CellID->62374381]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->213771625],
+
+Cell["Other examples:", "ExampleText",
+ CellID->432963277],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"CartanMatrix", "[",
+  RowBox[{"\"\<E\>\"", ",", "7"}], "]"}], "\[IndentingNewLine]",
+ RowBox[{"CartanMatrix", "[",
+  RowBox[{"\"\<so\>\"", ",", "10"}], "]"}]}], "Input",
+ CellID->493559987]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell[TextData[{
+   "Properties & Relations",
+   "\[NonBreakingSpace]\[NonBreakingSpace]",
+   Cell["(1)", "ExampleCount"]
+  }], "ExampleSection"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->2123667759],
+
+Cell["\<\
+SU(2), SP(2), SO(3) are isomorphic. SO(6) and SU(4) are too (interchange row \
+1 <-> row 2 and column 1 <-> column 2). SP(4) and SO(5) are also isomorphic \
+(interchange row 1<-> row 2 and column 1 <-> column 2):\
+\>", "ExampleText",
+ CellID->192159632],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Print", "[", "\"\<SU2; SP2; SO3:\>\"", "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{"Print", "[",
+  RowBox[{
+   RowBox[{"SU2", "//", "MatrixForm"}], ",", "\"\<;\>\"", ",",
+   RowBox[{"SP2", "//", "MatrixForm"}], ",", "\"\<;\>\"", ",",
+   RowBox[{"SO3", "//", "MatrixForm"}]}], "]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[", "\"\<SO6; SU4:\>\"", "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{"Print", "[",
+  RowBox[{
+   RowBox[{"SO6", "//", "MatrixForm"}], ",", "\"\<;\>\"", ",",
+   RowBox[{"SU4", "//", "MatrixForm"}]}], "]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[", "\"\<SP4; SO5:\>\"", "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{"Print", "[",
+  RowBox[{
+   RowBox[{"SP4", "//", "MatrixForm"}], ",", "\"\<;\>\"", ",",
+   RowBox[{"SO5", "//", "MatrixForm"}]}], "]"}]}], "Input",
+ CellID->154510494],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell[TextData[{
+   "Possible Issues",
+   "\[NonBreakingSpace]\[NonBreakingSpace]",
+   Cell["(1)", "ExampleCount"]
+  }], "ExampleSection"],
+  $Line = 0; Null]], "ExampleSection",
+ CellID->1305812373],
+
+Cell["\<\
+There is no SU(1), SO(4) [this group is not simple] or ABC(100):\
+\>", "ExampleText",
+ CellID->321780030],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"CartanMatrix", "[",
+  RowBox[{"\"\<SU\>\"", ",", "1"}], "]"}], "\[IndentingNewLine]",
+ RowBox[{"CartanMatrix", "[",
+  RowBox[{"\"\<SO\>\"", ",", "4"}], "]"}], "\[IndentingNewLine]",
+ RowBox[{"CartanMatrix", "[",
+  RowBox[{"\"\<ABC\>\"", ",", "100"}], "]"}]}], "Input",
+ CellID->72861505]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["TUTORIALS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "TutorialsSection",
+ CellID->250839057],
+
+Cell[TextData[ButtonBox["Susyno Tutorial",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/tutorial/SusynoTutorial"]], "Tutorials",
+ CellID->341631938]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

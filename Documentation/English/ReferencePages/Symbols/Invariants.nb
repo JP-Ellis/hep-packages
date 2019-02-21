@@ -1,0 +1,1191 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[{
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"Tutorials \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno Tutorial\"\>":>
+       Documentation`HelpLookup["paclet:Susyno/tutorial/SusynoTutorial"]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"URL \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno/ref/Invariants\"\>":>
+       None, "\<\"Copy Mathematica url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["Susyno/ref/Invariants"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$]; Null],
+       Delimiter, "\<\"Copy web url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/mathematica/Susyno/ref/\
+Invariants.html"], StandardForm]], "Input", TextClipboardType ->
+              "PlainText"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$];
+        Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[
+            StringJoin[
+            "http://reference.wolfram.com/mathematica/",
+             "Susyno/ref/Invariants", ".html"]], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}]
+    }], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}},
+   "RowsIndexed" -> {}}},
+ CellID->1],
+
+Cell["Invariants", "ObjectName",
+ CellID->1224892054],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"Invariants", "[",
+       RowBox[{"group", ",",
+        RowBox[{"{",
+         RowBox[{"rep1", ",", " ", "rep2", ",", " ", "..."}], "}"}]}], "]"}]],
+       "InlineFormula"],
+     "\[LineSeparator]Calculates the linear combinations of the components of \
+",
+     Cell[BoxData["rep1"], "InlineFormula"],
+     " x ",
+     Cell[BoxData["rep2"], "InlineFormula"],
+     " x \[CenterEllipsis] which are invariant under the action of the group. \
+These are also known as the Clebsch-Gordon coefficients."
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->300153018],
+
+Cell[TextData[{
+ Cell[BoxData["group"], "InlineFormula"],
+ " should be the ",
+ ButtonBox["Cartan matrix",
+  BaseStyle->"Link",
+  ButtonData->"paclet:Susyno/ref/CartanMatrix"],
+ " of the intended group."
+}], "Notes",
+ CellID->1067943069],
+
+Cell[TextData[{
+ "Each representation ",
+ Cell[BoxData["rep"], "InlineFormula"],
+ " should be a list of non-negative integers (Dynkin coefficients)."
+}], "Notes",
+ CellID->41030773],
+
+Cell["\<\
+There is no limit to the number of representations being multiplied, although \
+the calculation becomes slower as their number increases.\
+\>", "Notes",
+ CellID->221237370],
+
+Cell[TextData[{
+ "The optional input ",
+ Cell[BoxData[
+  RowBox[{"Conjugations", "->",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"conjugate", " ", "rep1"}], ",", " ",
+     RowBox[{"conjugate", " ", "rep2"}], ",", " ", "\[CenterEllipsis]"}],
+    "}"}]}]], "InlineFormula"],
+ "  can be passed to this function, where ",
+ Cell[BoxData[
+  RowBox[{"conjugate", " ", "repI"}]], "InlineFormula"],
+ " can be either ",
+ Cell[BoxData["True"], "InlineFormula"],
+ " or ",
+ Cell[BoxData["False"], "InlineFormula"],
+ ". If ",
+ Cell[BoxData["True"], "InlineFormula"],
+ ", the conjugate representation of ",
+ Cell[BoxData["repI"], "InlineFormula"],
+ " will be considered instead of ",
+ Cell[BoxData["repI"], "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->400920173],
+
+Cell[TextData[{
+ "There is also the possibility of ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " being a list ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{"group1", ",", "group2", ",", "..."}], "}"}]], "InlineFormula"],
+ " and each ",
+ Cell[BoxData["rep"], "InlineFormula"],
+ " a list ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{"rep_group1", ",", "rep_group2", ",", "..."}], "}"}]],
+  "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->75953507],
+
+Cell[TextData[{
+ "The output of this method is a list ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{"Invariant1", ",", "Invariant2", ",", "..."}], "}"}]],
+  "InlineFormula"],
+ " where it is assumed that ",
+ Cell[BoxData["a"], "InlineFormula"],
+ " is a field transforming as ",
+ Cell[BoxData["rep1"], "InlineFormula"],
+ ", ",
+ Cell[BoxData["b"], "InlineFormula"],
+ " as ",
+ Cell[BoxData["rep2"], "InlineFormula"],
+ ", ",
+ Cell[BoxData["c"], "InlineFormula"],
+ " as ",
+ Cell[BoxData["rep3"], "InlineFormula"],
+ ", and so on. These fields have group indices: ",
+ Cell[BoxData[
+  RowBox[{"a", "[",
+   RowBox[{"ind_group1", ",", " ", "ind_group2", ",", "..."}], "]"}]],
+  "InlineFormula"],
+ ", ",
+ Cell[BoxData[
+  RowBox[{"b", "[",
+   RowBox[{"ind_group1", ",", " ", "ind_group2", ",", "..."}], "]"}]],
+  "InlineFormula"],
+ ", ",
+ Cell[BoxData[
+  RowBox[{"c", "[",
+   RowBox[{"ind_group1", ",", " ", "ind_group2", ",", "..."}], "]"}]],
+  "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->10758554],
+
+Cell[TextData[{
+ "If there are no invariants, ",
+ Cell[BoxData[
+  RowBox[{"{", "}"}]], "InlineFormula"],
+ " is returned."
+}], "Notes",
+ CellID->335181877],
+
+Cell["\<\
+Clearly this method must assume a particular basis for each representation so \
+the results are basis dependent.\
+\>", "Notes",
+ CellID->898809850],
+
+Cell[TextData[{
+ "This method computes essentially generalized Clebsch-Gordon coefficients, \
+for any group (not just SU(2)) - see also the method ",
+ Cell[BoxData[
+  ButtonBox["IrrepInProduct",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/IrrepInProduct"]], "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->329977022],
+
+Cell[TextData[{
+ "The optional input ",
+ Cell[BoxData[
+  RowBox[{"TensorForm", "\[Rule]", "True"}]], "InlineFormula"],
+ " can be used to convert the output of this function into a pure tensor with \
+numerical factors. When this optional parameter is used, the output is of the \
+form ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{"tensor", ",", "variables"}], "}"}]], "InlineFormula"],
+ " where ",
+ Cell[BoxData[
+  RowBox[{"tensor", "[",
+   RowBox[{"[", "1", "]"}], "]"}]], "InlineFormula"],
+ ",  ",
+ Cell[BoxData[
+  RowBox[{"tensor", "[",
+   RowBox[{"[", "2", "]"}], "]"}]], "InlineFormula"],
+ ",  \[CenterEllipsis] contain the Clebsch-Gordon coefficients for each \
+invariant, and ",
+ Cell[BoxData["variables"], "InlineFormula"],
+ " is the list of field names and components used when  using ",
+ Cell[BoxData[
+  RowBox[{"TensorForm", "\[Rule]", "False"}]], "InlineFormula"],
+ ". As such, ",
+ StyleBox["Invariants[group,{rep1, rep2, ...}, TensorForm\[Rule]False]",
+  "InlineCode"],
+ " is the same as ",
+ StyleBox["Fold[Dot,#1,Reverse[#2]]&@@Invariants[group,{rep1, rep2, \
+...},TensorForm\[Rule]True]", "InlineCode"]
+}], "Notes",
+ CellID->273098746],
+
+Cell[TextData[{
+ "When a given representation appears repeated in the product ",
+ Cell[BoxData["rep1"], "InlineFormula"],
+ " x ",
+ Cell[BoxData["rep2"], "InlineFormula"],
+ " x \[CenterEllipsis], the resulting invariants will have \
+symmetries/anti-symmetries under permutations of the corresponding fields. \
+The  ",
+ Cell[BoxData["Invariants"], "InlineFormula"],
+ " function organizes the invariants in irreducible representations of this \
+permutation group, as given by the output of ",
+ Cell[BoxData[
+  ButtonBox["PermutationSymmetryOfInvariants",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/PermutationSymmetryOfInvariants"]],
+  "InlineFormula"],
+ " (see examples below)."
+}], "Notes",
+ CellID->392955586],
+
+Cell[TextData[{
+ "The invariants/Clebsch-Gordon coefficients returned by this function follow \
+the following general normalization convention. Writing each invariant as ",
+ Cell[BoxData[
+  UnderscriptBox["\[Sum]",
+   RowBox[{"i", ",", "j", ",", "..."}]]], "InlineFormula"],
+ "(",
+ Cell[BoxData[
+  SubscriptBox["c",
+   RowBox[{"ij", "..."}]]], "InlineFormula"],
+ " ",
+ Cell[BoxData["rep1"], "InlineFormula"],
+ "[i] x ",
+ Cell[BoxData["rep2"], "InlineFormula"],
+ "[j] x \[CenterEllipsis]), then the normalization convention is  ",
+ Cell[BoxData[
+  UnderscriptBox["\[Sum]",
+   RowBox[{"i", ",", "j", ",", "..."}]]], "InlineFormula"],
+ Cell[BoxData[
+  RowBox[{
+   RowBox[{"|",
+    SubscriptBox["c",
+     RowBox[{"ij", "..."}]],
+    SuperscriptBox["|", "2"]}], "="}]], "InlineFormula"],
+ Cell[BoxData[
+  SqrtBox[
+   RowBox[{
+    RowBox[{"dim",
+     RowBox[{"(", "rep1", ")"}], "dim",
+     RowBox[{"(", "rep2", ")"}]}], "..."}]]], "InlineFormula"],
+ ". Here, i,j, ... are the components of each representation."
+}], "Notes",
+ CellID->8342471]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->126824429],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(7)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->154017887],
+
+Cell["\<\
+If a and b are SU(2) doublets [={1}], they form an invariant:\
+\>", "ExampleText",
+ CellID->513681956],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Invariants", "[",
+  RowBox[{"SU2", ",",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{", "1", "}"}]}], "}"}]}], "]"}]], "Input",
+ CellID->196926373]
+}]],
+
+Cell["The same thing but in a tensor form:", "ExampleText",
+ CellID->229125790],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"temp", "=",
+  RowBox[{"Invariants", "[",
+   RowBox[{"SU2", ",",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"{", "1", "}"}], ",",
+      RowBox[{"{", "1", "}"}]}], "}"}], ",",
+    RowBox[{"TensorForm", "\[Rule]", "True"}]}], "]"}]}]], "Input",
+ CellID->388700568]
+}]],
+
+Cell[TextData[{
+ "The second part,",
+ StyleBox[" temp[[2]]", "InlineCode"],
+ ", is just the variables used when ",
+ StyleBox["TensorForm\[Rule]False", "InlineCode"],
+ ". As for the first part, ",
+ StyleBox["temp[[1]]", "InlineCode"],
+ ", it contains the list of invariants in a tensor form. Given that in this \
+case there is just one invariant contraction, the list contains just one \
+element:"
+}], "ExampleText",
+ CellID->572665028],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"temp", "[",
+   RowBox[{"[",
+    RowBox[{"1", ",", "1"}], "]"}], "]"}], "//", "MatrixForm"}]], "Input",
+ CellID->3736054]
+}]],
+
+Cell[TextData[{
+ "We can use both ",
+ StyleBox["temp[[1]]", "InlineCode"],
+ " and",
+ StyleBox[" temp[[2]]", "InlineCode"],
+ " to recover the first result, obtained without the  ",
+ StyleBox["TensorForm\[Rule]True", "InlineCode"],
+ " option:"
+}], "ExampleText",
+ CellID->776959355],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{" ",
+  StyleBox[
+   RowBox[{
+    RowBox[{
+     RowBox[{"Fold", "[",
+      RowBox[{"Dot", ",", "#1", ",",
+       RowBox[{"Reverse", "[", "#2", "]"}]}], "]"}], "&"}], "@@", "temp"}],
+   "InlineCode"]}]], "Input",
+ CellID->6508772]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->619907533],
+
+Cell["\<\
+How to put together two SU(2) doublets (a and b) and a triplet c?\
+\>", "ExampleText",
+ CellID->155872588],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Invariants", "[",
+  RowBox[{"SU2", ",",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{", "2", "}"}]}], "}"}]}], "]"}]], "Input",
+ CellID->459878862]
+}]],
+
+Cell["\<\
+The overall factor is of course irrelevant, therefore the following is also \
+an invariant:\
+\>", "ExampleText",
+ CellID->307224643],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Expand", "[",
+  RowBox[{
+   SuperscriptBox["3",
+    RowBox[{"1", "/", "4"}]], " ", "%"}], " ", "]"}]], "Input",
+ CellID->744812328]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->10855458],
+
+Cell["\<\
+If a is in the SU(3) fundamental representation [={1,0}] and b in its \
+conjugate...\
+\>", "ExampleText",
+ CellID->285596647],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Invariants", "[",
+  RowBox[{"SU3", ",",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{"1", ",", "0"}], "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"1", ",", "0"}], "}"}]}], "}"}], ",",
+   RowBox[{"Conjugations", "->",
+    RowBox[{"{",
+     RowBox[{"False", ",", "True"}], "}"}]}]}], "]"}]], "Input",
+ CellID->125780274]
+}]],
+
+Cell["\<\
+... but there is an equivalent way to do this since the conjugate of the \
+{1,0} representation is also known...it is {0,1}:\
+\>", "ExampleText",
+ CellID->178491849],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Invariants", "[",
+  RowBox[{"SU3", ",",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{"1", ",", "0"}], "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"0", ",", "1"}], "}"}]}], "}"}]}], "]"}]], "Input",
+ CellID->3239219]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->537300161],
+
+Cell["\<\
+Consider the 10-dimensional representation of SO(10), which is real. However, \
+in a general basis, the representation matrices might not be real and as a \
+consequence we get\
+\>", "ExampleText",
+ CellID->227005108],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Invariants", "[",
+  RowBox[{"SO10", ",",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{"1", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"1", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}]}], "}"}]}],
+   "]"}]], "Input",
+ CellID->440424632]
+}]],
+
+Cell[TextData[{
+ "In fact, Susyno assumes a basis where n of the algebra generators are \
+diagonal (n=group rank). The quantum numbers of fields are easily read off in \
+this basis, but it is easy to check that this basis always leads to group \
+representation matrices which are not real. Nevertheless, one can use the ",
+ StyleBox["Conjugation", "InlineCode"],
+ " option in the cases where there is a field \[Phi] and its conjugate ",
+ Cell[BoxData[
+  SuperscriptBox["\[Phi]", "*"]], "InlineFormula"],
+ " (in mass terms for example):"
+}], "ExampleText",
+ CellID->180242795],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Invariants", "[",
+  RowBox[{"SO10", ",",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{"1", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"1", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}]}], "}"}],
+   ",",
+   RowBox[{"Conjugations", "->",
+    RowBox[{"{",
+     RowBox[{"False", ",", "True"}], "}"}]}]}], "]"}]], "Input",
+ CellID->388476289]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->111069935],
+
+Cell["\<\
+More complicated cases where group is a list of simple factors are also \
+possible:\
+\>", "ExampleText",
+ CellID->259255305],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"Q", "=",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"{", "1", "}"}], ",",
+      RowBox[{"{",
+       RowBox[{"1", ",", "0"}], "}"}]}], "}"}]}], ";"}],
+  "    "}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"u", "=",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"{", "0", "}"}], ",",
+      RowBox[{"{",
+       RowBox[{"0", ",", "1"}], "}"}]}], "}"}]}], ";"}],
+  " "}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Hu", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"0", ",", "0"}], "}"}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{"Invariants", "[",
+  RowBox[{
+   RowBox[{"{",
+    RowBox[{"SU2", ",", "SU3"}], "}"}], ",",
+   RowBox[{"{",
+    RowBox[{"Q", ",", "u", ",", "Hu"}], "}"}]}], "]"}]}], "Input",
+ CellID->595169869]
+}]],
+
+Cell[TextData[{
+ "Note that in the output the first field/representation is always called ",
+ Cell[BoxData["a"], "InlineFormula"],
+ ", the second ",
+ Cell[BoxData["b"], "InlineFormula"],
+ ", the third ",
+ Cell[BoxData["c"], "InlineFormula"],
+ ", and so on. So in this last example, given that the groups are ",
+ StyleBox["{SU2,SU3}", "InlineCode"],
+ ", each of these fields has two indices: (",
+ StyleBox["a", "InlineCode"],
+ " or ",
+ StyleBox["b", "InlineCode"],
+ " or ",
+ StyleBox["c", "InlineCode"],
+ ")",
+ StyleBox["[SU2Index,SU3Index]", "InlineCode"],
+ "."
+}], "ExampleText",
+ CellID->597458693]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->54810852],
+
+Cell["\<\
+We shall now consider what happens when some of the representations given are \
+repeated. In the first case we will consider the product 24 x 24 x 24 in \
+SU(5).\
+\>", "ExampleText",
+ CellID->84025473],
+
+Cell["The 24 of SU(5) is written as {1,0,0,1}:", "ExampleText",
+ CellID->30860286],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RepName", "[",
+  RowBox[{"SU5", ",",
+   RowBox[{"{",
+    RowBox[{"1", ",", "0", ",", "0", ",", "1"}], "}"}]}], "]"}]], "Input",
+ CellID->679392214]
+}]],
+
+Cell["Now let us compute the invariants of 24 x 24 x 24:", "ExampleText",
+ CellID->27706218],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"temp", "=",
+   RowBox[{"Invariants", "[",
+    RowBox[{"SU5", ",",
+     RowBox[{"{",
+      RowBox[{
+       RowBox[{"{",
+        RowBox[{"1", ",", "0", ",", "0", ",", "1"}], "}"}], ",",
+       RowBox[{"{",
+        RowBox[{"1", ",", "0", ",", "0", ",", "1"}], "}"}], ",",
+       RowBox[{"{",
+        RowBox[{"1", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}],
+    "]"}]}], ";"}]], "Input",
+ CellID->189475799],
+
+Cell["There are two of them,", "ExampleText",
+ CellID->280142186],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Length", "[", "temp", "]"}]], "Input",
+ CellID->160209096]
+}]],
+
+Cell["\<\
+and we can check what happens when we permute the a field with the b field:\
+\>", "ExampleText",
+ CellID->915604961],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"temp", "[",
+   RowBox[{"[", "1", "]"}], "]"}], "===",
+  RowBox[{"(",
+   RowBox[{
+    RowBox[{"temp", "[",
+     RowBox[{"[", "1", "]"}], "]"}], "/.",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"a", "\[Rule]", "b"}], ",",
+      RowBox[{"b", "\[Rule]", "a"}]}], "}"}]}],
+   ")"}]}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"temp", "[",
+    RowBox[{"[", "1", "]"}], "]"}], "===",
+   RowBox[{"(",
+    RowBox[{
+     RowBox[{"-",
+      RowBox[{"temp", "[",
+       RowBox[{"[", "1", "]"}], "]"}]}], "/.",
+     RowBox[{"{",
+      RowBox[{
+       RowBox[{"a", "\[Rule]", "b"}], ",",
+       RowBox[{"b", "\[Rule]", "a"}]}], "}"}]}], ")"}]}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"temp", "[",
+   RowBox[{"[", "2", "]"}], "]"}], "===",
+  RowBox[{"(",
+   RowBox[{
+    RowBox[{"temp", "[",
+     RowBox[{"[", "2", "]"}], "]"}], "/.",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"a", "\[Rule]", "b"}], ",",
+      RowBox[{"b", "\[Rule]", "a"}]}], "}"}]}],
+   ")"}]}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"temp", "[",
+   RowBox[{"[", "2", "]"}], "]"}], "===",
+  RowBox[{"(",
+   RowBox[{
+    RowBox[{"-",
+     RowBox[{"temp", "[",
+      RowBox[{"[", "2", "]"}], "]"}]}], "/.",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"a", "\[Rule]", "b"}], ",",
+      RowBox[{"b", "\[Rule]", "a"}]}], "}"}]}], ")"}]}]}], "Input",
+ CellID->42780950]
+}]],
+
+Cell[TextData[{
+ "So, the first invariant is symmetric under the permutation ",
+ StyleBox["{a->b,b->a}", "InlineCode"],
+ ", and the second is anti-symmetric. The other permutations of (",
+ StyleBox["a", "InlineCode"],
+ ",",
+ StyleBox["b", "InlineCode"],
+ ",",
+ StyleBox["c", "InlineCode"],
+ ") can be also checked. To do this in a systematic way, we can use the ",
+ StyleBox["TensorForm", "InlineCode"],
+ " option and make transposions of the tensors:"
+}], "ExampleText",
+ CellID->344019791],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"temp2", "=",
+    RowBox[{
+     RowBox[{"Invariants", "[",
+      RowBox[{"SU5", ",",
+       RowBox[{"{",
+        RowBox[{
+         RowBox[{"{",
+          RowBox[{"1", ",", "0", ",", "0", ",", "1"}], "}"}], ",",
+         RowBox[{"{",
+          RowBox[{"1", ",", "0", ",", "0", ",", "1"}], "}"}], ",",
+         RowBox[{"{",
+          RowBox[{"1", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}], ",",
+       RowBox[{"TensorForm", "\[Rule]", "True"}]}], "]"}], "[",
+     RowBox[{"[", "1", "]"}], "]"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"possiblePermutations", "=",
+    RowBox[{"Permutations", "[",
+     RowBox[{"{",
+      RowBox[{"1", ",", "2", ",", "3"}], "}"}], "]"}]}], ";"}],
+  "\[IndentingNewLine]", "\[IndentingNewLine]",
+  RowBox[{"(*", " ",
+   RowBox[{"Produce", " ", "lists", " ", "with", " ", "elements", " ",
+    RowBox[{"{",
+     RowBox[{"permutation", ",", " ",
+      RowBox[{"x", "\[Rule]",
+       RowBox[{"<",
+        RowBox[{"sign", " ", "change", " ", "of", " ", "invariant"}],
+        ">"}]}]}], "}"}], " ", "for", " ", "both", " ", "invariants"}], " ",
+   "*)"}]}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"{",
+     RowBox[{"#", ",",
+      RowBox[{
+       RowBox[{"Solve", "[",
+        RowBox[{
+         RowBox[{"temp2", "[",
+          RowBox[{"[", "1", "]"}], "]"}], "\[Equal]",
+         RowBox[{"x", " ",
+          RowBox[{"Transpose", "[",
+           RowBox[{
+            RowBox[{"temp2", "[",
+             RowBox[{"[", "1", "]"}], "]"}], ",", "#"}], "]"}]}]}], "]"}],
+       "[",
+       RowBox[{"[", "1", "]"}], "]"}]}], "}"}], "&"}], "/@",
+   "possiblePermutations"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"{",
+    RowBox[{"#", ",",
+     RowBox[{
+      RowBox[{"Solve", "[",
+       RowBox[{
+        RowBox[{"temp2", "[",
+         RowBox[{"[", "2", "]"}], "]"}], "\[Equal]",
+        RowBox[{"x", " ",
+         RowBox[{"Transpose", "[",
+          RowBox[{
+           RowBox[{"temp2", "[",
+            RowBox[{"[", "2", "]"}], "]"}], ",", "#"}], "]"}]}]}], "]"}], "[",
+      RowBox[{"[", "1", "]"}], "]"}]}], "}"}], "&"}], "/@",
+  "possiblePermutations"}]}], "Input",
+ CellID->479334532]
+}]],
+
+Cell[TextData[{
+ "As can be seen, the first invariant never changes sign, while the second on \
+change sign according to the permutation sign. In other words, the first and \
+second invariants are in the trivial and anti-symmetric irreducible \
+representations of the ",
+ Cell[BoxData[
+  SubscriptBox["S", "3"]], "InlineFormula"],
+ " group. Indeed, we would have known this just by looking at the function ",
+ Cell[BoxData[
+  ButtonBox["PermutationSymmetryOfInvariants",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/PermutationSymmetryOfInvariants"]],
+  "InlineFormula"],
+ "."
+}], "ExampleText",
+ CellID->181262989],
+
+Cell[TextData[{
+ "In a general notation, these two representations of  ",
+ Cell[BoxData[
+  SubscriptBox["S", "3"]], "InlineFormula"],
+ " are written as {3} and {1,1,1} (recall that the irreducible representation \
+of the permutation group ",
+ Cell[BoxData[
+  SubscriptBox["S", "n"]], "InlineFormula"],
+ " are given by the partitions of the integer n). Now notice the following: "
+}], "ExampleText",
+ CellID->392147702],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"PermutationSymmetryOfInvariants", "[",
+  RowBox[{"SU5", ",",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{"1", ",", "0", ",", "0", ",", "1"}], "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"1", ",", "0", ",", "0", ",", "1"}], "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"1", ",", "0", ",", "0", ",", "1"}], "}"}]}], "}"}]}],
+  "]"}]], "Input",
+ CellID->324184734]
+}]],
+
+Cell[TextData[{
+ "This output tells us the following (see  ",
+ Cell[BoxData[
+  ButtonBox["PermutationSymmetryOfInvariants",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/PermutationSymmetryOfInvariants"]],
+  "InlineFormula"],
+ " for more information): a)- representations #1, #2 and #3 are equal; b)- \
+the invariants organize themselves in 1 irrep {3} plus 1 irrep {1,1,1} of ",
+ Cell[BoxData[
+  SubscriptBox["S", "3"]], "InlineFormula"],
+ ". By construction, the output of the Invariants function respects the \
+information given by ",
+ Cell[BoxData[
+  ButtonBox["PermutationSymmetryOfInvariants",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/PermutationSymmetryOfInvariants"]],
+  "InlineFormula"],
+ " (and in particular the ordering of the irreps of ",
+ Cell[BoxData[
+  SubscriptBox["S", "3"]], "InlineFormula"],
+ ")."
+}], "ExampleText",
+ CellID->41970355]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->259642841],
+
+Cell[TextData[{
+ "One is used to having invariants which are either completelly symmetric or \
+anti-symmetric under the permutation group. Both are 1-dimensional \
+representations of the ",
+ Cell[BoxData[
+  SubscriptBox["S", "n"]], "InlineFormula"],
+ " groups. However, in general more complicated situations can arrise where \
+the invariants are in other irreps of  ",
+ Cell[BoxData[
+  SubscriptBox["S", "n"]], "InlineFormula"],
+ ", which are not 1-dimensional. What does this mean in practice? To see this \
+we might consider the product of four doublets in SU(2):"
+}], "ExampleText",
+ CellID->537530654],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"temp", "=",
+   RowBox[{"Invariants", "[",
+    RowBox[{"SU2", ",",
+     RowBox[{"{",
+      RowBox[{
+       RowBox[{"{", "1", "}"}], ",",
+       RowBox[{"{", "1", "}"}], ",",
+       RowBox[{"{", "1", "}"}], ",",
+       RowBox[{"{", "1", "}"}]}], "}"}]}], "]"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{"Length", "[", "temp", "]"}]}], "Input",
+ CellID->184882421]
+}]],
+
+Cell[TextData[{
+ "As can be seen, two invariant combinations were found. Neither of them is \
+completelly symmetric nor anti-symmetric (nor a mixture of the two). This is \
+what ",
+ Cell[BoxData[
+  ButtonBox["PermutationSymmetryOfInvariants",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/PermutationSymmetryOfInvariants"]],
+  "InlineFormula"],
+ "  tells us:"
+}], "ExampleText",
+ CellID->605082615],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"PermutationSymmetryOfInvariants", "[",
+  RowBox[{"SU2", ",",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{", "1", "}"}], ",",
+     RowBox[{"{", "1", "}"}]}], "}"}]}], "]"}]], "Input",
+ CellID->62530752]
+}]],
+
+Cell[TextData[{
+ "The two invariants are in the {2,2} irreducible representation of ",
+ Cell[BoxData[
+  SubscriptBox["S", "4"]], "InlineFormula"],
+ ". Susyno can be used to check that this is indeed a two dimensional \
+representation of ",
+ Cell[BoxData[
+  SubscriptBox["S", "4"]], "InlineFormula"],
+ ":"
+}], "ExampleText",
+ CellID->376206384],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"SnIrrepDim", "[",
+  RowBox[{"{",
+   RowBox[{"2", ",", "2"}], "}"}], "]"}]], "Input",
+ CellID->163460897]
+}]],
+
+Cell[TextData[{
+ "So if we start with the first or second gauge invariant contraction of the \
+4 SU(2) doublets, and make permutations of the fields we will obtain linear \
+combinations of BOTH the first and second gauge invariant contractions. It is \
+possible to know exactly how they will transform without checking explicitly: \
+by construction the output of the ",
+ Cell[BoxData["Invariants"], "InlineFormula"],
+ " function follows the explicit irrep matrices given by ",
+ Cell[BoxData[
+  ButtonBox["SnIrrepGenerators",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/SnIrrepGenerators"]], "InlineFormula"],
+ ": under the transformations {a->b,b->a} and {a->b,b->c,c->d,d->a} which all \
+other permutations of ",
+ Cell[BoxData[
+  SubscriptBox["S", "4"]], "InlineFormula"],
+ ", the two invariants transforms as"
+}], "ExampleText",
+ CellID->727975633],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"MatrixForm", "/@",
+  RowBox[{"SnIrrepGenerators", "[",
+   RowBox[{"{",
+    RowBox[{"2", ",", "2"}], "}"}], "]"}]}]], "Input",
+ CellID->392425571]
+}]],
+
+Cell["by construction. We can check it as follows:", "ExampleText",
+ CellID->41907329],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"S4IrrepGenerators", "=",
+    RowBox[{"SnIrrepGenerators", "[",
+     RowBox[{"{",
+      RowBox[{"2", ",", "2"}], "}"}], "]"}]}], ";"}], "\[IndentingNewLine]",
+  "\[IndentingNewLine]",
+  RowBox[{"(*", " ",
+   RowBox[{"If", " ", "the", " ", "effect", " ", "of", " ", "changing", " ",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"a", "\[Rule]", "b"}], ",",
+      RowBox[{"b", "\[Rule]", "a"}]}], "}"}], " ", "and", " ",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"a", "\[Rule]", "b"}], ",",
+      RowBox[{"b", "\[Rule]", "c"}], ",",
+      RowBox[{"c", "\[Rule]", "d"}], ",",
+      RowBox[{"d", "\[Rule]", "a"}]}], "}"}], " ", "the", " ", "same", " ",
+    "as", " ", "applying", " ", "the", " ", "first", " ", "and", " ",
+    "second", " ", "S4IrrepGenerators", " ", "to", " ", "the", " ",
+    RowBox[{"invariants", "?"}]}], " ", "*)"}]}], "\[IndentingNewLine]",
+ RowBox[{"Simplify", "[",
+  RowBox[{
+   RowBox[{
+    RowBox[{"S4IrrepGenerators", "[",
+     RowBox[{"[", "1", "]"}], "]"}], ".", "temp"}], "==",
+   RowBox[{"(",
+    RowBox[{"temp", "/.",
+     RowBox[{"{",
+      RowBox[{
+       RowBox[{"a", "\[Rule]", "b"}], ",",
+       RowBox[{"b", "\[Rule]", "a"}]}], "}"}]}], ")"}]}],
+  "]"}], "\[IndentingNewLine]",
+ RowBox[{"Simplify", "[",
+  RowBox[{
+   RowBox[{
+    RowBox[{"S4IrrepGenerators", "[",
+     RowBox[{"[", "2", "]"}], "]"}], ".", "temp"}], "==",
+   RowBox[{"(",
+    RowBox[{"temp", "/.",
+     RowBox[{"{",
+      RowBox[{
+       RowBox[{"a", "\[Rule]", "b"}], ",",
+       RowBox[{"b", "\[Rule]", "c"}], ",",
+       RowBox[{"c", "\[Rule]", "d"}], ",",
+       RowBox[{"d", "\[Rule]", "a"}]}], "}"}]}], ")"}]}], "]"}]}], "Input",
+ CellID->751377938]
+}]]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["TUTORIALS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "TutorialsSection",
+ CellID->250839057],
+
+Cell[TextData[ButtonBox["Susyno Tutorial",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/tutorial/SusynoTutorial"]], "Tutorials",
+ CellID->341631938]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["RELATED LINKS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "RelatedLinksSection",
+ CellID->1584193535],
+
+Cell[TextData[{
+ Cell[BoxData[
+  ButtonBox["IrrepInProduct",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/IrrepInProduct"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["PermutationSymmetryOfInvariants",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/PermutationSymmetryOfInvariants"]],
+  "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["SnIrrepGenerators",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/SnIrrepGenerators"]], "InlineFormula"]
+}], "RelatedLinks",
+ CellID->1038487239]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

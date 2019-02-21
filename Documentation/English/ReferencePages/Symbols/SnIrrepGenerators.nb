@@ -1,0 +1,340 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[Cell[BoxData[
+     ActionMenuBox[
+      FrameBox["\<\"URL \[RightGuillemet]\"\>",
+       StripOnInput->False], {"\<\"Susyno/ref/SnIrrepGenerators\"\>":>
+      None, "\<\"Copy Mathematica url\"\>":>
+      Module[{DocumentationSearch`Private`nb$},
+       DocumentationSearch`Private`nb$ = NotebookPut[
+          Notebook[{
+            Cell["Susyno/ref/SnIrrepGenerators"]}, Visible -> False]];
+       SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+       FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+       NotebookClose[DocumentationSearch`Private`nb$]; Null],
+      Delimiter, "\<\"Copy web url\"\>":>
+      Module[{DocumentationSearch`Private`nb$},
+       DocumentationSearch`Private`nb$ = NotebookPut[
+          Notebook[{
+            Cell[
+             BoxData[
+              MakeBoxes[
+               Hyperlink[
+               "http://reference.wolfram.com/mathematica/Susyno/ref/\
+SnIrrepGenerators.html"], StandardForm]], "Input", TextClipboardType ->
+             "PlainText"]}, Visible -> False]];
+       SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+       FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+       NotebookClose[DocumentationSearch`Private`nb$];
+       Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+        NotebookLocate[{
+          URL[
+           StringJoin[
+           "http://reference.wolfram.com/mathematica/",
+            "Susyno/ref/SnIrrepGenerators", ".html"]], None}]}]},
+      Appearance->None,
+      MenuAppearance->Automatic]],
+     LineSpacing->{1.4, 0}]], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}},
+   "RowsIndexed" -> {}}},
+ CellID->1],
+
+Cell["SnIrrepGenerators", "ObjectName",
+ CellID->1224892054],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"SnIrrepGenerators", "[", "representation", "]"}]],
+      "InlineFormula"],
+     " \[LineSeparator]Calculates the representation matrices of the (12) and \
+(12...n) elements of the ",
+     Cell[BoxData[
+      SubscriptBox["S", "n"]], "InlineFormula"],
+     " group"
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->292930388],
+
+Cell[TextData[{
+ Cell[BoxData["representation"], "InlineFormula"],
+ " must be a partition of some integer n, as irreducible representations of  ",
+ Cell[BoxData[
+  SubscriptBox["S", "n"]], "InlineFormula"],
+ " are specified in this way;"
+}], "Notes",
+ CellID->613073599],
+
+Cell[TextData[{
+ "Note with the (12) and (12...n) elements of the ",
+ Cell[BoxData[
+  SubscriptBox["S", "n"]], "InlineFormula"],
+ " group alone, it is possible to generate all remaining group elements, for \
+any n;"
+}], "Notes",
+ CellID->1067943069],
+
+Cell[TextData[{
+ "This function returns two real orthogonal/unitary matrices which are the \
+representation matrices of the elements (12) and (12...n) elements of the ",
+ Cell[BoxData[
+  SubscriptBox["S", "n"]], "InlineFormula"],
+ " group. If orthogonality is not required, the option ",
+ StyleBox["OrthogonalizeGenerators\[Rule]False", "InlineCode"],
+ " can be used \[LongDash] the resulting matrices have less complicated \
+values, and the code is executed faster."
+}], "Notes",
+ CellID->98186647]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->10952983],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(2)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->147698276],
+
+Cell[TextData[{
+ Cell[BoxData[
+  SubscriptBox["S", "3"]], "InlineFormula"],
+ " has 3 irreducible representations: {3}, {2,1}, {1,1,1}. For example the \
+elements (12) and (123) of the irrep {2,1} can be written as follows:"
+}], "ExampleText",
+ CellID->447494391],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"gens", "=",
+   RowBox[{"SnIrrepGenerators", "[",
+    RowBox[{"{",
+     RowBox[{"2", ",", "1"}], "}"}], "]"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{"MatrixForm", "/@", "gens"}]}], "Input",
+ CellID->640503189]
+}]],
+
+Cell["\<\
+By multiplying repeatedly these matrices together we get 6 matrices:\
+\>", "ExampleText",
+ CellID->32979335],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"MatrixForm", "/@",
+  RowBox[{"FixedPoint", "[",
+   RowBox[{
+    RowBox[{
+     RowBox[{"Sort", "[",
+      RowBox[{"DeleteDuplicates", "[",
+       RowBox[{"Join", "[",
+        RowBox[{"#", ",",
+         RowBox[{"Dot", "@@@",
+          RowBox[{"Tuples", "[",
+           RowBox[{"#", ",", "2"}], "]"}]}]}], "]"}], "]"}], "]"}], "&"}],
+    ",", "gens"}], "]"}]}]], "Input",
+ CellID->281335393]
+}]],
+
+Cell[TextData[{
+ "If the representation does not need to be unitary, then we can use the \
+option ",
+ StyleBox["OrthogonalizeGenerators", "InlineCode"],
+ ":"
+}], "ExampleText",
+ CellID->20498925],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+gens=SnIrrepGenerators[{2,1},OrthogonalizeGenerators\[Rule]False];
+MatrixForm/@gens\
+\>", "Input",
+ CellID->91661810]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ InterpretationBox[Cell["\t", "ExampleDelimiter"],
+  $Line = 0; Null]], "ExampleDelimiter",
+ CellID->324607423],
+
+Cell[TextData[{
+ "The function ",
+ StyleBox["SnIrrepGenerators", "InlineCode"],
+ " works even for very big irreducible representations of ",
+ Cell[BoxData[
+  SubscriptBox["S", "n"]], "InlineFormula"],
+ ". For example, it can compute the representation matrices of the \
+42-dimension representation {3,3,2} of ",
+ Cell[BoxData[
+  SubscriptBox["S", "8"]], "InlineFormula"],
+ ". Note however that a significant amount of time is used to orthogonalize \
+the resulting matrices, as such, if this is not required, the option ",
+ StyleBox["OrthogonalizeGenerators", "InlineCode"],
+ " should be used:"
+}], "ExampleText",
+ CellID->42214145],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Timing", "[",
+  RowBox[{
+   RowBox[{"SnIrrepGenerators", "[",
+    RowBox[{"{",
+     RowBox[{"3", ",", "3", ",", "2"}], "}"}], "]"}], ";"}], "]"}]], "Input",
+ CellID->333761032]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Timing", "[",
+  RowBox[{
+   RowBox[{"SnIrrepGenerators", "[",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{"3", ",", "3", ",", "2"}], "}"}], ",",
+     RowBox[{"OrthogonalizeGenerators", "\[Rule]", "False"}]}], "]"}], ";"}],
+  "]"}]], "Input",
+ CellID->616528551]
+}]]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["RELATED LINKS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "RelatedLinksSection",
+ CellID->1584193535],
+
+Cell[TextData[{
+ Cell[BoxData[
+  ButtonBox["HookContentFormula",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/HookContentFormula"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["DecomposeSnProduct",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/DecomposeSnProduct"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["SnClassCharacter",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/SnClassCharacter"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["SnClassOrder",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/SnClassOrder"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["SnIrrepDim",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/SnIrrepDim"]], "InlineFormula"],
+ "\[NonBreakingSpace]",
+ StyleBox["\[MediumSpace]\[FilledVerySmallSquare]\[MediumSpace]",
+  "InlineSeparator"],
+ " ",
+ Cell[BoxData[
+  ButtonBox["Invariants",
+   BaseStyle->"Link",
+   ButtonData->"paclet:Susyno/ref/Invariants"]], "InlineFormula"],
+ " "
+}], "RelatedLinks",
+ CellID->1038487239]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)
