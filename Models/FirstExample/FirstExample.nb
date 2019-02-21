@@ -1,0 +1,326 @@
+(* Content-type: application/mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"$FeynRulesPath", "=",
+   RowBox[{"SetDirectory", "[", "\"\<< address of the package >\>\"", "]"}]}],
+   ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"<<", "FeynRules`"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SetDirectory", "[",
+   RowBox[{"$FeynRulesPath", "<>", "\"\</Models/FirstExample\>\""}], "]"}],
+  ";"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell["A first example : QCD (with 3 quark flavors)", "Title"],
+
+Cell[CellGroupData[{
+
+Cell["The model file", "Section"],
+
+Cell["We first read in the model file via the command", "Text"],
+
+Cell[BoxData[
+ RowBox[{"LoadModel", "[", "\"\<FirstExample.fr\>\"", "]"}]], "Input"],
+
+Cell["\<\
+The model file contains two particle classes :
+
+- The class F[1], a fermion represented by a symbol q, containing three \
+members (u, c, t).
+- The class V[1], a vector represented by the symbol G.
+
+Furthermore, the model contains a gauge group SU3C, connected to the gauge \
+boson G. Notice that the field strength tensor connected with G is defined \
+automatically by FeynRules:\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"FS", "[",
+  RowBox[{"G", ",", "\[Mu]", ",", "\[Nu]", ",", "a"}], "]"}]], "Input"],
+
+Cell["\<\
+The $ varaibles are nothing special, they are just defined internally by \
+Mathematica in order not to interfere with existing, user - defined \
+variables. \
+\>", "Text"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["The lagrangian", "Section"],
+
+Cell["The lagrangian is entered in the usual textbook way", "Text"],
+
+Cell[BoxData[
+ RowBox[{"L", "=",
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"-", "1"}], "/", "4"}],
+    RowBox[{"FS", "[",
+     RowBox[{"G", ",", "\[Mu]", ",", "\[Nu]", ",", "a"}], "]"}],
+    RowBox[{"FS", "[",
+     RowBox[{"G", ",", "\[Mu]", ",", "\[Nu]", ",", "a"}], "]"}]}], "+",
+   RowBox[{"I", " ",
+    RowBox[{"qbar", ".",
+     RowBox[{"Ga", "[", "\[Mu]", "]"}], ".",
+     RowBox[{"DC", "[",
+      RowBox[{"q", ",", "\[Mu]"}], "]"}]}]}], "-",
+   RowBox[{
+    RowBox[{"MQ", "[", "ff", "]"}], " ",
+    RowBox[{
+     RowBox[{"qbar", "[",
+      RowBox[{"s", ",", "ff", ",", "i"}], "]"}], ".",
+     RowBox[{"q", "[",
+      RowBox[{"s", ",", "ff", ",", "i"}], "]"}]}]}]}]}]], "Input"],
+
+Cell["\<\
+Two comments about this expression :
+
+1) Notice the appearance of the term FS[G, \[Mu], \[Nu], a] FS[G, \[Mu], \
+\[Nu], a] instead of FS[G, \[Mu], \[Nu], a]^2. This is crucial because FS \
+contains internal connected indices (See the \"$-varaibles\" in the expresion \
+for L.
+
+2) The anti quarks can be entered by using the predefined symbol qbar\
+\>", "Text"],
+
+Cell[BoxData["qbar"], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["The ToolBox functions", "Section"],
+
+Cell["\<\
+There are several functions in FeynRules which can be of interes during the \
+model building phase independently form the Feynman rule calculation. These \
+functions are stored in the ToolBox. The FeynRules ToolBox is meant to be the \
+place where the user can store his own functions, and reuse them at any time.
+
+For a detailed description of the default content of the ToolBox, just have a \
+look at the corresponding page on the FeynRules TWiki.
+The most important functions included in the current distribution of the \
+ToolBox are\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell["A set of boolean functions", "Subsection"],
+
+Cell["\<\
+This set of boolean functions can be useful to the user to build his own \
+functions\
+\>", "Text"],
+
+Cell[BoxData[{
+ RowBox[{"FieldQ", "[", "q", "]"}], "\[IndentingNewLine]",
+ RowBox[{"FieldQ", "[", "u", "]"}], "\[IndentingNewLine]",
+ RowBox[{"FieldQ", "[", "G", "]"}]}], "Input"],
+
+Cell[BoxData[{
+ RowBox[{"FermionQ", "[", "q", "]"}], "\[IndentingNewLine]",
+ RowBox[{"FermionQ", "[", "c", "]"}], "\[IndentingNewLine]",
+ RowBox[{"BosonQ", "[", "G", "]"}]}], "Input"],
+
+Cell[BoxData[{
+ RowBox[{"VectorFieldQ", "[", "G", "]"}], "\[IndentingNewLine]",
+ RowBox[{"DiracFieldQ", "[", "t", "]"}]}], "Input"],
+
+Cell[BoxData[{
+ RowBox[{"TensQ", "[", "T", "]"}], "\[IndentingNewLine]",
+ RowBox[{"TensQ", "[", "Ga", "]"}]}], "Input"],
+
+Cell[BoxData[{
+ RowBox[{"numQ", "[", "gs", "]"}], "\[IndentingNewLine]",
+ RowBox[{"CnumQ", "[", "gs", "]"}]}], "Input"],
+
+Cell["\<\
+Furthermore, the indices carried by a symbol can be accessed via $IndList :\
+\>", "Text"],
+
+Cell[BoxData[{
+ RowBox[{"$IndList", "[", "q", "]"}], "\[IndentingNewLine]",
+ RowBox[{"$IndList", "[", "G", "]"}], "\[IndentingNewLine]",
+ RowBox[{"$IndList", "[", "t", "]"}], "\[IndentingNewLine]",
+ RowBox[{"$IndList", "[", "T", "]"}]}], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["ExpandIndices", "Subsection"],
+
+Cell["\<\
+ExpandIndices expands the lagrangian over the suppressed indices\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"ExpandIndices", "[", "L", "]"}]], "Input"],
+
+Cell["\<\
+ExpandIndices has a couple of important and useful options
+
+        -FlavorExpand: expands the lagrangian over flavor indices.\
+\>", "Text"],
+
+Cell[BoxData[{
+ RowBox[{"ExpandIndices", "[",
+  RowBox[{"L", ",",
+   RowBox[{"FlavorExpand", "\[Rule]", "Generation"}]}],
+  "]"}], "\[IndentingNewLine]",
+ RowBox[{"ExpandIndices", "[",
+  RowBox[{"L", ",",
+   RowBox[{"FlavorExpand", "\[Rule]", "True"}]}], "]"}]}], "Input"],
+
+Cell["\<\
+        -MaxParticles : selects only those terms in the lagrangian which \
+contain at most the specified number of external fields.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"ExpandIndices", "[",
+  RowBox[{"L", ",",
+   RowBox[{"MaxParticles", "\[Rule]", "3"}]}], "]"}]], "Input"],
+
+Cell["\<\
+\[LineSeparator]        -MinParticles : selects only those terms in the \
+lagrangian which contain at least the specified number of external fields.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"ExpandIndices", "[",
+  RowBox[{"L", ",",
+   RowBox[{"MinParticles", "\[Rule]", "4"}]}], "]"}]], "Input"],
+
+Cell["\<\
+        -MaxCanonicalDimension : selects only those terms in the lagrangian \
+with canonical dimension at least the specified value.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"ExpandIndices", "[",
+  RowBox[{"L", ",",
+   RowBox[{"MaxCanonicalDimension", "\[Rule]", "3"}]}], "]"}]], "Input"],
+
+Cell["\<\
+        -MinCanonicalDimension : selects only those terms in the lagrangian \
+with canonical dimension at most the specified value.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"ExpandIndices", "[",
+  RowBox[{"L", ",",
+   RowBox[{"MinCanonicalDimension", "\[Rule]", "4"}]}], "]"}]], "Input"],
+
+Cell["\<\
+        -SelectParticles : selects only those terms in the lagrangian which \
+contain exactly the specified  external fields.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"ExpandIndices", "[",
+  RowBox[{"L", ",",
+   RowBox[{"SelectParticles", "\[Rule]",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"{",
+       RowBox[{"G", ",", "G", ",", "G"}], "}"}], ",",
+      RowBox[{"{",
+       RowBox[{"G", ",", "G", ",", "G", ",", "G"}], "}"}]}], "}"}]}]}],
+  "]"}]], "Input"]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Calculating Feynman rules", "Section"],
+
+Cell["The Feynman rules can be obtained via", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"vertsQCD", "=",
+   RowBox[{"FeynmanRules", "[", "L", "]"}]}], ";"}]], "Input"],
+
+Cell["\<\
+The screen output can be turned off using the option ScreenOutput \[Rule] \
+False\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"vertsQCD", "=",
+   RowBox[{"FeynmanRules", "[",
+    RowBox[{"L", ",",
+     RowBox[{"ScreenOutput", "\[Rule]", "False"}]}], "]"}]}], ";"}]], "Input"],
+
+Cell["The vertices can be accessed via", "Text"],
+
+Cell[BoxData["vertsQCD"], "Input"],
+
+Cell["FeynmanRules shares all the options of ExpandIndices:", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"FeynmanRules", "[",
+   RowBox[{"L", ",",
+    RowBox[{"MaxParticles", "\[Rule]", "3"}]}], "]"}], ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"FeynmanRules", "[",
+   RowBox[{"L", ",",
+    RowBox[{"MinParticles", "\[Rule]", "4"}]}], "]"}], ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"FeynmanRules", "[",
+   RowBox[{"L", ",",
+    RowBox[{"SelectParticles", "\[Rule]",
+     RowBox[{"{",
+      RowBox[{
+       RowBox[{"{",
+        RowBox[{"G", ",", "G", ",", "G"}], "}"}], ",",
+       RowBox[{"{",
+        RowBox[{"G", ",", "G", ",", "G", ",", "G"}], "}"}]}], "}"}]}]}],
+   "]"}], ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"FeynmanRules", "[",
+   RowBox[{"L", ",",
+    RowBox[{"MaxCanonicalDimension", "\[Rule]", "3"}]}], "]"}],
+  ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"FeynmanRules", "[",
+   RowBox[{"L", ",",
+    RowBox[{"MinCanonicalDimension", "\[Rule]", "4"}]}], "]"}],
+  ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"FeynmanRules", "[",
+   RowBox[{"L", ",",
+    RowBox[{"Free", "\[Rule]",
+     RowBox[{"{", "q", "}"}]}]}], "]"}], ";"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"FeynmanRules", "[",
+   RowBox[{"L", ",",
+    RowBox[{"Contains", "\[Rule]",
+     RowBox[{"{", "q", "}"}]}]}], "]"}], ";"}]], "Input"]
+}]]
+}]]
+}]
+(* End of Notebook Content *)

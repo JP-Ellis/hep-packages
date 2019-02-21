@@ -1,0 +1,189 @@
+(* Content-type: application/mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ TagBox[GridBox[{
+    {"\<\" \"\>"},
+    {
+     StyleBox["\<\"   Gamma Matrices   \"\>",
+      StripOnInput->False,
+      FontSize->12,
+      FontWeight->Bold]},
+    {
+     ButtonBox[
+      TagBox[
+       SuperscriptBox[
+        TagBox["\[Gamma]",
+         Power,
+         Editable->True,
+         Selectable->True],
+        TagBox["\[Placeholder]",
+         Power,
+         Editable->True,
+         Selectable->True]],
+       InterpretTemplate[Superscript[#, #2]& ],
+       Editable->False,
+       Selectable->False],
+      BaseStyle->"Paste",
+      ButtonData->RowBox[{
+         InterpretationBox[
+          StyleBox["Ga", ShowStringCharacters -> True, NumberMarks -> True],
+          InputForm[FeynRules`Ga], Editable -> True, AutoDelete -> True], "[",
+          "\[Placeholder]", "]"}]]},
+    {
+     ButtonBox[
+      SubscriptBox[
+       TagBox[
+        SuperscriptBox[
+         TagBox["\[Gamma]",
+          Power,
+          Editable->True,
+          Selectable->True],
+         TagBox["\[Placeholder]",
+          Power,
+          Editable->True,
+          Selectable->True]],
+        InterpretTemplate[Superscript[#, #2]& ],
+        Editable->False,
+        Selectable->False],
+       RowBox[{"\[Placeholder]", ",", "\[Placeholder]"}]],
+      BaseStyle->"Paste",
+      ButtonData->RowBox[{
+         InterpretationBox[
+          StyleBox["Ga", ShowStringCharacters -> True, NumberMarks -> True],
+          InputForm[FeynRules`Ga], Editable -> True, AutoDelete -> True], "[",
+
+         RowBox[{
+          "\[Placeholder]", ",", "\[Placeholder]", ",", "\[Placeholder]"}],
+         "]"}]]},
+    {
+     ButtonBox[
+      SubscriptBox["P", "\<\"+\"\>"],
+      BaseStyle->"Paste",
+      ButtonData->SubscriptBox["P", "\"+\""]]},
+    {
+     ButtonBox[
+      SubscriptBox["P", "\<\"-\"\>"],
+      BaseStyle->"Paste",
+      ButtonData->InterpretationBox[
+        StyleBox["ProjM", ShowStringCharacters -> True, NumberMarks -> True],
+
+        InputForm[FeynRules`ProjM], Editable -> True, AutoDelete -> True]]},
+    {
+     ButtonBox[
+      SubscriptBox[
+       RowBox[{"(",
+        SubscriptBox["P", "\<\"+\"\>"], ")"}],
+       RowBox[{"\[Placeholder]", ",", "\[Placeholder]"}]],
+      BaseStyle->"Paste",
+      ButtonData->RowBox[{
+         InterpretationBox[
+          StyleBox[
+          "ProjP", ShowStringCharacters -> True, NumberMarks -> True],
+          InputForm[FeynRules`ProjP], Editable -> True, AutoDelete -> True],
+         "[",
+         RowBox[{"\[Placeholder]", ",", "\[Placeholder]"}], "]"}]]},
+    {
+     ButtonBox[
+      SubscriptBox[
+       RowBox[{"(",
+        SubscriptBox["P", "\<\"-\"\>"], ")"}],
+       RowBox[{"\[Placeholder]", ",", "\[Placeholder]"}]],
+      BaseStyle->"Paste",
+      ButtonData->RowBox[{
+         InterpretationBox[
+          StyleBox[
+          "ProjM", ShowStringCharacters -> True, NumberMarks -> True],
+          InputForm[FeynRules`ProjM], Editable -> True, AutoDelete -> True],
+         "[",
+         RowBox[{"\[Placeholder]", ",", "\[Placeholder]"}], "]"}]]},
+    {
+     StyleBox["\<\"Derivative\"\>",
+      StripOnInput->False,
+      FontSize->12,
+      FontWeight->Bold]},
+    {
+     ButtonBox[
+      RowBox[{"\<\"\[PartialD]\"\>", "[",
+       RowBox[{"\[Placeholder]", ",", "\[Placeholder]"}], "]"}],
+      BaseStyle->"Paste",
+      ButtonData->RowBox[{
+         InterpretationBox[
+          StyleBox["del", ShowStringCharacters -> True, NumberMarks -> True],
+
+          InputForm[FeynRules`del], Editable -> True, AutoDelete -> True],
+         "[",
+         RowBox[{"\[Placeholder]", ",", "\[Placeholder]"}], "]"}]]},
+    {
+     StyleBox["\<\"  Hermitian Conjugate  \"\>",
+      StripOnInput->False,
+      FontSize->12,
+      FontWeight->Bold]},
+    {
+     ButtonBox[
+      TagBox[
+       SuperscriptBox[
+        TagBox["\[Placeholder]",
+         Power,
+         Editable->True,
+         Selectable->True],
+        TagBox["\[Dagger]",
+         Power,
+         Editable->True,
+         Selectable->True]],
+       InterpretTemplate[Superscript[#, #2]& ],
+       Editable->False,
+       Selectable->False],
+      BaseStyle->"Paste",
+      ButtonData->RowBox[{
+         InterpretationBox[
+          StyleBox["HC", ShowStringCharacters -> True, NumberMarks -> True],
+          InputForm[FeynRules`HC], Editable -> True, AutoDelete -> True], "[",
+          "\[Placeholder]", "]"}]]},
+    {
+     StyleBox["\<\"  Charge Conjugate  \"\>",
+      StripOnInput->False,
+      FontSize->12,
+      FontWeight->Bold]},
+    {
+     ButtonBox[
+      TagBox[
+       SuperscriptBox[
+        TagBox["\[Placeholder]",
+         Power,
+         Editable->True,
+         Selectable->True],
+        TagBox["C",
+         Power,
+         Editable->True,
+         Selectable->True]],
+       InterpretTemplate[Superscript[#, #2]& ],
+       Editable->False,
+       Selectable->False],
+      BaseStyle->"Paste",
+      ButtonData->RowBox[{
+         InterpretationBox[
+          StyleBox["CC", ShowStringCharacters -> True, NumberMarks -> True],
+          InputForm[FeynRules`CC], Editable -> True, AutoDelete -> True], "[",
+          "\[Placeholder]", "]"}]]}
+   },
+   ColumnsEqual->False,
+   GridBoxAlignment->{"Columns" -> {{Center}}},
+   GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+   RowsEqual->False],
+  "Column"]],
+ CellMargins->{{0, 0}, {0, 0}},
+ CellBracketOptions->{"Color"->RGBColor[0.269993, 0.308507, 0.6]},
+ CellHorizontalScrolling->True,
+ PageBreakAbove->True,
+ PageBreakWithin->False,
+ ShowAutoStyles->True,
+ LineSpacing->{1.25, 0},
+ AutoItalicWords->{},
+ ScriptMinSize->9,
+ ShowStringCharacters->False,
+ FontFamily:>CurrentValue["PanelFontFamily"],
+ FontSize:>CurrentValue["PanelFontSize"]]
+}]
+(* End of Notebook Content *)

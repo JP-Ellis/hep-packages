@@ -1,0 +1,506 @@
+(* Content-type: application/mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{"Quit", "[", "]"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"$FeynRulesPath", "=",
+  RowBox[{
+  "SetDirectory", "[", "\"\<< address of the package >\>\"", "]"}]}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"<<", "FeynRules`"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SetDirectory", "[",
+   RowBox[{"$FeynRulesPath", "<>", "\"\</Models/SM\>\""}], "]"}],
+  ";"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell["The Standard Model", "Title"],
+
+Cell["We first load in the Standard Model model-file", "Text"],
+
+Cell[BoxData[
+ RowBox[{"LoadModel", "[", "\"\<SM.fr\>\"", "]"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"LoadRestriction", "[",
+  RowBox[{"\"\<Massless.rst\>\"", ",", "\"\<DiagonalCKM.rst\>\""}],
+  "]"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell["The SM lagrangian", "Section"],
+
+Cell[CellGroupData[{
+
+Cell["Unitary Gauge", "Subsection"],
+
+Cell["\<\
+The full lagrangian in unitary gauge can be accessed immediatly via\
+\>", "Text"],
+
+Cell[BoxData["LSM"], "Input"],
+
+Cell[CellGroupData[{
+
+Cell["Gauge sector", "Subsubsection"],
+
+Cell["\<\
+The part of the lagrangian representing the gauge sector can be accessed via\
+\>", "Text"],
+
+Cell[BoxData["LGauge"], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Scalar sector", "Subsubsection"],
+
+Cell["\<\
+The part of the lagrangian representing the scalar sector can be accessed via\
+\
+\>", "Text"],
+
+Cell[BoxData["LHiggs"], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Fermion sector", "Subsubsection"],
+
+Cell["\<\
+The part of the lagrangian representing the fermion sector can be accessed via\
+\>", "Text"],
+
+Cell[BoxData["LFermions"], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Yukawa sector", "Subsubsection"],
+
+Cell["\<\
+The part of the lagrangian representing the Yukawa sector can be accessed via\
+\
+\>", "Text"],
+
+Cell[BoxData["LYukawa"], "Input"]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Feynman Gauge", "Subsection"],
+
+Cell["\<\
+By default, SM lagrangian is loaded in unitary gauge. However, Feynman gauge \
+can be obtained by putting\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"FeynmanGauge", "=", "True"}], ";"}]], "Input"],
+
+Cell["\<\
+The full lagrangian in Feynman gauge can be accessed immediatly via\
+\>", "Text"],
+
+Cell[BoxData["LSM"], "Input"],
+
+Cell[CellGroupData[{
+
+Cell["Gauge sector", "Subsubsection"],
+
+Cell["\<\
+The part of the lagrangian representing the gauge sector can be accessed via\
+\>", "Text"],
+
+Cell[BoxData["LGauge"], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Scalar sector", "Subsubsection"],
+
+Cell["\<\
+The part of the lagrangian representing the scalar sector can be accessed via\
+\
+\>", "Text"],
+
+Cell[BoxData["LHiggs"], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Fermion sector", "Subsubsection"],
+
+Cell["\<\
+The part of the lagrangian representing the fermion sector can be accessed via\
+\>", "Text"],
+
+Cell[BoxData["LFermions"], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Yukawa sector", "Subsubsection"],
+
+Cell["\<\
+The part of the lagrangian representing the Yukawa sector can be accessed via\
+\
+\>", "Text"],
+
+Cell[BoxData["LYukawa"], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Ghost sector", "Subsubsection"],
+
+Cell["\<\
+The part of the lagrangian representing the ghost sector can be accessed via\
+\>", "Text"],
+
+Cell[BoxData["LGhost"], "Input"]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Checking the Lagrangian", "Section"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"FeynmanGauge", "=", "False"}], ";"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell["Checking hermiticity", "Subsection"],
+
+Cell["The hermiticity of the Lagrangian can be checked via", "Text"],
+
+Cell[BoxData[
+ RowBox[{"CheckHermiticity", "[", "LSM", "]"}]], "Input"],
+
+Cell["\<\
+The same command can be applied to the flavor - expanded Lagrangian\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"CheckHermiticity", "[",
+  RowBox[{"LSM", ",",
+   RowBox[{"FlavorExpand", "\[Rule]", "True"}]}], "]"}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Checking the mass spectrum", "Subsection"],
+
+Cell["\<\
+FeynRules can check whether all the values of the masses given in the model \
+file ar ein agreement with the masses given in the Lagrangian:\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"CheckMassSpectrum", "[", "LSM", "]"}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Checking the kinetic terms", "Subsection"],
+
+Cell["\<\
+In the same way, FeynRules can check whether all kinetic terms are correctly \
+normalized :\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"CheckKineticTermNormalisation", "[",
+  RowBox[{"LSM", ",",
+   RowBox[{"FlavorExpand", "\[Rule]", "SU2W"}]}], "]"}]], "Input"],
+
+Cell["\<\
+The same command cen be used at the level of the flavor - expanded Lagrangian \
+:\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"CheckKineticTermNormalisation", "[",
+  RowBox[{"LSM", ",",
+   RowBox[{"FlavorExpand", "\[Rule]", "True"}]}], "]"}]], "Input"]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Calculation of the Feynman rules", "Section"],
+
+Cell["\<\
+We will calculate now explicitly the Feynman rules for the SM in Feynman \
+gauge.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"FeynmanGauge", "=", "True"}], ";"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell["Gauge sector", "Subsection"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"vertsGauge", "=",
+   RowBox[{"FeynmanRules", "[",
+    RowBox[{"LGauge", ",",
+     RowBox[{"FlavorExpand", "\[Rule]", "SU2W"}]}], "]"}]}], ";"}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Higgs Sector", "Subsection"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"vertsHiggs", "=",
+   RowBox[{"FeynmanRules", "[", "LHiggs", "]"}]}], ";"}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Matter sector", "Subsection"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"vertsFermions", "=",
+   RowBox[{"FeynmanRules", "[", "LFermions", "]"}]}], ";"}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Yukawa sector", "Subsection"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"vertsYukawa", "=",
+   RowBox[{"FeynmanRules", "[",
+    RowBox[{"LYukawa", ",",
+     RowBox[{"FlavorExpand", "\[Rule]", "True"}]}], "]"}]}], ";"}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["LGhost sector", "Subsection"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"vertsGhosts", "=",
+   RowBox[{"FeynmanRules", "[",
+    RowBox[{"LGhost", ",",
+     RowBox[{"FlavorExpand", "\[Rule]", "SU2W"}]}], "]"}]}], ";"}]], "Input"]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Outputs and interfaces", "Section"],
+
+Cell[CellGroupData[{
+
+Cell["FeynArts output", "Subsection"],
+
+Cell["The FeynArts output for the SM can be obtained via", "Text"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"FeynmanGauge", " ", "=", " ", "False"}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{"WriteFeynArtsOutput", "[",
+  RowBox[{"LGauge", ",", "LHiggs", ",", "LFermions", ",", "LYukawa", ",",
+   RowBox[{"FlavorExpand", "\[Rule]", "SU2W"}]}], "]"}]}], "Input"],
+
+Cell["FeynArts also supports the Feynman gauge", "Text"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"FeynmanGauge", " ", "=", " ", "True"}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{"WriteFeynArtsOutput", "[",
+  RowBox[{
+  "LGauge", ",", "LHiggs", ",", "LFermions", ",", "LYukawa", ",", "LGhost",
+   ",",
+   RowBox[{"FlavorExpand", "\[Rule]", "SU2W"}], ",",
+   RowBox[{"Output", "\[Rule]", "\"\<SM.mod\>\""}]}], "]"}]}], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Sherpa output", "Subsection"],
+
+Cell["The Sherpa output for the SM can be obtained via", "Text"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"FeynmanGauge", "=", "False"}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{"WriteSHOutput", "[",
+  RowBox[{"LGauge", ",", "LHiggs", ",", "LFermions", ",", "LYukawa"}],
+  "]"}]}], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["CalcHep output", "Subsection"],
+
+Cell["CalcHep also supports the Feynman gauge", "Text"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"FeynmanGauge", "=", "True"}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"WriteCHOutput", "[",
+   RowBox[{
+   "LGauge", ",", "LHiggs", ",", "LFermions", ",", "LYukawa", ",", "LGhost"}],
+    "]"}], ";"}]}], "Input"],
+
+Cell[BoxData[""], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Whizard output", "Subsection"],
+
+Cell["Whizard also supports the Feynman gauge", "Text"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"FeynmanGauge", "=", "True"}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"WriteWOOutput", "[",
+   RowBox[{
+   "LGauge", ",", "LHiggs", ",", "LFermions", ",", "LYukawa", ",", "LGhost"}],
+    "]"}], ";"}]}], "Input"],
+
+Cell[BoxData[""], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["UFO output", "Subsection"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"WriteUFO", "[",
+   RowBox[{
+   "LGauge", ",", "LHiggs", ",", "LFermions", ",", "LYukawa", ",", "LGhost"}],
+    "]"}], ";"}]], "Input"]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["NLO (QCD)", "Subsubtitle"],
+
+Cell[BoxData[
+ RowBox[{"(*",
+  RowBox[{
+  "Renormalization", " ", "and", " ", "output", " ", "to", " ", "FA"}],
+  "*)"}]], "Input"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Lren", "=",
+   RowBox[{"OnShellRenormalization", "[",
+    RowBox[{"LSM", ",",
+     RowBox[{"QCDOnly", "\[Rule]", "True"}], ",",
+     RowBox[{"FlavorMixing", "\[Rule]", "False"}]}], "]"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"SetDirectory", "[", "\"\<~/celine/FeynArts-3.7/Models\>\"", "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{"WriteFeynArtsOutput", "[",
+  RowBox[{"Lren", ",",
+   RowBox[{"Output", "\[Rule]", "\"\<SMQCDrenoL\>\""}], ",",
+   RowBox[{"GenericFile", "\[Rule]", "False"}]}], "]"}]}], "Input"],
+
+Cell[BoxData[
+ RowBox[{"(*",
+  RowBox[{"Computation", " ", "of", " ", "the", " ", "Counterterms"}],
+  "*)"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"Quit", "[", "]"}]], "Input"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetDirectory", "[", "\"\<< FeynArts directory >\>\"", "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{"<<", " ", "FeynArts`"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"SetDirectory", "[", "\"\<< NLOCT directory >\>\"", "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{"<<", " ", "NLOCT`"}]}], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"WriteCT", "[",
+   RowBox[{"\"\<SMQCDrenoL/SMQCDrenoL\>\"", ",", "\"\<Lorentz\>\"", ",",
+    RowBox[{"Output", "->", "\"\<SMQCDreno\>\""}], ",",
+    RowBox[{"LabelInternal", "\[Rule]", "True"}], ",",
+    RowBox[{"QCDOnly", "\[Rule]", "True"}], ",",
+    RowBox[{"KeptIndices", "\[Rule]",
+     RowBox[{"{", "}"}]}], ",",
+    RowBox[{"ZeroMom", "\[Rule]",
+     RowBox[{"{",
+      RowBox[{"{",
+       RowBox[{"aS", ",",
+        RowBox[{"{",
+         RowBox[{
+          RowBox[{"F", "[", "7", "]"}], ",",
+          RowBox[{"V", "[", "4", "]"}], ",",
+          RowBox[{"-",
+           RowBox[{"F", "[", "7", "]"}]}]}], "}"}], ",", "0"}], "}"}],
+      "}"}]}], ",",
+    RowBox[{"ComplexMass", "\[Rule]", "False"}]}], "]"}], "//", "Timing",
+  " "}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"(*",
+  RowBox[{
+  "Quit", " ", "and", " ", "reload", " ", "FeynRules", " ", "and", " ", "the",
+    " ", "model", " ", "with", " ", "the", " ", "restrictions"}],
+  "*)"}]], "Input"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+  "SetDirectory", "[",
+   "\"\<~/celine/feynrules/trunk/feynrules-development/R2\>\"", "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Get", "[", "\"\<SMQCDreno.nlo\>\"", "]"}], ";"}]}], "Input"],
+
+Cell[BoxData[
+ RowBox[{"WriteUFO", "[",
+  RowBox[{"LSM", ",",
+   RowBox[{"UVCounterterms", "\[Rule]", "UV$vertlist"}], ",",
+   RowBox[{"R2Vertices", "\[Rule]", "R2$vertlist"}], ",",
+   RowBox[{"Output", "\[Rule]", "\"\<SM_NLO\>\""}]}], "]"}]], "Input"]
+}]]
+}]]
+}]
+(* End of Notebook Content *)
