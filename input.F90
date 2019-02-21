@@ -41,11 +41,11 @@ module input
  ! * sets n_additional (number of additional data values for each parameter point)
  ! * allocates theo, g2, partR
  !************************************************************
-  use usefulbits, only : np,ndat,n_additional,theo,g2,partR, &
+  use usefulbits, only : np,ndat,n_additional,theo,effC,g2,partR, &
          &               inputmethod,whichinput, &
          &               debug,infile1,infile2, &
          &               allocate_hadroncolliderextras_parts,allocate_dataset_parts, &
-         &               allocate_sqcouplratio_parts,fill_pdesc
+         &               allocate_sqcouplratio_parts,allocate_couplratio_parts,fill_pdesc
 
   use theory_BRfunctions      
   implicit none
@@ -144,24 +144,32 @@ module input
 
   allocate(theo(ndat))
 
+  if(debug) write(*,*) 'allocating theo data...'
   call allocate_dataset_parts(theo,n_additional)                
   
+! - Outdated:
+  if(debug) write(*,*) 'allocating g2 data...'
   allocate(g2(ndat)) 
   call allocate_sqcouplratio_parts(g2)
+! -
+  if(debug) write(*,*) 'allocating effC data...'
+  allocate(effC(ndat)) 
+  call allocate_couplratio_parts(effC)
   
+  if(debug) write(*,*) 'allocating partR data...'
   allocate(partR(ndat)) 
   call allocate_hadroncolliderextras_parts(partR)  
+  if(debug) write(*,*) 'done.'
 
  end subroutine setup_input
 
 !************************************************************      
  subroutine do_input
- ! only used for inputmethod='datfile' or 'website'
  ! determines what input is needed and calls the appropriate
  ! subroutines to get this input
  !************************************************************
   use usefulbits, only : ndat,inputmethod,whichinput, &
-         &               theo,g2,partR,infile1
+         &               theo,effC,partR,infile1,g2
   use extra_bits_for_web, only : getlongcommandline2web  
   use extra_bits_for_SLHA, only : getSLHAdata
   use theory_BRfunctions      
@@ -188,7 +196,8 @@ module input
      if(ndat.ne.1)then
        stop 'error in subroutine do_input (4): need to specify infile1 for each SLHA file somehow'
      endif          
-     call getSLHAdata(theo(n),g2(n),infile1)
+!      call getSLHAdata(theo(n),g2(n),infile1)
+     call getSLHAdata(theo(n),effC(n),infile1)     
      !call test_input(n)
    case default
     stop 'error in subroutine do_input (1)'
@@ -215,7 +224,7 @@ module input
  integer :: n,nt
  
    n=1
-   nt=33
+   nt=26
 
    allocate(stem_array(nt))
    allocate(required(nt))
@@ -225,46 +234,82 @@ module input
    !                                      |               |                         |        np
    !                                      |   whichinput  |       whichanalyses     |Hneu Hcha Chineut Chiplus
    !         stem                         |part hadr effC |LandH onlyL onlyH  onlyP | ==0  ==0  ==0     ==0 
-   call fill('MH_GammaTot'                ,   1,   1,   1,     1,    1,    1,    1,    0, 1,     1,    1) 
-   call fill('MHall_uncertainties'        ,  -1,  -1,  -1,     1,    1,    1,    1,    1, 1,     1,    1)    
-   call fill('MHplus_GammaTot'            ,   1,   1,   1,     1,    1,    1,    1,    1, 0,     1,    1) 
-   call fill('MC_GammaTot'                ,   1,   1,   1,     1,    1,    1,    1,    1, 1,     0,    0) 
-   call fill('MN_GammaTot'                ,   1,   1,   1,     1,    1,    1,    1,    1, 1,     0,    1) 
-   call fill('effC'                       ,   0,   0,   1,     1,    1,    1,    1,    0, 1,     1,    1)
+!    call fill('MH_GammaTot'                ,   1,   1,   1,     1,    1,    1,    1,    0, 1,     1,    1) 
+!    call fill('MHall_uncertainties'        ,  -1,  -1,  -1,     1,    1,    1,    1,    1, 1,     1,    1)    
+!    call fill('MHplus_GammaTot'            ,   1,   1,   1,     1,    1,    1,    1,    1, 0,     1,    1) 
+!    call fill('MC_GammaTot'                ,   1,   1,   1,     1,    1,    1,    1,    1, 1,     0,    0) 
+!    call fill('MN_GammaTot'                ,   1,   1,   1,     1,    1,    1,    1,    1, 1,     0,    1) 
+!    call fill('effC'                       ,   0,   0,   1,     1,    1,    1,    1,    0, 1,     1,    1)
+!  
+!    call fill('BR_H_OP'                    ,   1,   1,   0,     1,    1,    1,    1,    0, 1,     1,    1) 
+!    call fill('BR_H_NP'                    ,   1,   1,   1,     1,    1,    1,    1,    0, 1,     1,    1) 
+!    call fill('BR_t'                       ,   1,   1,   1,     1,    0,    1,    1,    1, 0,     1,    1) 
+!    call fill('BR_Hplus'                   ,   1,   1,   1,     1,    1,    1,    1,    1, 0,     1,    1) 
+!    call fill('BR_C'                       ,   1,   1,   1,     1,    1,    1,    1,    1, 1,     0,    0) 
+!    call fill('BR_N'                       ,   1,   1,   1,     1,    1,    1,    1,    1, 1,     0,    1)
+! 
+!    call fill('LEP_HZ_CS_ratios'           ,   1,   1,   0,     1,    1,    0,    1,    0, 1,     1,    1) 
+!    call fill('LEP_H_ff_CS_ratios'         ,   1,   1,   0,     1,    1,    0,    1,    0, 1,     1,    1) 
+!    call fill('LEP_2H_CS_ratios'           ,   1,   1,   0,     1,    1,    0,    1,    0, 1,     1,    1) 
+!    call fill('LEP_HpHm_CS_ratios'         ,   1,   1,   1,     1,    1,    0,    1,    1, 0,     1,    1) 
+!    call fill('LEP_CpCm_CS'                ,   1,   1,   1,     1,    1,    0,    1,    1, 1,     0,    0) 
+!    call fill('LEP_2N_CS'                  ,   1,   1,   1,     1,    1,    0,    1,    1, 1,     0,    1) 
+! 
+!    call fill('TEVLHC_H_0jet_partCS_ratios',   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+!    call fill('TEVLHC_H_1jet_partCS_ratios',   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+!    call fill('TEVLHC_HW_partCS_ratios'    ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+!    call fill('TEVLHC_HZ_partCS_ratios'    ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+! 
+!    call fill('TEV_H_vbf_hadCS_ratios'     ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+!    call fill('TEV_H_tt_hadCS_ratios'      ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+!    call fill('TEV_1H_hadCS_ratios'        ,   0,   1,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+! 
+!    call fill('LHC7_H_vbf_hadCS_ratios'    ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+!    call fill('LHC7_H_tt_hadCS_ratios'     ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+!    call fill('LHC7_1H_hadCS_ratios'       ,   0,   1,   0,     1,    0,    1,    1,    0, 1,     1,    1)
+! 
+!    call fill('LHC8_H_vbf_hadCS_ratios'    ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+!    call fill('LHC8_H_tt_hadCS_ratios'     ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+!    call fill('LHC8_1H_hadCS_ratios'       ,   0,   1,   0,     1,    0,    1,    1,    0, 1,     1,    1)
+! 
+!    call fill('CP_values'                  ,   1,   1,   0,     1,    1,    1,    1,    0, 1,     1,    1) 
+!    call fill('additional'                 ,   1,   1,   1,     1,    1,    1,    1,    1, 1,     1,    1) 
+
+   call fill('MH_GammaTot'                ,   1,   1,     1,    1,    1,    1,    0, 1,     1,    1) 
+   call fill('MHall_uncertainties'        ,  -1,  -1,     1,    1,    1,    1,    1, 1,     1,    1)    
+   call fill('MHplus_GammaTot'            ,   1,   1,     1,    1,    1,    1,    1, 0,     1,    1) 
+   call fill('MC_GammaTot'                ,   1,   1,     1,    1,    1,    1,    1, 1,     0,    0) 
+   call fill('MN_GammaTot'                ,   1,   1,     1,    1,    1,    1,    1, 1,     0,    1) 
+   call fill('effC'                       ,   0,   1,     1,    1,    1,    1,    0, 1,     1,    1)
  
-   call fill('BR_H_OP'                    ,   1,   1,   0,     1,    1,    1,    1,    0, 1,     1,    1) 
-   call fill('BR_H_NP'                    ,   1,   1,   1,     1,    1,    1,    1,    0, 1,     1,    1) 
-   call fill('BR_t'                       ,   1,   1,   1,     1,    0,    1,    1,    1, 0,     1,    1) 
-   call fill('BR_Hplus'                   ,   1,   1,   1,     1,    1,    1,    1,    1, 0,     1,    1) 
-   call fill('BR_C'                       ,   1,   1,   1,     1,    1,    1,    1,    1, 1,     0,    0) 
-   call fill('BR_N'                       ,   1,   1,   1,     1,    1,    1,    1,    1, 1,     0,    1)
+   call fill('BR_H_OP'                    ,   1,  -1,     1,    1,    1,    1,    0, 1,     1,    1) 
+   call fill('BR_H_NP'                    ,   1,   1,     1,    1,    1,    1,    0, 1,     1,    1) 
+   call fill('BR_t'                       ,   1,   1,     1,    0,    1,    1,    1, 0,     1,    1) 
+   call fill('BR_Hplus'                   ,   1,   1,     1,    1,    1,    1,    1, 0,     1,    1) 
+   call fill('BR_C'                       ,   1,   1,     1,    1,    1,    1,    1, 1,     0,    0) 
+   call fill('BR_N'                       ,   1,   1,     1,    1,    1,    1,    1, 1,     0,    1)
 
-   call fill('LEP_HZ_CS_ratios'           ,   1,   1,   0,     1,    1,    0,    1,    0, 1,     1,    1) 
-   call fill('LEP_H_ff_CS_ratios'         ,   1,   1,   0,     1,    1,    0,    1,    0, 1,     1,    1) 
-   call fill('LEP_2H_CS_ratios'           ,   1,   1,   0,     1,    1,    0,    1,    0, 1,     1,    1) 
-   call fill('LEP_HpHm_CS_ratios'         ,   1,   1,   1,     1,    1,    0,    1,    1, 0,     1,    1) 
-   call fill('LEP_CpCm_CS'                ,   1,   1,   1,     1,    1,    0,    1,    1, 1,     0,    0) 
-   call fill('LEP_2N_CS'                  ,   1,   1,   1,     1,    1,    0,    1,    1, 1,     0,    1) 
+   call fill('LEP_HZ_CS_ratios'           ,   1,   0,     1,    1,    0,    1,    0, 1,     1,    1) 
+   call fill('LEP_H_ff_CS_ratios'         ,   1,   0,     1,    1,    0,    1,    0, 1,     1,    1) 
+   call fill('LEP_2H_CS_ratios'           ,   1,   0,     1,    1,    0,    1,    0, 1,     1,    1) 
+   call fill('LEP_HpHm_CS_ratios'         ,   1,   1,     1,    1,    0,    1,    1, 0,     1,    1) 
+   call fill('LEP_CpCm_CS'                ,   1,   1,     1,    1,    0,    1,    1, 1,     0,    0) 
+   call fill('LEP_2N_CS'                  ,   1,   1,     1,    1,    0,    1,    1, 1,     0,    1) 
 
-   call fill('TEVLHC_H_0jet_partCS_ratios',   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
-   call fill('TEVLHC_H_1jet_partCS_ratios',   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
-   call fill('TEVLHC_HW_partCS_ratios'    ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
-   call fill('TEVLHC_HZ_partCS_ratios'    ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+   call fill('TEV_1H_hadCS_ratios'        ,   1,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+   call fill('LHC7_1H_hadCS_ratios'       ,   1,   0,     1,    0,    1,    1,    0, 1,     1,    1)
+   call fill('LHC8_1H_hadCS_ratios'       ,   1,   0,     1,    0,    1,    1,    0, 1,     1,    1)
+   call fill('LHC13_1H_hadCS_ratios'      ,   1,   0,     1,    0,    1,    1,    0, 1,     1,    1)
 
-   call fill('TEV_H_vbf_hadCS_ratios'     ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
-   call fill('TEV_H_tt_hadCS_ratios'      ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
-   call fill('TEV_1H_hadCS_ratios'        ,   0,   1,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
+!    call fill('TEV_Hplus_hadCS'            ,   1,   1,     1,    0,    1,    1,    1, 0,     1,    1) 
+!    call fill('LHC7_Hplus_hadCS'           ,   1,   1,     1,    0,    1,    1,    1, 0,     1,    1) 
+   call fill('LHC8_Hplus_hadCS'           ,   1,   1,     1,    0,    1,    1,    1, 0,     1,    1) 
+   call fill('LHC13_Hplus_hadCS'          ,   1,   1,     1,    0,    1,    1,    1, 0,     1,    1) 
+!--n.B.: Extend this by 2H hadronic input in case needed! (No searches yet)
 
-   call fill('LHC7_H_vbf_hadCS_ratios'    ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
-   call fill('LHC7_H_tt_hadCS_ratios'     ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
-   call fill('LHC7_1H_hadCS_ratios'       ,   0,   1,   0,     1,    0,    1,    1,    0, 1,     1,    1)
+   call fill('CP_values'                  ,   1,   0,     1,    1,    1,    1,    0, 1,     1,    1) 
+   call fill('additional'                 ,   1,   1,     1,    1,    1,    1,    1, 1,     1,    1) 
 
-   call fill('LHC8_H_vbf_hadCS_ratios'    ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
-   call fill('LHC8_H_tt_hadCS_ratios'     ,   1,   0,   0,     1,    0,    1,    1,    0, 1,     1,    1) 
-   call fill('LHC8_1H_hadCS_ratios'       ,   0,   1,   0,     1,    0,    1,    1,    0, 1,     1,    1)
-
-   call fill('CP_values'                  ,   1,   1,   0,     1,    1,    1,    1,    0, 1,     1,    1) 
-   call fill('additional'                 ,   1,   1,   1,     1,    1,    1,    1,    1, 1,     1,    1) 
 
    if(n.ne.nt+1)stop 'Error in subroutine fill_stem_array A'
  
@@ -283,20 +328,78 @@ module input
    !                                   |   whichinput  |       whichanalyses    |Hneu Hcha Chineut Chiplus
    !         stem                      |part hadr effC |LandH onlyL onlyH onlyP | ==0  ==0  ==0     ==0 
 
-   subroutine fill(stem ,part,hadr,effC, LandH,onlyL,onlyH,onlyP, Hneu,Hcha, Chneu,  Chcha)
+!    subroutine fill(stem ,part,hadr,effC, LandH,onlyL,onlyH,onlyP, Hneu,Hcha, Chneu,  Chcha)
+!    !nb required(i) for 'additional' is not set until later
+!     implicit none
+! 
+!     character(LEN=*), intent(in):: stem
+!     integer, intent(in) :: part,hadr,effC,LandH,onlyL,onlyH,onlyP,Hneu,Hcha,Chneu,Chcha
+!     integer :: req
+! 
+!     stem_array(n)=stem 
+! 
+!     req=1
+!     select case(whichinput)
+!     case('part')
+!      req= part * req
+!     case('hadr')
+!      req= hadr * req
+!     case('effC')
+!      req= effC * req
+!     case default
+!      stop 'error in subroutine fill(whichinput)'
+!     end select
+! 
+!     select case(whichanalyses)
+!     case('LandH')
+!      req= LandH * req
+!     case('onlyL')
+!      req= onlyL * req
+!     case('onlyH')
+!      req= onlyH * req
+!     case('onlyP')
+!      req= onlyP * req
+!     case default
+!      stop 'error in subroutine fill(whichanalyses)'
+!     end select
+! 
+!     if(np(Hneut)==0)  req= Hneu  * req
+!     if(np(Hplus)==0)  req= Hcha  * req
+!     if(np(Chineut)==0)req= Chneu * req
+!     if(np(Chiplus)==0)req= Chcha * req
+! 
+!     select case(req)
+!     case(0)
+!      required(n)=.False.
+!      isoptional(n)=.False.
+!     case(1)
+!      required(n)=.True.
+!      isoptional(n)=.False.
+!     case(-1)
+!      required(n)=.False.
+!      isoptional(n)=.True. 
+!     case default
+!      stop 'error in subroutine fill(req)' 
+!     end select
+!    
+!     n=n+1
+! 
+!    end subroutine fill
+
+   subroutine fill(stem ,hadr,effC, LandH,onlyL,onlyH,onlyP, Hneu,Hcha, Chneu,  Chcha)
    !nb required(i) for 'additional' is not set until later
     implicit none
 
     character(LEN=*), intent(in):: stem
-    integer, intent(in) :: part,hadr,effC,LandH,onlyL,onlyH,onlyP,Hneu,Hcha,Chneu,Chcha
+    integer, intent(in) :: hadr,effC,LandH,onlyL,onlyH,onlyP,Hneu,Hcha,Chneu,Chcha
     integer :: req
 
     stem_array(n)=stem 
 
     req=1
     select case(whichinput)
-    case('part')
-     req= part * req
+!     case('part')
+!      req= part * req
     case('hadr')
      req= hadr * req
     case('effC')
@@ -351,17 +454,18 @@ module input
  ! First column is always line number. Last line is checked to make
  ! sure line number is correct
  !************************************************************ 
-  use usefulbits, only : np,theo,ndat,infile1,g2,partR, &
-                   &     n_additional
+  use usefulbits, only : np,theo,ndat,infile1,g2,effC,partR, &
+                   &     n_additional,BRdirectinput
   implicit none  
   !--------------------------------------input
   integer,intent(in) :: n_stem
   !-----------------------------------internal
   character(LEN=50) :: stem
-  integer :: jj,i,j,f,k,q,ios,x,y
+  integer :: jj,i,j,f,k,q,ios,x,y,count
   double precision :: nc
   logical :: needed, opt
-  double precision, allocatable :: BR_hjhihi_in(:),BR_NjqqNi_in(:),BR_NjZNi_in(:)
+  double precision, allocatable :: BR_NjqqNi_in(:),BR_NjZNi_in(:),BR_hjHpiW_in(:), &
+  &                                BR_hkhjhi_in(:),BR_hjhiZ_in(:),BR_HpjhiW_in(:) !BR_hjhihi_in(:)
   character(LEN=500) :: line
   integer :: numskip
   double precision, allocatable :: numbersfromline(:)
@@ -376,9 +480,10 @@ module input
    open(f,file=trim(infile1)//trim(stem)//'.dat',status='old',action='read',iostat=ios)      
 
     if(ios.ne.0)then
-     if(needed) then
      call file_name_msg(f)
-     stop 'problem opening file: see standard output for more info'
+!      stop 'problem opening file: see standard output for more info'
+     if(needed) then
+      write(*,*) 'WARNING: Required file not found. Corresponding values are set to zero!'
      else 
       write(*,*) 'Optional datafile '//trim(infile1)//trim(stem)//'.dat'//' not found.'//&
       &          ' Using default values.'
@@ -386,6 +491,7 @@ module input
      endif 
     endif
 
+   if(getfilelength(f).eq.0) return
    if((ndat.ne.getfilelength(f)))then
      write(*,*)'wrong no. lines in input file'
      write(*,*)'It had',getfilelength(f),'lines'
@@ -478,25 +584,43 @@ module input
      enddo
    case('effC')        
      do jj=1,ndat                                    
-      read(f,*)   nc,  (g2(jj)%hjss_s(i)                   ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjss_p(i)                   ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjcc_s(i)                   ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjcc_p(i)                   ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjbb_s(i)                   ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjbb_p(i)                   ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjtoptop_s(i)               ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjtoptop_p(i)               ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjmumu_s(i)                 ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjmumu_p(i)                 ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjtautau_s(i)               ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjtautau_p(i)               ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjWW(i)                     ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjZZ(i)                     ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjZga(i)                    ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjgaga(i)                   ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjgg(i)                     ,i=1,np(Hneut)), &
-           &           (g2(jj)%hjggZ(i)                    ,i=1,np(Hneut)), &
-           &          ((g2(jj)%hjhiZ(j,i)                  ,i=1,j),j=1,np(Hneut))   
+      read(f,*)   nc,  (effC(jj)%hjss_s(i)                   ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjss_p(i)                   ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjcc_s(i)                   ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjcc_p(i)                   ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjbb_s(i)                   ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjbb_p(i)                   ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjtt_s(i)                   ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjtt_p(i)                   ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjmumu_s(i)                 ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjmumu_p(i)                 ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjtautau_s(i)               ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjtautau_p(i)               ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjWW(i)                     ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjZZ(i)                     ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjZga(i)                    ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjgaga(i)                   ,i=1,np(Hneut)), &
+           &           (effC(jj)%hjgg(i)                     ,i=1,np(Hneut)), &
+           &          ((effC(jj)%hjhiZ(j,i)                  ,i=1,j),j=1,np(Hneut))   
+!       read(f,*)   nc,  (g2(jj)%hjss_s(i)                   ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjss_p(i)                   ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjcc_s(i)                   ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjcc_p(i)                   ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjbb_s(i)                   ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjbb_p(i)                   ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjtoptop_s(i)               ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjtoptop_p(i)               ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjmumu_s(i)                 ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjmumu_p(i)                 ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjtautau_s(i)               ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjtautau_p(i)               ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjWW(i)                     ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjZZ(i)                     ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjZga(i)                    ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjgaga(i)                   ,i=1,np(Hneut)), &
+!            &           (g2(jj)%hjgg(i)                     ,i=1,np(Hneut)), &
+! !            &           (g2(jj)%hjggZ(i)                    ,i=1,np(Hneut)), &
+!            &          ((g2(jj)%hjhiZ(j,i)                  ,i=1,j),j=1,np(Hneut))   
     enddo     
    case('LEP_HZ_CS_ratios')                 
      do jj=1,ndat    
@@ -523,81 +647,103 @@ module input
      do jj=1,ndat                                   
       read(f,*)  nc, ((theo(jj)%lep%XS_NjNi(j,i),i=1,j),j=1,np(Chineut))   
      enddo
-   case('TEVLHC_H_0jet_partCS_ratios')
-    do jj=1,ndat     
-     read(f,*)  nc, (partR(jj)%gg_hj(i)           ,i=1,np(Hneut)), &
-         &          (partR(jj)%qq_hj(5,i)         ,i=1,np(Hneut))    
-    enddo   
-   case('TEVLHC_H_1jet_partCS_ratios')           
-    do jj=1,ndat     
-     read(f,*)  nc, (partR(jj)%bg_hjb(i),i=1,np(Hneut))   
-    enddo    
-   case('TEVLHC_HW_partCS_ratios')
-    do jj=1,ndat     
-     read(f,*)  nc, ((partR(jj)%qq_hjWp(q,i)       ,i=1,np(Hneut)), q=1,partR(jj)%nq_hjWp), &
-         &          ((partR(jj)%qq_hjWm(q,i)       ,i=1,np(Hneut)), q=1,partR(jj)%nq_hjWm)  
-    enddo      
-   case('TEVLHC_HZ_partCS_ratios')
-    do jj=1,ndat     
-     read(f,*)  nc,(partR(jj)%gg_hjZ(i)          ,i=1,np(Hneut)), &
-         &       (( partR(jj)%qq_hjZ(q,i)        ,i=1,np(Hneut)), q=1,partR(jj)%nq_hjZ ) 
-    enddo   
-   case('TEV_H_vbf_hadCS_ratios')    
-    do jj=1,ndat     
-     read(f,*)  nc, (theo(jj)%tev%XS_vbf_ratio(i),i=1,np(Hneut)) 
-    enddo    
-   case('TEV_H_tt_hadCS_ratios')    
-    do jj=1,ndat     
-     read(f,*)  nc, (theo(jj)%tev%XS_tthj_ratio(i),i=1,np(Hneut)) 
-    enddo  
+!    case('TEVLHC_H_0jet_partCS_ratios')
+!     do jj=1,ndat     
+!      read(f,*)  nc, (partR(jj)%gg_hj(i)           ,i=1,np(Hneut)), &
+!          &          (partR(jj)%qq_hj(5,i)         ,i=1,np(Hneut))    
+!     enddo   
+!    case('TEVLHC_H_1jet_partCS_ratios')           
+!     do jj=1,ndat     
+!      read(f,*)  nc, (partR(jj)%bg_hjb(i),i=1,np(Hneut))   
+!     enddo    
+!    case('TEVLHC_HW_partCS_ratios')
+!     do jj=1,ndat     
+!      read(f,*)  nc, ((partR(jj)%qq_hjWp(q,i)       ,i=1,np(Hneut)), q=1,partR(jj)%nq_hjWp), &
+!          &          ((partR(jj)%qq_hjWm(q,i)       ,i=1,np(Hneut)), q=1,partR(jj)%nq_hjWm)  
+!     enddo      
+!    case('TEVLHC_HZ_partCS_ratios')
+!     do jj=1,ndat     
+!      read(f,*)  nc,(partR(jj)%gg_hjZ(i)          ,i=1,np(Hneut)), &
+!          &       (( partR(jj)%qq_hjZ(q,i)        ,i=1,np(Hneut)), q=1,partR(jj)%nq_hjZ ) 
+!     enddo   
+!    case('TEV_H_vbf_hadCS_ratios')    
+!     do jj=1,ndat     
+!      read(f,*)  nc, (theo(jj)%tev%XS_vbf_ratio(i),i=1,np(Hneut)) 
+!     enddo    
+!    case('TEV_H_tt_hadCS_ratios')    
+!     do jj=1,ndat     
+!      read(f,*)  nc, (theo(jj)%tev%XS_tthj_ratio(i),i=1,np(Hneut)) 
+!     enddo  
    case('TEV_1H_hadCS_ratios')  
      do jj=1,ndat    
       read(f,*)  nc, (theo(jj)%tev%XS_hj_ratio(i)   ,i=1,np(Hneut)) , &
-                  &  (theo(jj)%tev%XS_hjb_ratio(i)  ,i=1,np(Hneut)) , &
+                  &  (theo(jj)%tev%XS_gg_hj_ratio(i),i=1,np(Hneut)) , &
+                  &  (theo(jj)%tev%XS_bb_hj_ratio(i),i=1,np(Hneut)) , &
                   &  (theo(jj)%tev%XS_hjW_ratio(i)  ,i=1,np(Hneut)) , &
                   &  (theo(jj)%tev%XS_hjZ_ratio(i)  ,i=1,np(Hneut)) , &
                   &  (theo(jj)%tev%XS_vbf_ratio(i)  ,i=1,np(Hneut)) , &
-                  &  (theo(jj)%tev%XS_tthj_ratio(i) ,i=1,np(Hneut))   
+                  &  (theo(jj)%tev%XS_tthj_ratio(i) ,i=1,np(Hneut)) , &
+                  &  (theo(jj)%tev%XS_thj_tchan_ratio(i),i=1,np(Hneut)) , &
+                  &  (theo(jj)%tev%XS_thj_schan_ratio(i),i=1,np(Hneut))   
      enddo     
-   case('LHC7_H_vbf_hadCS_ratios')    
-    do jj=1,ndat     
-     read(f,*)  nc, (theo(jj)%lhc7%XS_vbf_ratio(i),i=1,np(Hneut)) 
-    enddo    
-   case('LHC7_H_tt_hadCS_ratios')    
-    do jj=1,ndat     
-     read(f,*)  nc, (theo(jj)%lhc7%XS_tthj_ratio(i),i=1,np(Hneut)) 
-    enddo  
+!    case('LHC7_H_vbf_hadCS_ratios')    
+!     do jj=1,ndat     
+!      read(f,*)  nc, (theo(jj)%lhc7%XS_vbf_ratio(i),i=1,np(Hneut)) 
+!     enddo    
+!    case('LHC7_H_tt_hadCS_ratios')    
+!     do jj=1,ndat     
+!      read(f,*)  nc, (theo(jj)%lhc7%XS_tthj_ratio(i),i=1,np(Hneut)) 
+!     enddo  
    case('LHC7_1H_hadCS_ratios')  
      do jj=1,ndat    
       read(f,*)  nc, (theo(jj)%lhc7%XS_hj_ratio(i)   ,i=1,np(Hneut)) , &
-                  &  (theo(jj)%lhc7%XS_hjb_ratio(i)  ,i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc7%XS_gg_hj_ratio(i),i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc7%XS_bb_hj_ratio(i),i=1,np(Hneut)) , &
                   &  (theo(jj)%lhc7%XS_hjW_ratio(i)  ,i=1,np(Hneut)) , &
                   &  (theo(jj)%lhc7%XS_hjZ_ratio(i)  ,i=1,np(Hneut)) , &
                   &  (theo(jj)%lhc7%XS_vbf_ratio(i)  ,i=1,np(Hneut)) , &
-                  &  (theo(jj)%lhc7%XS_tthj_ratio(i) ,i=1,np(Hneut))   
+                  &  (theo(jj)%lhc7%XS_tthj_ratio(i) ,i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc7%XS_thj_tchan_ratio(i),i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc7%XS_thj_schan_ratio(i),i=1,np(Hneut))   
      enddo            
-   case('LHC8_H_vbf_hadCS_ratios')    
-    do jj=1,ndat     
-     read(f,*)  nc, (theo(jj)%lhc8%XS_vbf_ratio(i),i=1,np(Hneut)) 
-    enddo    
-   case('LHC8_H_tt_hadCS_ratios')    
-    do jj=1,ndat     
-     read(f,*)  nc, (theo(jj)%lhc8%XS_tthj_ratio(i),i=1,np(Hneut)) 
-    enddo  
+!    case('LHC8_H_vbf_hadCS_ratios')    
+!     do jj=1,ndat     
+!      read(f,*)  nc, (theo(jj)%lhc8%XS_vbf_ratio(i),i=1,np(Hneut)) 
+!     enddo    
+!    case('LHC8_H_tt_hadCS_ratios')    
+!     do jj=1,ndat     
+!      read(f,*)  nc, (theo(jj)%lhc8%XS_tthj_ratio(i),i=1,np(Hneut)) 
+!     enddo  
    case('LHC8_1H_hadCS_ratios')  
      do jj=1,ndat    
       read(f,*)  nc, (theo(jj)%lhc8%XS_hj_ratio(i)   ,i=1,np(Hneut)) , &
-                  &  (theo(jj)%lhc8%XS_hjb_ratio(i)  ,i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc8%XS_gg_hj_ratio(i),i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc8%XS_bb_hj_ratio(i),i=1,np(Hneut)) , &
                   &  (theo(jj)%lhc8%XS_hjW_ratio(i)  ,i=1,np(Hneut)) , &
                   &  (theo(jj)%lhc8%XS_hjZ_ratio(i)  ,i=1,np(Hneut)) , &
                   &  (theo(jj)%lhc8%XS_vbf_ratio(i)  ,i=1,np(Hneut)) , &
-                  &  (theo(jj)%lhc8%XS_tthj_ratio(i) ,i=1,np(Hneut))   
+                  &  (theo(jj)%lhc8%XS_tthj_ratio(i) ,i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc8%XS_thj_tchan_ratio(i),i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc8%XS_thj_schan_ratio(i),i=1,np(Hneut))   
      enddo            
+   case('LHC13_1H_hadCS_ratios')  
+     do jj=1,ndat    
+      read(f,*)  nc, (theo(jj)%lhc13%XS_hj_ratio(i)   ,i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc13%XS_gg_hj_ratio(i),i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc13%XS_bb_hj_ratio(i),i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc13%XS_hjW_ratio(i)  ,i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc13%XS_hjZ_ratio(i)  ,i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc13%XS_vbf_ratio(i)  ,i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc13%XS_tthj_ratio(i) ,i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc13%XS_thj_tchan_ratio(i),i=1,np(Hneut)) , &
+                  &  (theo(jj)%lhc13%XS_thj_schan_ratio(i),i=1,np(Hneut))   
+     enddo
    case('BR_H_OP')       
      do jj=1,ndat          
        read(f,*)    nc, (theo(jj)%BR_hjss(i)       ,i=1,np(Hneut)), &
            &          (theo(jj)%BR_hjcc(i)         ,i=1,np(Hneut)), &
            &          (theo(jj)%BR_hjbb(i)         ,i=1,np(Hneut)), &
+           &          (theo(jj)%BR_hjtt(i)         ,i=1,np(Hneut)), &           
            &          (theo(jj)%BR_hjmumu(i)       ,i=1,np(Hneut)), &
            &          (theo(jj)%BR_hjtautau(i)     ,i=1,np(Hneut)), &
            &          (theo(jj)%BR_hjWW(i)         ,i=1,np(Hneut)), &
@@ -605,32 +751,177 @@ module input
            &          (theo(jj)%BR_hjZga(i)        ,i=1,np(Hneut)), &
            &          (theo(jj)%BR_hjgaga(i)       ,i=1,np(Hneut)), &
            &          (theo(jj)%BR_hjgg(i)         ,i=1,np(Hneut))
-     enddo  
+     enddo
+     BRdirectinput=.True.
+   case('TEV_Hplus_hadCS')  
+     do jj=1,ndat    
+      read(f,*)  nc, (theo(jj)%tev%XS_Hpjtb(i)   ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%tev%XS_Hpjcb(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%tev%XS_Hpjbjet(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%tev%XS_Hpjcjet(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%tev%XS_Hpjjetjet(i) ,i=1,np(Hplus)) , &                                                      
+                  &  (theo(jj)%tev%XS_HpjW(i)    ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%tev%XS_HpjZ(i)    ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%tev%XS_vbf_Hpj(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%tev%XS_HpjHmj(i)  ,i=1,np(Hplus)) , &
+                  &  ((theo(jj)%tev%XS_Hpjhi(j,i) ,i=1,np(Hneut)),j=1,np(Hplus))
+     enddo     
+   case('LHC7_Hplus_hadCS')  
+     do jj=1,ndat    
+      read(f,*)  nc, (theo(jj)%lhc7%XS_Hpjtb(i)   ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc7%XS_Hpjcb(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc7%XS_Hpjbjet(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc7%XS_Hpjcjet(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc7%XS_Hpjjetjet(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc7%XS_HpjW(i)    ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc7%XS_HpjZ(i)    ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc7%XS_vbf_Hpj(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc7%XS_HpjHmj(i)  ,i=1,np(Hplus)) , &
+                  &  ((theo(jj)%lhc7%XS_Hpjhi(j,i) ,i=1,np(Hneut)),j=1,np(Hplus))
+     enddo     
+   case('LHC8_Hplus_hadCS')  
+     do jj=1,ndat    
+      read(f,*)  nc, (theo(jj)%lhc8%XS_Hpjtb(i)   ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc8%XS_Hpjcb(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc8%XS_Hpjbjet(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc8%XS_Hpjcjet(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc8%XS_Hpjjetjet(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc8%XS_HpjW(i)    ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc8%XS_HpjZ(i)    ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc8%XS_vbf_Hpj(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc8%XS_HpjHmj(i)  ,i=1,np(Hplus)) , &
+                  &  ((theo(jj)%lhc8%XS_Hpjhi(j,i) ,i=1,np(Hneut)),j=1,np(Hplus))
+     enddo     
+   case('LHC13_Hplus_hadCS')  
+     do jj=1,ndat    
+      read(f,*)  nc, (theo(jj)%lhc13%XS_Hpjtb(i)   ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc13%XS_Hpjcb(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc13%XS_Hpjbjet(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc13%XS_Hpjcjet(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc13%XS_Hpjjetjet(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc13%XS_HpjW(i)    ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc13%XS_HpjZ(i)    ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc13%XS_vbf_Hpj(i) ,i=1,np(Hplus)) , &
+                  &  (theo(jj)%lhc13%XS_HpjHmj(i)  ,i=1,np(Hplus)) , &
+                  &  ((theo(jj)%lhc13%XS_Hpjhi(j,i) ,i=1,np(Hneut)),j=1,np(Hplus))
+     enddo           
    case('BR_H_NP')
+
+      if(np(Hplus)>0) then
+       allocate(BR_hjHpiW_in(np(Hneut)*np(Hplus)))   
+       BR_hjHpiW_in  =0.0D0  
+      endif 
+
      if(np(Hneut)>1)then !because if np(Hneut)=1, then matrix BR_hjhihi has no off diagonal entries
-       allocate(BR_hjhihi_in(np(Hneut)**2-np(Hneut)))   
-       BR_hjhihi_in  =0.0D0  
 
-       do jj=1,ndat      
+!        allocate(BR_hjhihi_in(np(Hneut)**2-np(Hneut)))   
+!        BR_hjhihi_in  =0.0D0  
+
+       allocate(BR_hkhjhi_in(np(Hneut)**2*(np(Hneut)-1)/2))   
+       BR_hkhjhi_in  =0.0D0  
+       allocate(BR_hjhiZ_in(np(Hneut)**2-np(Hneut)))   
+       BR_hjhiZ_in  =0.0D0  
+
+       do jj=1,ndat
+        if(np(Hplus)>0)then      
+         read(f,*)  nc,  (theo(jj)%BR_hjinvisible(i)    ,i=1,np(Hneut)), &
+&                       (BR_hkhjhi_in(i)               ,i=1,int(np(Hneut)**2*(np(Hneut)-1)/2)),&
+&						(BR_hjhiZ_in(i)                ,i=1,int(np(Hneut)**2-np(Hneut))),&
+&                       (theo(jj)%BR_hjemu(i)          ,i=1,np(Hneut)), &
+&                       (theo(jj)%BR_hjetau(i)         ,i=1,np(Hneut)), &
+&                       (theo(jj)%BR_hjmutau(i)        ,i=1,np(Hneut)),&
+&                       (BR_hjHpiW_in(i)               ,i=1,int(np(Hneut)*np(Hplus)))
+       else
         read(f,*)  nc,  (theo(jj)%BR_hjinvisible(i)    ,i=1,np(Hneut)), &
-             &        (         BR_hjhihi_in(i)      ,i=1,int(np(Hneut)**2-np(Hneut)))  
+&                       (BR_hkhjhi_in(i)               ,i=1,int(np(Hneut)**2*(np(Hneut)-1)/2)),&
+&						(BR_hjhiZ_in(i)                ,i=1,int(np(Hneut)**2-np(Hneut))),&
+&                       (theo(jj)%BR_hjemu(i)          ,i=1,np(Hneut)), &
+&                       (theo(jj)%BR_hjetau(i)         ,i=1,np(Hneut)), &
+&                       (theo(jj)%BR_hjmutau(i)        ,i=1,np(Hneut))
+       endif
+!              &        (         BR_hjhihi_in(i)      ,i=1,int(np(Hneut)**2-np(Hneut)))  
 
-        k=0
-        do j=1,np(Hneut)
-          do i=1,np(Hneut)
-           if(i.ne.j)then
-          k=k+1
-          theo(jj)%BR_hjhihi(j,i) = BR_hjhihi_in(k)         
-           endif           
-          enddo
-        enddo    
+      theo(jj)%BR_hkhjhi=0.0D0
+      count=0
+      do k=1,np(Hneut)
+       do j=1,np(Hneut)
+        do i=1,np(Hneut)
+         if(i.ne.k.and.j.ne.k) then
+          if(j.le.i) then
+           count=count+1
+           theo(jj)%BR_hkhjhi(k,j,i)=BR_hkhjhi_in(count)
+          else
+           theo(jj)%BR_hkhjhi(k,j,i)=theo(jj)%BR_hkhjhi(k,i,j) 
+          endif
+!            write(*,*) "Reading BR_hkhjhi(",k,j,i,") element = ", theo(jj)%BR_hkhjhi(k,j,i)
+         endif
+        enddo
+       enddo
+      enddo 
+
+      theo(jj)%BR_hjhiZ = 0.0D0
+      count=0
+      do j=1,np(Hneut)
+       do i=1,np(Hneut)
+        if(i.ne.j)then
+         count=count+1
+         theo(jj)%BR_hjhiZ(j,i) = BR_hjhiZ_in(count)
+        endif
+!         write(*,*) "Reading BR_hjhiZ(",j,i,") element = ", theo(jj)%BR_hjhiZ(j,i)        
+       enddo
+      enddo
+
+      if(np(Hplus)>0)then
+      theo(jj)%BR_hjHpiW = 0.0D0
+      count=0      
+      do j=1,np(Hneut)
+       do i=1,np(Hplus)
+        count=count+1
+        theo(jj)%BR_hjHpiW(j,i) = BR_hjHpiW_in(count)
+       enddo
+      enddo
+      endif  
+          
+  !       k=0
+!         do j=1,np(Hneut)
+!           do i=1,np(Hneut)
+!            if(i.ne.j)then
+!           k=k+1
+!           theo(jj)%BR_hjhihi(j,i) = BR_hjhihi_in(k)         
+!            endif           
+!           enddo
+!         enddo    
       
        enddo
-       deallocate(BR_hjhihi_in)
-
+!         deallocate(BR_hjhihi_in)
+       deallocate(BR_hkhjhi_in)
+       deallocate(BR_hjhiZ_in)
+        
      else
-       do jj=1,ndat      
-        read(f,*)  nc,  (theo(jj)%BR_hjinvisible(i)    ,i=1,np(Hneut))
+       do jj=1,ndat
+        if(np(Hplus)>0)then             
+        read(f,*)  nc,  (theo(jj)%BR_hjinvisible(i)    ,i=1,np(Hneut)),&
+&                       (theo(jj)%BR_hjemu(i)          ,i=1,np(Hneut)), &
+&                       (theo(jj)%BR_hjetau(i)         ,i=1,np(Hneut)), &
+&                       (theo(jj)%BR_hjmutau(i)        ,i=1,np(Hneut)), &
+&                       (BR_hjHpiW_in(i)               ,i=1,int(np(Hneut)*np(Hplus)))
+
+         theo(jj)%BR_hjHpiW = 0.0D0
+         count=0      
+         do j=1,np(Hneut)
+          do i=1,np(Hplus)
+           count=count+1
+           theo(jj)%BR_hjHpiW(j,i) = BR_hjHpiW_in(count)
+          enddo
+         enddo
+        
+        else
+        read(f,*)  nc,  (theo(jj)%BR_hjinvisible(i)    ,i=1,np(Hneut)),&
+&                       (theo(jj)%BR_hjemu(i)          ,i=1,np(Hneut)), &
+&                       (theo(jj)%BR_hjetau(i)         ,i=1,np(Hneut)), &
+&                       (theo(jj)%BR_hjmutau(i)        ,i=1,np(Hneut))
+        endif
+
        enddo
      endif
   case('BR_t')
@@ -639,11 +930,39 @@ module input
          &          (theo(jj)%BR_tHpjb(i)       ,i=1,np(Hplus))  
     enddo 
   case('BR_Hplus')
-    do jj=1,ndat     
+    if(np(Hneut).ge.1) then     
+
+    allocate(BR_HpjhiW_in(int(np(Hplus)*np(Hneut))))
+    
+    BR_HpjhiW_in  =0.0D0  
+
+    do jj=1,ndat
      read(f,*)  nc, (theo(jj)%BR_Hpjcs(i)       ,i=1,np(Hplus)), &
          &          (theo(jj)%BR_Hpjcb(i)       ,i=1,np(Hplus)), &
-         &          (theo(jj)%BR_Hpjtaunu(i)    ,i=1,np(Hplus))  
-    enddo
+         &          (theo(jj)%BR_Hpjtaunu(i)    ,i=1,np(Hplus)), &
+         &          (theo(jj)%BR_Hpjtb(i)       ,i=1,np(Hplus)), &
+         &          (theo(jj)%BR_HpjWZ(i)       ,i=1,np(Hplus)), &
+         &          (BR_HpjhiW_in(i)   ,i=1,int(np(Hplus)*np(Hneut)))
+    
+     count=0
+     do j=1,np(Hplus)
+      do i=1,np(Hneut)
+       count=count+1
+       theo(jj)%BR_HpjhiW(j,i) = BR_HpjhiW_in(count)         
+      enddo
+     enddo
+    
+    enddo    
+   else
+    do jj=1,ndat
+     read(f,*)  nc, (theo(jj)%BR_Hpjcs(i)       ,i=1,np(Hplus)), &
+         &          (theo(jj)%BR_Hpjcb(i)       ,i=1,np(Hplus)), &
+         &          (theo(jj)%BR_Hpjtaunu(i)    ,i=1,np(Hplus)), &
+         &          (theo(jj)%BR_Hpjtb(i)       ,i=1,np(Hplus)), &
+         &          (theo(jj)%BR_HpjWZ(i)       ,i=1,np(Hplus))
+	enddo   
+   endif    
+    
   case('BR_C')
     do jj=1,ndat     
      read(f,*)  nc, ((theo(jj)%BR_CjqqNi(j,i)       ,i=1,np(Chineut)),j=1,np(Chiplus)), &
@@ -870,7 +1189,7 @@ module input
    else !official, datfile
     write(*,*)' ./HiggsBounds whichanalyses whichinput nHneut nHplus prefix'
     write(*,*)'e.g.'
-    write(*,*)' ./HiggsBounds LandH part 3 1 mhmax'
+    write(*,*)' ./HiggsBounds LandH effC 3 1 example_data/mhmodplus/mhmod+_'
    endif
 
    write(*,*)'See HiggsBounds manual for more details.' 
@@ -1070,9 +1389,11 @@ module input
    n = n + 1               
   enddo            
 
-  if(n.eq.0)stop 'File is empty'
-      
   getfilelength=n
+
+  if(n.eq.0) return !stop 'File is empty'
+      
+
   rewind(fileid)
 
   m = 0 ;  
@@ -1192,9 +1513,14 @@ module input
    case('MN_GammaTot')
     x=2*np(Chineut)
    case('BR_H_NP')
-    x=1*np(Hneut)+np(Hneut)*(np(Hneut)-1)
+!n.b.: extended by hk->hjhi (n^2(n-1)/2), hj->hiZ (n(n-1)), hj->emu, hj->etau, hj->mutau
+!      and hj->HpjW
+!     x=1*np(Hneut)+np(Hneut)*(np(Hneut)-1)
+    x=4*np(Hneut) + np(Hneut)*(np(Hneut)-1) + np(Hneut)**2*(np(Hneut)-1)/2 + np(Hneut)*np(Hplus)
    case('BR_H_OP')
-    x=10*np(Hneut)
+!n.b.: added BR(Hj->tt).
+!     x=10*np(Hneut)
+    x=11*np(Hneut)    
    case('LEP_HZ_CS_ratios') 
     x=1*np(Hneut)
    case('LEP_H_ff_CS_ratios') 
@@ -1208,37 +1534,53 @@ module input
    case('LEP_2N_CS') 
     x=1*(np(Chineut)*(np(Chineut)+1))/2  
    case('effC')
-    x=18*np(Hneut)  + (np(Hneut)*(np(Hneut)+1))/2
-   case('TEVLHC_H_0jet_partCS_ratios')
-    x=2*np(Hneut)
-   case('TEVLHC_H_1jet_partCS_ratios')
-    x=1*np(Hneut)
-   case('TEVLHC_HW_partCS_ratios')
-    x=4*np(Hneut)
-   case('TEVLHC_HZ_partCS_ratios')
-    x=6*np(Hneut)
-   case('TEV_H_vbf_hadCS_ratios')
-    x=1*np(Hneut)
-   case('TEV_H_tt_hadCS_ratios')
-    x=1*np(Hneut)  
+!n.b.: removed g2hjggZ   
+!     x=18*np(Hneut)  + (np(Hneut)*(np(Hneut)+1))/2
+    x=17*np(Hneut)  + (np(Hneut)*(np(Hneut)+1))/2    
+!    case('TEVLHC_H_0jet_partCS_ratios')
+!     x=2*np(Hneut)
+!    case('TEVLHC_H_1jet_partCS_ratios')
+!     x=1*np(Hneut)
+!    case('TEVLHC_HW_partCS_ratios')
+!     x=4*np(Hneut)
+!    case('TEVLHC_HZ_partCS_ratios')
+!     x=6*np(Hneut)
+!    case('TEV_H_vbf_hadCS_ratios')
+!     x=1*np(Hneut)
+!    case('TEV_H_tt_hadCS_ratios')
+!     x=1*np(Hneut)  
    case('TEV_1H_hadCS_ratios')  
-    x=6*np(Hneut)
-   case('LHC7_H_vbf_hadCS_ratios')
-    x=1*np(Hneut)
-   case('LHC7_H_tt_hadCS_ratios')
-    x=1*np(Hneut)  
+!n.b.: extended by gg->hj,hjbb,thj(t-channel),thj(s-channel)   
+!     x=6*np(Hneut)
+    x=9*np(Hneut)
+!    case('LHC7_H_vbf_hadCS_ratios')
+!     x=1*np(Hneut)
+!    case('LHC7_H_tt_hadCS_ratios')
+!     x=1*np(Hneut)  
    case('LHC7_1H_hadCS_ratios')  
-    x=6*np(Hneut)
-   case('LHC8_H_vbf_hadCS_ratios')
-    x=1*np(Hneut)
-   case('LHC8_H_tt_hadCS_ratios')
-    x=1*np(Hneut)  
+    x=9*np(Hneut)
+!    case('LHC8_H_vbf_hadCS_ratios')
+!     x=1*np(Hneut)
+!    case('LHC8_H_tt_hadCS_ratios')
+!     x=1*np(Hneut)  
    case('LHC8_1H_hadCS_ratios')  
-    x=6*np(Hneut)
+    x=9*np(Hneut)
+   case('LHC13_1H_hadCS_ratios')  
+    x=9*np(Hneut)
+   case('TEV_Hplus_hadCS')
+    x=9*np(Hplus)+np(Hplus)*np(Hneut)
+   case('LHC7_Hplus_hadCS')
+    x=9*np(Hplus)+np(Hplus)*np(Hneut)
+   case('LHC8_Hplus_hadCS')
+    x=9*np(Hplus)+np(Hplus)*np(Hneut)
+   case('LHC13_Hplus_hadCS')
+    x=9*np(Hplus)+np(Hplus)*np(Hneut)    
    case('BR_t')
     x=1+np(Hplus)
    case('BR_Hplus')
-    x=3*np(Hplus)
+!n.b.: extended by Hpj->tb, Hpj->WZ, Hpj->hiW  
+!     x=3*np(Hplus)
+    x=5*np(Hplus) + np(Hplus)*np(Hneut)
    case('BR_C')
     x=3*np(Chiplus)*np(Chineut)
    case('BR_N')

@@ -907,6 +907,20 @@ module S95tables_type1
   S95_t1(x)%deltax=0.0D0 
   filename(x)='1344_CMS_ZH_VBF-invisible_24.6fb-1'
 
+  x=x+1 
+  S95_t1(x)%id=6682
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='[hep-ex] arXiv:1809.06682 (ATLAS)'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%SMlike=0 
+  S95_t1(x)%lumi=36.1D0
+  S95_t1(x)%xmin=75.0D0
+  S95_t1(x)%xmax=3000.0D0
+  S95_t1(x)%sep=5.0D0 
+  S95_t1(x)%deltax=5.0D0 
+  filename(x)='6682_Atlas_VBF_h-invisible_13TeV_36.1fb-1'
+
 
 !----------------------- H -> W W -------------------------
 
@@ -1318,6 +1332,19 @@ module S95tables_type1
   S95_t1(x)%deltax=0.0D0   
   filename(x)='13022_CMS_VBF-WW_25.4fb-1'  
 
+  x=x+1 
+  S95_t1(x)%id=2016062
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATLAS'
+  S95_t1(x)%label='ATLAS-CONF-2016-062'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=13.2D0
+  S95_t1(x)%SMlike=0  
+  S95_t1(x)%xmin=500.0D0
+  S95_t1(x)%xmax=3000.0D0
+  S95_t1(x)%sep=50.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='2016062_Atlas_gg-H-WW-lnuqq_13.2fb-1'  
 
 
 !--------------- H -> VV -> l nu l nu ----------------
@@ -1392,33 +1419,33 @@ module S95tables_type1
 !  S95_t1(x)%sep=20.0D0 
 !  filename(x)='2011052_Atlas_H-WW_35pb-1'
 
-  x=x+1 
-  S95_t1(x)%id=3615
-  S95_t1(x)%particle_x=Hneut
-  S95_t1(x)%expt='ATL'
-  S95_t1(x)%label='[hep-ex] arXiv:1109.3615 (ATLAS)'
-  S95_t1(x)%energy=7.0D0
-  S95_t1(x)%lumi=0.035D0
-  S95_t1(x)%SMlike=1  
-  S95_t1(x)%xmin=240.0D0
-  S95_t1(x)%xmax=600.0D0
-  S95_t1(x)%sep=20.0D0 
-  S95_t1(x)%deltax=0.0D0     
-  filename(x)='3615_Atlas_H-WW-lnuqq_1.04fb-1'  
-
-  x=x+1 
-  S95_t1(x)%id=2012018
-  S95_t1(x)%particle_x=Hneut
-  S95_t1(x)%expt='ATL'
-  S95_t1(x)%label='ATLAS-CONF-2012-018'
-  S95_t1(x)%energy=7.0D0
-  S95_t1(x)%lumi=4.7D0
-  S95_t1(x)%SMlike=1  
-  S95_t1(x)%xmin=300.0D0
-  S95_t1(x)%xmax=600.0D0
-  S95_t1(x)%sep=10.0D0 
-  S95_t1(x)%deltax=0.0D0     
-  filename(x)='2012018_Atlas_H-WW-lnuqq_4.7fb-1'  
+!   x=x+1 
+!   S95_t1(x)%id=3615
+!   S95_t1(x)%particle_x=Hneut
+!   S95_t1(x)%expt='ATL'
+!   S95_t1(x)%label='[hep-ex] arXiv:1109.3615 (ATLAS)'
+!   S95_t1(x)%energy=7.0D0
+!   S95_t1(x)%lumi=0.035D0
+!   S95_t1(x)%SMlike=1  
+!   S95_t1(x)%xmin=240.0D0
+!   S95_t1(x)%xmax=600.0D0
+!   S95_t1(x)%sep=20.0D0 
+!   S95_t1(x)%deltax=0.0D0     
+!   filename(x)='3615_Atlas_H-WW-lnuqq_1.04fb-1'  
+! 
+!   x=x+1 
+!   S95_t1(x)%id=2012018
+!   S95_t1(x)%particle_x=Hneut
+!   S95_t1(x)%expt='ATL'
+!   S95_t1(x)%label='ATLAS-CONF-2012-018'
+!   S95_t1(x)%energy=7.0D0
+!   S95_t1(x)%lumi=4.7D0
+!   S95_t1(x)%SMlike=1  
+!   S95_t1(x)%xmin=300.0D0
+!   S95_t1(x)%xmax=600.0D0
+!   S95_t1(x)%sep=10.0D0 
+!   S95_t1(x)%deltax=0.0D0     
+!   filename(x)='2012018_Atlas_H-WW-lnuqq_4.7fb-1'  
 
   x=x+1 
   S95_t1(x)%id=12046
@@ -1434,6 +1461,34 @@ module S95tables_type1
   S95_t1(x)%deltax=0.0D0     
   filename(x)='12046_CMS_H-WW-lnuqq_17fb-1'  
 
+
+  x=x+1 
+  S95_t1(x)%id=20160741
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='ATLAS-CONF-2016-074'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=13.2D0
+  S95_t1(x)%SMlike=1  
+  S95_t1(x)%xmin=300.0D0
+  S95_t1(x)%xmax=3000.0D0
+  S95_t1(x)%sep=50.0D0 
+  S95_t1(x)%deltax=10.0D0     
+  filename(x)='2016074_Atlas_gg-H-WW-lnulnu_13.2fb-1'  
+
+  x=x+1 
+  S95_t1(x)%id=20160742
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='ATLAS-CONF-2016-074'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=13.2D0
+  S95_t1(x)%SMlike=1  
+  S95_t1(x)%xmin=300.0D0
+  S95_t1(x)%xmax=3000.0D0
+  S95_t1(x)%sep=50.0D0 
+  S95_t1(x)%deltax=10.0D0     
+  filename(x)='2016074_Atlas_vbf-H-WW-lnulnu_13.2fb-1'  
 
 !------------------------- H -> Z Z --------------------------
 
@@ -1559,6 +1614,29 @@ module S95tables_type1
   S95_t1(x)%sep=5.0D0 
   filename(x)='2013013-3_Atlas_H-ZZ-4l_VBFVH_21fb-1'
 
+  x=x+1 
+  S95_t1(x)%id=20160792
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='ATLAS-CONF-2016-079'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=14.8D0
+  S95_t1(x)%xmin=200.0D0
+  S95_t1(x)%xmax=400.0D0
+  S95_t1(x)%sep=1.0D0 
+  filename(x)='20160792_gg-H-ZZ-4l_14.8fb-1_lowmass'
+
+  x=x+1 
+  S95_t1(x)%id=20160793
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='ATLAS-CONF-2016-079'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=14.8D0
+  S95_t1(x)%xmin=200.0D0
+  S95_t1(x)%xmax=1000.0D0
+  S95_t1(x)%sep=1.0D0 
+  filename(x)='20160793_VBF-H-ZZ-4l_14.8fb-1'
 
   x=x+1
   S95_t1(x)%id=1997
@@ -1629,6 +1707,68 @@ module S95tables_type1
   S95_t1(x)%sep=5.0D0 
   S95_t1(x)%deltax=0.0D0 
   filename(x)='009361_CMS_H-VV_5.1fb-1_19.7fb-1'
+
+  x=x+1 
+  S95_t1(x)%id=063861
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='arXiv:1712.06386 (ATLAS)'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=36.1D0
+  S95_t1(x)%xmin=200.0D0
+  S95_t1(x)%xmax=400.0D0
+  S95_t1(x)%sep=1.0D0 
+  filename(x)='063861_ATLAS_gg-H-ZZ-4l+2l2nu_NWA_36.1fb-1'
+
+
+
+  x=x+1 
+  S95_t1(x)%id=20160821
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='ATLAS-CONF-2016-082'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=13.2D0
+  S95_t1(x)%xmin=500.0D0
+  S95_t1(x)%xmax=3000.0D0
+  S95_t1(x)%sep=1.0D0 
+  filename(x)='20160821_Atlas_gg-H-ZZ-llnunu_13.2fb-1'
+
+  x=x+1 
+  S95_t1(x)%id=20160822
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='ATLAS-CONF-2016-082'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=13.2D0
+  S95_t1(x)%xmin=300.0D0
+  S95_t1(x)%xmax=3000.0D0
+  S95_t1(x)%sep=1.0D0 
+  filename(x)='20160822_Atlas_gg-H-ZZ-llqq_13.2fb-1'
+
+  x=x+1 
+  S95_t1(x)%id=20160823
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='ATLAS-CONF-2016-082'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=13.2D0
+  S95_t1(x)%xmin=300.0D0
+  S95_t1(x)%xmax=3000.0D0
+  S95_t1(x)%sep=1.0D0 
+  filename(x)='20160823_Atlas_qq-Hqq-ZZ-llqq_13.2fb-1'
+
+  x=x+1 
+  S95_t1(x)%id=16034
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-PAS-HIG-16-034'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=12.9D0
+  S95_t1(x)%xmin=550.0D0
+  S95_t1(x)%xmax=2000.0D0
+  S95_t1(x)%sep=10.0D0 
+  filename(x)='16034_CMS_H-ZZ-llqq_12.9fb-1'
 
 
 !------------------------- SM combined -----------------------
@@ -2203,6 +2343,29 @@ module S95tables_type1
 !  S95_t1(x)%sep=10.0D0 
 !  filename(x)='12033_CMS_bbH-bbbb_4.8fb-1'
 
+ x=x+1 
+ S95_t1(x)%id=1508329
+ S95_t1(x)%particle_x=Hneut
+ S95_t1(x)%expt='CMS'
+ S95_t1(x)%label='arXiv:1506.08329 (CMS)'
+ S95_t1(x)%energy=8.0D0
+ S95_t1(x)%lumi=19.7D0
+ S95_t1(x)%xmin=100.0D0
+ S95_t1(x)%xmax=900.0D0
+ S95_t1(x)%sep=10.0D0 
+ filename(x)='1508329_CMS_Hb-bbb_19.7fb-1'
+
+ x=x+1 
+ S95_t1(x)%id=2015080
+ S95_t1(x)%particle_x=Hneut
+ S95_t1(x)%expt='ATL'
+ S95_t1(x)%label='CERN-THESIS-2015-080 (ATLAS)'
+ S95_t1(x)%energy=8.0D0
+ S95_t1(x)%lumi=19.5D0
+ S95_t1(x)%xmin=450.0D0
+ S95_t1(x)%xmax=800.0D0
+ S95_t1(x)%sep=50.0D0 
+ filename(x)='2015080_Atlas_hb-bbb_19.5fb-1'
 
 !-------------------- H -> tau tau -------------------------
 
@@ -2348,7 +2511,7 @@ module S95tables_type1
   S95_t1(x)%id=2014049
   S95_t1(x)%particle_x=Hneut
   S95_t1(x)%expt='ATL'
-  S95_t1(x)%label='ATLAS-CONF-2014-049,arXiv:1409.6064'
+  S95_t1(x)%label='ATLAS-CONF-2014-049, arXiv:1409.6064'
   S95_t1(x)%energy=8.0D0
   S95_t1(x)%lumi=20.3D0
   S95_t1(x)%xmin=90.0D0
@@ -2363,7 +2526,7 @@ module S95tables_type1
   S95_t1(x)%id=20140492
   S95_t1(x)%particle_x=Hneut
   S95_t1(x)%expt='ATL'
-  S95_t1(x)%label='ATLAS-CONF-2014-049,arXiv:1409.6064'
+  S95_t1(x)%label='ATLAS-CONF-2014-049, arXiv:1409.6064'
   S95_t1(x)%energy=8.0D0
   S95_t1(x)%lumi=20.3D0
   S95_t1(x)%xmin=90.0D0
@@ -2372,6 +2535,95 @@ module S95tables_type1
   S95_t1(x)%sep=10.0D0 
   S95_t1(x)%deltax=20.0D0 
   filename(x)='20140492_Atlas_ggh_h-tautau_20.3fb-1'
+
+! Analysis is disabled when using CMS tau tau likelihood
+!   x=x+1
+!   S95_t1(x)%id=20160851
+!   S95_t1(x)%particle_x=Hneut
+!   S95_t1(x)%expt='ATL'
+!   S95_t1(x)%label='ATLAS-CONF-2016-085'
+!   S95_t1(x)%energy=13.0D0
+!   S95_t1(x)%lumi=13.3D0
+!   S95_t1(x)%xmin=200.0D0
+!   S95_t1(x)%xmax=1200.0D0
+!   S95_t1(x)%llh=1
+!   S95_t1(x)%sep=20.0D0 
+!   S95_t1(x)%deltax=20.0D0 
+!   filename(x)='20160851_Atlas_ggh_h_tautau_13.3fb-1'
+
+! Analysis is disabled when using CMS tau tau likelihood
+!   x=x+1
+!   S95_t1(x)%id=20160852
+!   S95_t1(x)%particle_x=Hneut
+!   S95_t1(x)%expt='ATL'
+!   S95_t1(x)%label='ATLAS-CONF-2016-085'
+!   S95_t1(x)%energy=13.0D0
+!   S95_t1(x)%lumi=13.3D0
+!   S95_t1(x)%xmin=200.0D0
+!   S95_t1(x)%xmax=1200.0D0
+!   S95_t1(x)%llh=1
+!   S95_t1(x)%sep=20.0D0 
+!   S95_t1(x)%deltax=20.0D0 
+!   filename(x)='20160852_Atlas_bbh_h_tautau_13.3fb-1'
+
+! Analysis is disabled when using CMS tau tau likelihood
+!   x=x+1
+!   S95_t1(x)%id=160371
+!   S95_t1(x)%particle_x=Hneut
+!   S95_t1(x)%expt='CMS'
+!   S95_t1(x)%label='CMS-PAS-HIG-16-037'
+!   S95_t1(x)%energy=13.0D0
+!   S95_t1(x)%lumi=12.9D0
+!   S95_t1(x)%xmin=90.0D0
+!   S95_t1(x)%xmax=3000.0D0
+!   S95_t1(x)%llh=1
+!   S95_t1(x)%sep=10.0D0 
+!   S95_t1(x)%deltax=20.0D0 
+!   filename(x)='160371_CMS_ggh_h_tautau_12.9fb-1'
+
+! Analysis is disabled when using CMS tau tau likelihood
+!   x=x+1
+!   S95_t1(x)%id=160372
+!   S95_t1(x)%particle_x=Hneut
+!   S95_t1(x)%expt='CMS'
+!   S95_t1(x)%label='CMS-PAS-HIG-16-037'
+!   S95_t1(x)%energy=13.0D0
+!   S95_t1(x)%lumi=12.9D0
+!   S95_t1(x)%xmin=90.0D0
+!   S95_t1(x)%xmax=3000.0D0
+!   S95_t1(x)%llh=1
+!   S95_t1(x)%sep=10.0D0 
+!   S95_t1(x)%deltax=20.0D0 
+!   filename(x)='160372_CMS_bbh_h_tautau_12.9fb-1'
+
+! Analysis is disabled when using CMS tau tau likelihood
+!   x=x+1
+!   S95_t1(x)%id=20170501
+!   S95_t1(x)%particle_x=Hneut
+!   S95_t1(x)%expt='ATL'
+!   S95_t1(x)%label='ATLAS-CONF-2017-050'
+!   S95_t1(x)%energy=13.0D0
+!   S95_t1(x)%lumi=36.1D0
+!   S95_t1(x)%xmin=200.0D0
+!   S95_t1(x)%xmax=2250.0D0
+!   S95_t1(x)%llh=1
+!   S95_t1(x)%sep=10.0D0 
+!   S95_t1(x)%deltax=20.0D0 
+!   filename(x)='20170501_Atlas_gg-H-tautau_36.1fb-1'
+
+!   x=x+1
+!   S95_t1(x)%id=20170502
+!   S95_t1(x)%particle_x=Hneut
+!   S95_t1(x)%expt='ATL'
+!   S95_t1(x)%label='ATLAS-CONF-2017-050'
+!   S95_t1(x)%energy=13.0D0
+!   S95_t1(x)%lumi=36.1D0
+!   S95_t1(x)%xmin=200.0D0
+!   S95_t1(x)%xmax=2250.0D0
+!   S95_t1(x)%llh=1
+!   S95_t1(x)%sep=10.0D0 
+!   S95_t1(x)%deltax=20.0D0 
+!   filename(x)='20170502_Atlas_bb-H-tautau_36.1fb-1'
   
 !  x=x+1
 !  S95_t1(x)%id=110291
@@ -2454,19 +2706,19 @@ module S95tables_type1
 !
 ! Requires hi -> hj Z branching ratio in input!
 !
-!    x=x+1
-!  S95_t1(x)%id=14011
-!  S95_t1(x)%particle_x=Hneut
-!  S95_t1(x)%expt='CMS'
-!  S95_t1(x)%label='CMS-PAS-HIG-14-011'
-!  S95_t1(x)%energy=8.0D0
-!  S95_t1(x)%lumi=19.7D0
-!  S95_t1(x)%SMlike=0
-!  S95_t1(x)%xmin=225.0D0
-!  S95_t1(x)%xmax=600.0D0
-!  S95_t1(x)%sep=0.1D0 
-!  S95_t1(x)%deltax=10.0D0   
-!  filename(x)='14011_CMS_A-Zh-llbb_19.7fb-1'
+   x=x+1
+ S95_t1(x)%id=14011
+ S95_t1(x)%particle_x=Hneut
+ S95_t1(x)%expt='CMS'
+ S95_t1(x)%label='CMS-PAS-HIG-14-011, arXiv:1504.04710 (CMS)'
+ S95_t1(x)%energy=8.0D0
+ S95_t1(x)%lumi=19.7D0
+ S95_t1(x)%SMlike=0
+ S95_t1(x)%xmin=225.0D0
+ S95_t1(x)%xmax=600.0D0
+ S95_t1(x)%sep=0.1D0 
+ S95_t1(x)%deltax=10.0D0   
+ filename(x)='14011_CMS_A-Zh-llbb_19.7fb-1'
 !
   x=x+1
   S95_t1(x)%id=04670
@@ -2497,6 +2749,50 @@ module S95tables_type1
   filename(x)='04670_Atlas_H-hh-gagaWW_20.3fb-1'
 
   x=x+1
+  S95_t1(x)%id=8567
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='[hep-ex] arXiv:1807.08567 (ATLAS)'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=36.1D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=260.0D0
+  S95_t1(x)%xmax=500.0D0
+  S95_t1(x)%sep=1.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='8567_Atlas_X-HH-WWgaga_13TeV_36.1fb-1'
+
+  x=x+1
+  S95_t1(x)%id=4873
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='[hep-ex] arXiv:1807.04873 (ATLAS)'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=36.1D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=260.0D0
+  S95_t1(x)%xmax=1000.0D0
+  S95_t1(x)%sep=10.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='4873_Atlas_X-HH-gagabb_13TeV_36.1fb-1'
+
+
+
+  x=x+1
+  S95_t1(x)%id=2016071
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='ATLAS-CONF-2016-071'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=13.3D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=260.0D0
+  S95_t1(x)%xmax=500.0D0
+  S95_t1(x)%sep=10.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='2016071_Atlas_gg-H-hh-WWgaga_13.3fb-1'
+
+  x=x+1
   S95_t1(x)%id=046702
   S95_t1(x)%particle_x=Hneut
   S95_t1(x)%expt='ATL'
@@ -2510,6 +2806,335 @@ module S95tables_type1
   S95_t1(x)%deltax=10.0D0   
   filename(x)='04670_Atlas_H-hh-bbtautau_20.3fb-1'
 
+  x=x+1
+  S95_t1(x)%id=336
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='[hep-ex] arXiv:1808.00336 (ATLAS)'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=36.1D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=260.0D0
+  S95_t1(x)%xmax=1000.0D0
+  S95_t1(x)%sep=5.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='336_Atlas_X-HH-bbtautau_13TeV_36.1fb-1'
+
+
+  x=x+1  
+  S95_t1(x)%id=2016049
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='ATLAS-CONF-2016-049'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=13.3D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=300.0D0
+  S95_t1(x)%xmax=3000.0D0
+  S95_t1(x)%sep=50.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='2016049_Atlas_H-hh-bbbb_13.3fb-1' 
+
+
+
+  x=x+1  
+  S95_t1(x)%id=011811
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='[hep-ex] arXiv:1510.01181 (CMS)'
+  S95_t1(x)%energy=8.0D0
+  S95_t1(x)%lumi=19.7D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=260.0D0
+  S95_t1(x)%xmax=350.0D0
+  S95_t1(x)%sep=10.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='140341_CMS_H-hh-bbtautau_19.7fb-1'  
+
+  x=x+1  
+  S95_t1(x)%id=17020321
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='[hep-ex] arXiv:1701.02032 (CMS)'
+  S95_t1(x)%energy=8.0D0
+  S95_t1(x)%lumi=19.7D0
+  S95_t1(x)%SMlike=1
+  S95_t1(x)%xmin=5.0D0
+  S95_t1(x)%xmax=15.0D0
+  S95_t1(x)%sep=1.0D0 
+  S95_t1(x)%deltax=0.0D0   
+  filename(x)='170102032_CMS_HSM-aa-tautau_19.7fb-1'  
+
+  x=x+1  
+  S95_t1(x)%id=7355
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='[hep-ex] arXiv:1806.07355 (ATLAS)'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=36.1D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=20.0D0
+  S95_t1(x)%xmax=60.0D0
+  S95_t1(x)%sep=1.0D0 
+  S95_t1(x)%deltax=0.0D0   
+  filename(x)='7355_Atlas_VH-aa-bbbb_13TeV_36.1fb-1' 
+
+
+  x=x+1  
+  S95_t1(x)%id=17020322
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='[hep-ex] arXiv:1701.02032 (CMS)'
+  S95_t1(x)%energy=8.0D0
+  S95_t1(x)%lumi=19.7D0
+  S95_t1(x)%SMlike=1
+  S95_t1(x)%xmin=25.0D0
+  S95_t1(x)%xmax=62.5D0
+  S95_t1(x)%sep=0.5D0 
+  S95_t1(x)%deltax=0.0D0   
+  filename(x)='170102032_CMS_HSM-aa-mumubb_19.7fb-1'  
+
+  x=x+1  
+  S95_t1(x)%id=539
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='[hep-ex] arXiv:1807.00539 (ATLAS)'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=36.1D0
+  S95_t1(x)%SMlike=1
+  S95_t1(x)%xmin=20.0D0
+  S95_t1(x)%xmax=60.0D0
+  S95_t1(x)%sep=0.5D0 
+  S95_t1(x)%deltax=0.0D0   
+  filename(x)='539_Atlas_H-aa-bbmumu_13TeV_36.1fb-1'  
+
+  x=x+1  
+  S95_t1(x)%id=17020323
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='[hep-ex] arXiv:1701.02032 (CMS)'
+  S95_t1(x)%energy=8.0D0
+  S95_t1(x)%lumi=19.7D0
+  S95_t1(x)%SMlike=1
+  S95_t1(x)%xmin=15.0D0
+  S95_t1(x)%xmax=62.5D0
+  S95_t1(x)%sep=0.5D0 
+  S95_t1(x)%deltax=0.0D0   
+  filename(x)='170102032_CMS_HSM-aa-mumutautau_19.7fb-1'  
+
+  x=x+1  
+  S95_t1(x)%id=5051
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='[hep-ex] arXiv:1509.05051 (ATLAS)'
+  S95_t1(x)%energy=8.0D0
+  S95_t1(x)%lumi=20.3D0
+  S95_t1(x)%SMlike=1
+  S95_t1(x)%xmin=10.0D0
+  S95_t1(x)%xmax=61.75D0
+  S95_t1(x)%sep=0.05D0 
+  S95_t1(x)%deltax=0.0D0   
+  filename(x)='5051_Atlas_gg-H-aa-gagagaga_20.3fb-1'  
+
+
+  x=x+1  
+  S95_t1(x)%id=1506534
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='[hep-ex] arXiv:1510.06534 (CMS)'
+  S95_t1(x)%energy=8.0D0
+  S95_t1(x)%lumi=19.7D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=4.0D0
+  S95_t1(x)%xmax=8.0D0
+  S95_t1(x)%sep=1.0D0 
+  S95_t1(x)%deltax=0.0D0   
+  filename(x)='1506534_CMS_gg-H-hh-tautautautau_19.7fb-1'  
+
+  x=x+1  
+  S95_t1(x)%id=17006
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-PAS-HIG 17-006'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=36.0D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=260.0D0
+  S95_t1(x)%xmax=900.0D0
+  S95_t1(x)%sep=5.0D0 
+  S95_t1(x)%deltax=0.0D0   
+  filename(x)='17006_CMS_H-hh-bbVV-bblnulnu_36fb-1'  
+
+  x=x+1  
+  S95_t1(x)%id=011812
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='[hep-ex] arXiv:1510.01181 (CMS)'
+  S95_t1(x)%energy=8.0D0
+  S95_t1(x)%lumi=19.7D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=220.0D0
+  S95_t1(x)%xmax=350.0D0
+  S95_t1(x)%sep=10.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='140342_CMS_A-hZ-tautaull_19.7fb-1'  
+
+  x=x+1  
+  S95_t1(x)%id=044781
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATLAS'
+  S95_t1(x)%label='[hep-ex] arXiv:1502.04478 (ATLAS)'
+  S95_t1(x)%energy=8.0D0
+  S95_t1(x)%lumi=20.3D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=220.0D0
+  S95_t1(x)%xmax=1000.0D0
+  S95_t1(x)%sep=10.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='044781_ATLAS_gg-A-hZ-tautaull_20.3fb-1'
+
+  x=x+1  
+  S95_t1(x)%id=044782
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATLAS'
+  S95_t1(x)%label='[hep-ex] arXiv:1502.04478 (ATLAS)'
+  S95_t1(x)%energy=8.0D0
+  S95_t1(x)%lumi=20.3D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=220.0D0
+  S95_t1(x)%xmax=1000.0D0
+  S95_t1(x)%sep=10.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='044782_ATLAS_gg-A-hZ-bbll_20.3fb-1'
+
+  x=x+1  
+  S95_t1(x)%id=20160151
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATLAS'
+  S95_t1(x)%label='ATLAS-CONF-2016-015'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=3.2D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=220.0D0
+  S95_t1(x)%xmax=2000.0D0
+  S95_t1(x)%sep=10.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='20160151_ATLAS_gg-A-hZ-bbll_3.2fb-1'  
+
+  x=x+1  
+  S95_t1(x)%id=20160152
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATLAS'
+  S95_t1(x)%label='ATLAS-CONF-2016-015'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=3.2D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=220.0D0
+  S95_t1(x)%xmax=2000.0D0
+  S95_t1(x)%sep=10.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='20160152_ATLAS_bb-A-hZ-bbll_3.2fb-1'   
+
+
+  x=x+1  
+  S95_t1(x)%id=180051
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-PAS-HIG-18-005'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=35.9D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=220.0D0
+  S95_t1(x)%xmax=1000.0D0
+  S95_t1(x)%sep=1.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='180051_CMS_gg-A-Zh-Zbb_13TeV_35.9fb-1'  
+
+  x=x+1  
+  S95_t1(x)%id=180052
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-PAS-HIG-18-005'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=35.9D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=220.0D0
+  S95_t1(x)%xmax=1000.0D0
+  S95_t1(x)%sep=1.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='180052_CMS_bb-A-Zh-Zbb_13TeV_35.9fb-1'  
+
+
+  x=x+1  
+  S95_t1(x)%id=16002
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-PAS-HIG-16-002'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=2.3D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=260.0D0
+  S95_t1(x)%xmax=1200.0D0
+  S95_t1(x)%sep=5.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='16002_CMS_H-hh-bbbb_2.3fb-1'  
+
+!   x=x+1  
+!   S95_t1(x)%id=16029
+!   S95_t1(x)%particle_x=Hneut
+!   S95_t1(x)%expt='CMS'
+!   S95_t1(x)%label='CMS-PAS-HIG-16-029'
+!   S95_t1(x)%energy=13.0D0
+!   S95_t1(x)%lumi=12.9D0
+!   S95_t1(x)%SMlike=0
+!   S95_t1(x)%xmin=250.0D0
+!   S95_t1(x)%xmax=900.0D0
+!   S95_t1(x)%sep=10.0D0 
+!   S95_t1(x)%deltax=10.0D0   
+!   filename(x)='16029_CMS_H-hh-bbtautau_12.9fb-1'  
+
+  x=x+1  
+  S95_t1(x)%id=17002
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-PAS-HIG-17-002'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=35.9D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=250.0D0
+  S95_t1(x)%xmax=900.0D0
+  S95_t1(x)%sep=10.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='17002_CMS_H-hh-tautaubb_35.9fb-1'  
+
+
+  x=x+1  
+  S95_t1(x)%id=14013
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-PAS-HIG-14-013,arXiv:1503.04114 (CMS)'
+  S95_t1(x)%energy=8.0D0
+  S95_t1(x)%lumi=17.9D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=270.0D0
+  S95_t1(x)%xmax=1097.0D0
+  S95_t1(x)%sep=1.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='14013_H-hh-bbbb_17.9fb-1' 
+
+  x=x+1  
+  S95_t1(x)%id=17030
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-PAS-HIG-17-030'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=35.9D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=270.0D0
+  S95_t1(x)%xmax=3000.0D0
+  S95_t1(x)%sep=10.0D0 
+  S95_t1(x)%deltax=10.0D0   
+  filename(x)='17030_CMS_pp-X-HH_comb_13TeV_35.9fb-1'  
 
 
 !-------------------- H -> mu mu -------------------------
@@ -2884,6 +3509,20 @@ module S95tables_type1
   S95_t1(x)%deltax=20.0D0 
   filename(x)='0038914_Atlas_VBF-WW-CPS_20.3fb-1'
 
+   x=x+1 
+  S95_t1(x)%id=17013
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-PAS-HIG-17-013'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=35.9D0
+  S95_t1(x)%SMlike=1
+  S95_t1(x)%xmin=80.0D0
+  S95_t1(x)%xmax=110.0D0
+  S95_t1(x)%sep=0.1D0 
+  S95_t1(x)%deltax=0.0D0 
+  filename(x)='17013_CMS_H-gaga_lowmass_8TeV_20fb-1_and_13TeV_36fb-1'
+
 
 !  x=x+1 
 !  S95_t1(x)%id=1487
@@ -2969,6 +3608,21 @@ module S95tables_type1
   S95_t1(x)%deltax=0.0D0 
   filename(x)='14031_CMS_H-Zgamma-19.7fb-1'  
 
+   x=x+1 
+  S95_t1(x)%id=2018025
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='ATLAS-CONF-2018-025'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=80.0D0
+  S95_t1(x)%SMlike=0
+  S95_t1(x)%xmin=65.0D0
+  S95_t1(x)%xmax=110.0D0
+  S95_t1(x)%sep=0.1D0 
+  S95_t1(x)%deltax=0.0D0 
+  filename(x)='2018025_Atlas_h-gaga_13TeV_80fb-1'
+  
+  
 
 !   x=x+1 
 !  S95_t1(x)%id=14006
@@ -3202,6 +3856,126 @@ module S95tables_type1
 !  S95_t1(x)%sep=10.0D0 
 !  filename(x)='D0_Hb_tautaub_2.7fb_0968'
 
+!---------------- Daniel's attempts --------------
+  x=x+1
+  S95_t1(x)%id=2016025
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-HIG-16-025'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=2.69D0
+  S95_t1(x)%xmin=550.0D0
+  S95_t1(x)%xmax=1200.0D0
+  S95_t1(x)%sep=5.0D0 
+  S95_t1(x)%deltax=10.0D0 
+  filename(x)='2016025_CMS_H-bb_2.69fb-1'
+  
+  x=x+1
+  S95_t1(x)%id=201608391
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATLAS'
+  S95_t1(x)%label='ATLAS-1606-08391'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=3.2D0
+  S95_t1(x)%xmin=20.0D0
+  S95_t1(x)%xmax=60.0D0
+  S95_t1(x)%sep=0.5D0 
+  S95_t1(x)%deltax=10.0D0 
+  filename(x)='160608391_Atlas_HW_Waa_Wbbbb_3.2fb-1'
+  
+  
+  x=x+1
+  S95_t1(x)%id=2016044
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATLAS'
+  S95_t1(x)%label='ATLAS-CONF-2016-044'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=13.3D0
+  S95_t1(x)%xmin=250.0D0
+  S95_t1(x)%xmax=2500.0D0
+  S95_t1(x)%sep=2D0 
+  S95_t1(x)%deltax=10.0D0 
+  filename(x)='2016044_Atlas_H_ZA_13.3fb-1'
+  
+  x=x+1
+  S95_t1(x)%id=2016004
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATLAS'
+  S95_t1(x)%label='ATLAS-CONF-2016-004'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=3.2D0
+  S95_t1(x)%xmin=275.0D0
+  S95_t1(x)%xmax=400.0D0
+  S95_t1(x)%sep=1D0 
+  S95_t1(x)%deltax=10.0D0 
+  filename(x)='2016004_Atlas_H-hh-bbgaga_3.2fb-1'
+  
+  x=x+1
+  S95_t1(x)%id=1604833
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATLAS'
+  S95_t1(x)%label='ATLAS-1606-04833'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=3.2D0
+  S95_t1(x)%xmin=500.0D0
+  S95_t1(x)%xmax=3000.0D0
+  S95_t1(x)%sep=10D0 
+  S95_t1(x)%deltax=10.0D0 
+  filename(x)='1604833_Atlas_H-VV_3.2fb-1'
+  
+  
+  x=x+1
+  S95_t1(x)%id=2016056
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATLAS'
+  S95_t1(x)%label='ATLAS-CONF-2016-056'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=13.3D0
+  S95_t1(x)%xmin=300.0D0
+  S95_t1(x)%xmax=1000.0D0
+  S95_t1(x)%sep=5D0 
+  S95_t1(x)%deltax=10.0D0 
+  filename(x)='2016056_Atlas_H-ZZ-llnunu_13.3fb-1'
+  
+  x=x+1
+  S95_t1(x)%id=20160551
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATLAS'
+  S95_t1(x)%label='ATLAS-CONF-2016-055'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=15.5D0
+  S95_t1(x)%xmin=1200.0D0
+  S95_t1(x)%xmax=3000.0D0
+  S95_t1(x)%sep=100D0 
+  S95_t1(x)%deltax=10.0D0 
+  filename(x)='20160551_Atlas_pp-H-ZZ-qqqq_15.5fb-1'  
+
+  x=x+1
+  S95_t1(x)%id=20160552
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='ATLAS'
+  S95_t1(x)%label='ATLAS-CONF-2016-055'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=15.5D0
+  S95_t1(x)%xmin=1200.0D0
+  S95_t1(x)%xmax=3000.0D0
+  S95_t1(x)%sep=100D0 
+  S95_t1(x)%deltax=10.0D0 
+  filename(x)='20160552_Atlas_pp-H-WW-qqqq_15.5fb-1'  
+
+  
+  x=x+1
+  S95_t1(x)%id=15009
+  S95_t1(x)%particle_x=Hneut
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-PAS-HIG-2015-009'
+  S95_t1(x)%energy=8.0D0
+  S95_t1(x)%lumi=19.7D0
+  S95_t1(x)%xmin=25.0D0
+  S95_t1(x)%xmax=60.0D0
+  S95_t1(x)%sep=0.1D0 
+  S95_t1(x)%deltax=1.0D0 
+  filename(x)='15009_CMS_bbA_mumu_19.7fb-1'
 !---------------- charged Higgs ------------------
 
   x=x+1 
@@ -3361,6 +4135,32 @@ module S95tables_type1
   filename(x)='2014050_Atlas_Hp_taunu_19.5fb-1'
 
 
+  x=x+1 
+  S95_t1(x)%id=79151
+  S95_t1(x)%particle_x=Hplus
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='[hep-ex] arXiv:1807.07915 (ATLAS)'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=36.1D0
+  S95_t1(x)%xmin=90.0D0
+  S95_t1(x)%xmax=2000.0D0
+  S95_t1(x)%sep=10.0D0 
+  S95_t1(x)%deltax=0.0D0 
+  filename(x)='079151_Atlas_tbHp-taunu_36fb-1'
+
+  x=x+1 
+  S95_t1(x)%id=79152
+  S95_t1(x)%particle_x=Hplus
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='[hep-ex] arXiv:1807.07915 (ATLAS)'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=36.1D0
+  S95_t1(x)%xmin=90.0D0
+  S95_t1(x)%xmax=160.0D0
+  S95_t1(x)%sep=10.0D0 
+  S95_t1(x)%deltax=0.0D0 
+  filename(x)='079152_Atlas_t-Hpb-taunu_36fb-1'
+
 !  x=x+1
 !  S95_t1(x)%id=11008
 !  S95_t1(x)%particle_x=Hplus
@@ -3400,8 +4200,115 @@ module S95tables_type1
   S95_t1(x)%deltax=0.0D0 
   filename(x)='13035_CMS_chargedH-cs_19.7fb-1'
 
+  x=x+1
+  S95_t1(x)%id=16030
+  S95_t1(x)%particle_x=Hplus
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-PAS-HIG-16-030'
+  S95_t1(x)%energy=8.0D0
+  S95_t1(x)%lumi=19.7D0
+  S95_t1(x)%xmin=90.0D0
+  S95_t1(x)%xmax=150.0D0
+  S95_t1(x)%sep=10.0D0 
+  S95_t1(x)%deltax=0.0D0 
+  filename(x)='16030_CMS_t_Hplusb_cb_19.7fb-1'
 
 
+! HB-5
+
+  x=x+1
+  S95_t1(x)%id=1504233
+  S95_t1(x)%particle_x=Hplus
+  S95_t1(x)%expt='ATLAS'
+  S95_t1(x)%label='arXiv:1503.04233 [hep-ex] (ATLAS)'
+  S95_t1(x)%energy=8.0D0
+  S95_t1(x)%lumi=20.3D0
+  S95_t1(x)%xmin=200.0D0
+  S95_t1(x)%xmax=1000.0D0
+  S95_t1(x)%sep=20.0D0 
+  S95_t1(x)%deltax=10.0D0 
+  filename(x)='1504233_Atlas_Hplus_VBF-WZ_20.3fb-1'
+
+
+!   x=x+1
+!   S95_t1(x)%id=160312
+!   S95_t1(x)%particle_x=Hplus
+!   S95_t1(x)%expt='CMS'
+!   S95_t1(x)%label='CMS-PAS-HIG-16-031'
+!   S95_t1(x)%energy=13.0D0
+!   S95_t1(x)%lumi=12.9D0
+!   S95_t1(x)%xmin=180.0D0
+!   S95_t1(x)%xmax=3000.0D0
+!   S95_t1(x)%sep=10.0D0 
+!   S95_t1(x)%deltax=0.0D0 
+!   filename(x)='16031_CMS_Hptb_taunu_12.9fb-1'
+
+! Still leave this in, although strictly speaking superseded by 18-014, because different implementation.
+  x=x+1
+  S95_t1(x)%id=160311
+  S95_t1(x)%particle_x=Hplus
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-PAS-HIG-16-031'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=12.9D0
+  S95_t1(x)%xmin=80.0D0
+  S95_t1(x)%xmax=160.0D0
+  S95_t1(x)%sep=5.0D0 
+  S95_t1(x)%deltax=0.0D0 
+  filename(x)='160311_CMS_t_Hplusb_taunu_12.9fb-1'
+
+  x=x+1
+  S95_t1(x)%id=18014
+  S95_t1(x)%particle_x=Hplus
+  S95_t1(x)%expt='CMS'
+  S95_t1(x)%label='CMS-PAS-HIG-18-014'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=35.9D0
+  S95_t1(x)%xmin=80.0D0
+  S95_t1(x)%xmax=3000.0D0
+  S95_t1(x)%sep=5.0D0 
+  S95_t1(x)%deltax=0.0D0 
+  filename(x)='18014_CMS_pp-tbHpm-taunu_13TeV_35.9fb-1'
+
+
+  x=x+1
+  S95_t1(x)%id=2016088
+  S95_t1(x)%particle_x=Hplus
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='ATLAS-CONF-2016-088'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=14.7D0
+  S95_t1(x)%xmin=200.0D0
+  S95_t1(x)%xmax=2000.0D0
+  S95_t1(x)%sep=25.0D0 
+  S95_t1(x)%deltax=0.0D0 
+  filename(x)='2016088_Atlas_Hptb-taunutb_14.7fb-1'
+
+!   x=x+1
+!   S95_t1(x)%id=2016089
+!   S95_t1(x)%particle_x=Hplus
+!   S95_t1(x)%expt='ATL'
+!   S95_t1(x)%label='ATLAS-CONF-2016-089'
+!   S95_t1(x)%energy=13.0D0
+!   S95_t1(x)%lumi=13.2D0
+!   S95_t1(x)%xmin=300.0D0
+!   S95_t1(x)%xmax=1000.0D0
+!   S95_t1(x)%sep=50.0D0 
+!   S95_t1(x)%deltax=0.0D0 
+!   filename(x)='2016089_Atlas_Hptb-tbtb_13.2fb-1'
+
+  x=x+1
+  S95_t1(x)%id=3599
+  S95_t1(x)%particle_x=Hplus
+  S95_t1(x)%expt='ATL'
+  S95_t1(x)%label='[hep-ex] arXiv:1808.03599 (ATLAS)'
+  S95_t1(x)%energy=13.0D0
+  S95_t1(x)%lumi=36.1D0
+  S95_t1(x)%xmin=200.0D0
+  S95_t1(x)%xmax=2000.0D0
+  S95_t1(x)%sep=25.0D0 
+  S95_t1(x)%deltax=10.0D0 
+  filename(x)='3599_Atlas_pp-tbHpm-tbtb_13Tev_36.1fb-1'
 
 
 !----------------------------------------------
@@ -4653,7 +5560,9 @@ module S95tables_type1
   xdummy_store = t1%xmin-t1%sep
   do i=1,t1%nx
    read(file_id_1,*)xdummy,(t1%dat(i,n),n=1,col-1) 
-
+!    if(minval(t1%dat(i,:)).lt.0) then
+!     write(*,*) xdummy,minval(t1%dat(i,:))
+!    endif
    ! checks that x are evenly spaced as expected
    if((abs(xdummy-xdummy_store-t1%sep).gt.1.0D-7) &
      &  .or.(abs(xdummy-(t1%xmin+dble(i-1)*t1%sep)).gt.1.0D-7))then

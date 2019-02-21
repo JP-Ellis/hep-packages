@@ -21,8 +21,9 @@ module output
  !********************************************************
   use usefulbits, only : ndat,inputmethod, & !input
                        & rep, & !output
-                       & res,fullHBres, & !allocated
-                       & allocate_if_stats_required,infile1,whichinput
+                       & res,fullHBres,numres, & !allocated
+                       & allocate_if_stats_required,infile1,whichinput,&
+                       & wantkey
   implicit none
   !-----------------------------------internal
   integer :: i                    
@@ -45,7 +46,9 @@ module output
    case default 
      stop 'problem in subroutine setup_output 1'
    end select
-   call createKey(start_of_filename)
+   if(wantkey) then
+    call createKey(start_of_filename)
+   endif 
 
    rep=1
   case('website') 
@@ -54,12 +57,14 @@ module output
   case('subrout')
    !create Key to process numbers in file Key.dat      
 #ifndef WEBVERSION
+ if(wantkey) then
    call createKey(infile1)
+ endif  
 #endif
    if(allocated(allocate_if_stats_required))then
      rep=2         
    else
-     rep=1          !if change this, also need to change subroutine run_HiggsBounds_effC
+     rep=numres       ! HB-5: changed from 1 to numres=3 to get info from next-sensitive channels
    endif
   end select
       
@@ -67,6 +72,7 @@ module output
   do i=1,ndat
    allocate(res(i)%chan(rep))
    allocate(res(i)%obsratio(rep))
+   allocate(res(i)%predratio(rep))   
    allocate(res(i)%axis_i(rep))
    allocate(res(i)%axis_j(rep))
    allocate(res(i)%sfactor(rep))
@@ -293,7 +299,7 @@ module output
  ! setting of whichanalyses)
  !********************************************************
   use S95tables
-  use likelihoods, only : CMS_llhdata,outputproc_llh
+  use likelihoods, only : llhdata,outputproc_llh
   use usefulbits, only : np,ntot,pr,vers,whichanalyses !input
   use channels, only : is_analysis_deactivated
   implicit none
@@ -339,8 +345,8 @@ module output
     tableno=trim(S95_t2(pr(n)%tlist)%label)  
     tableid=S95_t2(pr(n)%tlist)%id
    case(9)
-    tableno=trim(CMS_llhdata(1)%label)
-    tableid=CMS_llhdata(1)%analysisID    
+    tableno=trim(llhdata(pr(n)%tlist)%D2llhdata(1)%label)
+    tableid=llhdata(pr(n)%tlist)%D2llhdata(1)%analysisID    
    end select
         
    if((j.eq.1).and.(i.eq.1))write(file_id_common,131)trim(tableno)

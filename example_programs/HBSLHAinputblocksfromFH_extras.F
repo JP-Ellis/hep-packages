@@ -1,12 +1,12 @@
 c-------------------------------------------------------------------
-c for use with FeynHiggs 2.8.0
+c for use with FeynHiggs 2.12.0 or higher
 c-------------------------------------------------------------------
 	subroutine createSLHAfilewithFHwithoutHBinputblocks(
      &          inputfile,outputfile, 
-     &          g2hjbb_s,g2hjbb_p,g2hjtoptop_s,g2hjtoptop_p,       
-     &          g2hjtautau_s,g2hjtautau_p,                         
-     &          g2hjWW,g2hjZZ,                                     
-     &          g2hjgg,g2hjggZ,g2hjhiZ_nHbynH                      )
+     &          ghjbb_s,ghjbb_p,ghjtoptop_s,ghjtoptop_p,       
+     &          ghjtautau_s,ghjtautau_p,                         
+     &          ghjWW,ghjZZ,                                     
+     &          ghjgg,ghjhiZ_nHbynH                      )
 
         implicit none
 
@@ -31,21 +31,27 @@ c used by FHSetSLHA,FHOutputSLHA
 	double complex slhadata(nslhadata)
 	character*(*) inputfile,outputfile
 
+
 c used by FHRetrieveSMPara:
-       double precision invAlfa, AlfasMZ, GF
+C      double precision invAlfa, AlfasMZ, GF
+C      double precision ME, MU, MD, MM, MC, MS, ML, MB
+C      double precision MW, MZ
+C      double precision CKMlambda, CKMA, CKMrhobar, CKMetabar
+
+       double precision invAlfa0, invAlfaMZ, AlfasMZ, GF
        double precision ME, MU, MD, MM, MC, MS, ML, MB
-       double precision MW, MZ
+       double precision MW, MZ, GammaW, GammaZ
        double precision CKMlambda, CKMA, CKMrhobar, CKMetabar
 
         double precision
-     &          g2hjWW(3),g2hjZZ(3),                
-     &          g2hjgg(3),g2hjggZ(3),g2hjhiZ_nHbynH(3,3)
-        double precision g2hjbb_s(3),g2hjbb_p(3)
-        double precision g2hjtautau_s(3),g2hjtautau_p(3)
-        double precision g2hjtoptop_s(3),g2hjtoptop_p(3)
+     &          ghjWW(3),ghjZZ(3),                
+     &          ghjgg(3),ghjhiZ_nHbynH(3,3)
+        double precision ghjbb_s(3),ghjbb_p(3)
+        double precision ghjtautau_s(3),ghjtautau_p(3)
+        double precision ghjtoptop_s(3),ghjtoptop_p(3)
 
-c        call FHSetFlagsString(error, "400302113")
-        call FHSetFlagsString(error, "400202110")
+C       call FHSetFlagsString(error, "4002423110")        
+        call FHSetFlagsString(error, "42423110") ! since FH-2.14
 	if( error .ne. 0 ) return
 
 	call SLHARead(error, slhadata, inputfile, 1)
@@ -59,9 +65,8 @@ c        call FHSetFlagsString(error, "400302113")
 	call FHHiggsCorr(error, MHiggs, SAeff, UHiggs, ZHiggs)
 	if( error .ne. 0 ) return
 	
-    	call FHSelectUZ(error, 2, 2, 1)
-    	
-	if( error .ne. 0 ) return
+Ccall FHSelectUZ(error, 2, 2, 1)
+Cif( error .ne. 0 ) return
 
 	call FHCouplings(error,
      &    couplings, couplingsms, gammas, gammasms, 1)
@@ -100,93 +105,99 @@ c We would like FH to calculate LHC cross sections
         call FHHiggsProd(error, sqrts, prodxs)
 	if( error .ne. 0 ) return
 
-        call FHRetrieveSMPara(error,
-     &   invAlfa, AlfasMZ, GF,
+       call FHRetrieveSMPara(error,
+     &   invAlfa0, invAlfaMZ, AlfasMZ, GF,
      &   ME, MU, MD, MM, MC, MS, ML, MB,
-     &   MW, MZ,
+     &   MW, MZ, GammaW, GammaZ,
      &   CKMlambda, CKMA, CKMrhobar, CKMetabar)
+
+C       call FHRetrieveSMPara(error,
+C    &   invAlfa, AlfasMZ, GF,
+C    &   ME, MU, MD, MM, MC, MS, ML, MB,
+C    &   MW, MZ,
+C    &   CKMlambda, CKMA, CKMrhobar, CKMetabar)
 	if( error .ne. 0 ) return
  
         do i=1,3
    
-         g2hjbb_s(i)=(abs(RCoupling(H0FF(i,4,3,3))
+         ghjbb_s(i)=(abs(RCoupling(H0FF(i,4,3,3))
      &                   /RCouplingSM(H0FF(i,4,3,3))+ 
      &                    LCoupling(H0FF(i,4,3,3))
-     &                   /LCouplingSM(H0FF(i,4,3,3)))/2.0D0)**2.0D0
-         g2hjbb_p(i)=(abs(RCoupling(H0FF(i,4,3,3))
+     &                   /LCouplingSM(H0FF(i,4,3,3)))/2.0D0)
+         ghjbb_p(i)=(abs(RCoupling(H0FF(i,4,3,3))
      &                   /RCouplingSM(H0FF(i,4,3,3))- 
      &                    LCoupling(H0FF(i,4,3,3))
-     &                   /LCouplingSM(H0FF(i,4,3,3)))/2.0D0)**2.0D0
+     &                   /LCouplingSM(H0FF(i,4,3,3)))/2.0D0)
 
-         g2hjtautau_s(i)=(abs(RCoupling(H0FF(i,2,3,3))
+         ghjtautau_s(i)=(abs(RCoupling(H0FF(i,2,3,3))
      &                   /RCouplingSM(H0FF(i,2,3,3))+ 
      &                    LCoupling(H0FF(i,2,3,3))
-     &                   /LCouplingSM(H0FF(i,2,3,3)))/2.0D0)**2.0D0
-         g2hjtautau_p(i)=(abs(RCoupling(H0FF(i,2,3,3))
+     &                   /LCouplingSM(H0FF(i,2,3,3)))/2.0D0)
+         ghjtautau_p(i)=(abs(RCoupling(H0FF(i,2,3,3))
      &                   /RCouplingSM(H0FF(i,2,3,3))- 
      &                    LCoupling(H0FF(i,2,3,3))
-     &                   /LCouplingSM(H0FF(i,2,3,3)))/2.0D0)**2.0D0
+     &                   /LCouplingSM(H0FF(i,2,3,3)))/2.0D0)
 
-         g2hjtoptop_s(i)=(abs(RCoupling(H0FF(i,3,3,3))
+         ghjtoptop_s(i)=(abs(RCoupling(H0FF(i,3,3,3))
      &                   /RCouplingSM(H0FF(i,3,3,3))+ 
      &                    LCoupling(H0FF(i,3,3,3))
-     &                   /LCouplingSM(H0FF(i,3,3,3)))/2.0D0)**2.0D0
-         g2hjtoptop_p(i)=(abs(RCoupling(H0FF(i,3,3,3))
+     &                   /LCouplingSM(H0FF(i,3,3,3)))/2.0D0)
+         ghjtoptop_p(i)=(abs(RCoupling(H0FF(i,3,3,3))
      &                   /RCouplingSM(H0FF(i,3,3,3))- 
      &                    LCoupling(H0FF(i,3,3,3))
-     &                   /LCouplingSM(H0FF(i,3,3,3)))/2.0D0)**2.0D0
+     &                   /LCouplingSM(H0FF(i,3,3,3)))/2.0D0)
 
-         g2hjWW(i)= dble(  Coupling(H0VV(i,4)) 
+         ghjWW(i)= sqrt( dble(  Coupling(H0VV(i,4)) 
      &                   / CouplingSM(H0VV(i,4)) )**2.0D0
      &            + dimag( Coupling(H0VV(i,4)) 
-     &                   / CouplingSM(H0VV(i,4)) )**2.0D0
+     &                   / CouplingSM(H0VV(i,4)) )**2.0D0 )
 c Note that this is currently equivalent to
 c         g2hjWW(i)= WhTev(i)/WhTevSM(i
 c	  g2hjWW(i)= qqhTev(i)/qqhTevSM(i)
 c as long as MH>80 GeV and uzint=uzext
 
-         g2hjZZ(i)= dble(  Coupling(H0VV(i,3)) 
+         ghjZZ(i)= sqrt( dble(  Coupling(H0VV(i,3)) 
      &                   / CouplingSM(H0VV(i,3)) )**2.0D0
      &            + dimag( Coupling(H0VV(i,3)) 
-     &                   / CouplingSM(H0VV(i,3)) )**2.0D0
+     &                   / CouplingSM(H0VV(i,3)) )**2.0D0 )
 c Note that this is currently equivalent to
 c         g2hjZZ(i)= ZhTev(i)/ZhTevSM(i)
 c as long as MH>80 GeV and uzint=uzext
 c It is also equivalent to g2hjWW(i)
 
-         g2hjggZ(i)=0.0D0
+C        g2hjggZ(i)=0.0D0
 
-c tevatron gluon fusion XS is not calculated in FH is MH<=90 geV
+c gluon fusion XS is not calculated in FH is MH<=90 geV
          if(MHiggs(i).gt.90.0001D0)then      
            if(gghSM(i).gt.0.0D0)then
-            g2hjgg(i) = ggh(i)/gghSM(i)
+            ghjgg(i) = sqrt( ggh(i)/gghSM(i) )
            else
-            g2hjgg(i) = 0.0D0
+            ghjgg(i) = 0.0D0
            endif 
          else
            if(GammaSM(H0VV(i,5)).le.0.0D0)then
-            g2hjgg(i)=0.0D0
+            ghjgg(i)=0.0D0
            else
-            g2hjgg(i)= Gamma(H0VV(i,5))/GammaSM(H0VV(i,5))
+            ghjgg(i)= sqrt( Gamma(H0VV(i,5))/GammaSM(H0VV(i,5)) )
           endif
          endif
 
         enddo
   
-	if( invAlfa .gt. 0 ) then
+	if( invAlfaMZ .gt. 0 ) then
           CW2 = (MW/MZ)**2.0D0
-          norm = 1/invAlfa*Pi/CW2/(1.0D0-CW2)
+          norm = 1/invAlfaMZ*Pi/CW2/(1.0D0-CW2)
 	else
           norm=GF*sqrt(2.0D0)*MZ**2.0D0
 	endif
 
         do j=1,3
           do i=1,3   
-            g2hjhiZ_nHbynH(j,i)= (
+            ghjhiZ_nHbynH(j,i)= sqrt( (
      &          dble(  Coupling(H0HV(j,i)) )**2.0D0
      &        + dimag( Coupling(H0HV(j,i)) )**2.0D0
      &          )
-     &       /norm
+     &       /norm)
             
           enddo
         enddo

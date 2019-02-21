@@ -10,17 +10,22 @@ module usefulbits
 ! Mass uncertainties smaller than 0.1 GeV are not considered
  double precision :: small_mh = 0.1D0
  logical :: run_HB_classic = .False.
-
+ logical :: wantkey = .True.
+ logical :: extrapolatewidth = .True.
 ! For the CMS likelihood extension
  integer :: using_likelihood = 0
 
 ! For the LEP chisq extension:
  logical :: chisqcut_at_mumax = .False.
  
+! HB-5:
+ logical :: BRdirectinput = .False.
+ 
  character(LEN=5) :: whichanalyses
  character(LEN=4) :: whichinput 
  character(LEN=7) :: inputmethod = 'subrout'
- character(LEN=9),parameter :: vers='4.3.1'
+ character(LEN=9),parameter :: vers='5.3.2beta'
+ integer, parameter :: numres = 3
  integer :: n_additional                       
  character(len=300) :: infile1,infile2
  integer,parameter :: file_id_common=10 
@@ -34,6 +39,7 @@ module usefulbits
  integer, allocatable :: analysis_exclude_list(:)
 
  !read from http://pdg.lbl.gov/ 22.10.2009
+ double precision,parameter :: mt=173.2D0
  double precision,parameter :: ms=0.105D0
  double precision,parameter :: mc=1.27D0
  double precision,parameter :: mbmb=4.20D0
@@ -63,16 +69,22 @@ module usefulbits
  integer,parameter :: Chiplus = 4 !either chargino1 or chargino2
  integer :: np(0:4)=1 !e.g np(Hneut) holds number of neutral Higgs considered
  type(particledescriptions),allocatable :: pdesc(:)
+ 
+ ! HB-5.2: Needed for the channelrates_matrix
+!  integer, parameter :: Nprod = 7
+!  integer, parameter :: Ndecay = 9
+ integer, parameter :: Nprod = 11
+ integer, parameter :: Ndecay = 11
 
 
 
- !for subroutine version--------------------
- type inputsubroutineinfo
-  integer :: stat
-  character(LEN=40) :: desc
-  integer :: req
- end type
- type(inputsubroutineinfo),allocatable :: inputsub(:)
+ !for subroutine version-------------------- (HB5: Removed!)
+!  type inputsubroutineinfo
+!   integer :: stat
+!   character(LEN=40) :: desc
+!   integer :: req
+!  end type
+!  type(inputsubroutineinfo),allocatable :: inputsub(:)
 
  logical :: just_after_run  
 
@@ -96,9 +108,9 @@ module usefulbits
 ! Central value for mass with uncertainties
   double precision, allocatable  :: Mc(:)
   double precision, allocatable  :: GammaTot(:)
-! Mass uncertainties used for HiggsSignals
+! Mass uncertainties (chi-2 test) used in HiggsSignals
   double precision, allocatable  :: dM(:)
-! Mass uncertainties (variation) used in HB
+! Mass uncertainties (variation) used in HiggsBounds
   double precision, allocatable  :: dMh(:)   
  end type
 
@@ -122,22 +134,57 @@ module usefulbits
  end type 
 
  type hadroncolliderdataset
-  double precision, allocatable :: XS_hj_ratio(:) 
+  double precision, allocatable :: XS_hj_ratio(:)
+  double precision, allocatable :: XS_gg_hj_ratio(:)	! HB-5: for gluon fusion
+  double precision, allocatable :: XS_bb_hj_ratio(:)	! HB-5: for bb+Higgs production
   double precision, allocatable :: XS_hjZ_ratio(:)
+  double precision, allocatable :: XS_gg_hjZ_ratio(:) ! HB-5 (TS 6.4.2018)
+  double precision, allocatable :: XS_qq_hjZ_ratio(:) ! HB-5 (TS 6.4.2018)
   double precision, allocatable :: XS_hjW_ratio(:) 
-  double precision, allocatable :: XS_hjb_ratio(:) 
-  double precision, allocatable :: XS_tthj_ratio(:) 
-  double precision, allocatable :: XS_vbf_ratio(:)  
+  double precision, allocatable :: XS_hjb_ratio(:) 	! still needed?
+  double precision, allocatable :: XS_tthj_ratio(:)
+  double precision, allocatable :: XS_vbf_ratio(:)
+  double precision, allocatable :: XS_thj_tchan_ratio(:)  ! HB-5
+  double precision, allocatable :: XS_thj_schan_ratio(:)  ! HB-5
+  double precision, allocatable :: XS_hjhi(:,:)           ! HB-5  
+! SM reference cross section holders:    
   double precision, allocatable :: XS_HZ_SM(:)
+  double precision, allocatable :: XS_gg_HZ_SM(:) ! HB-5 (TS 6.4.2018)
+  double precision, allocatable :: XS_qq_HZ_SM(:) ! HB-5 (TS 6.4.2018)
   double precision, allocatable :: XS_HW_SM(:)
   double precision, allocatable :: XS_H_SM(:)
+  double precision, allocatable :: XS_gg_H_SM(:)  ! HB-5
+  double precision, allocatable :: XS_bb_H_SM(:)  ! HB-5
   !double precision, allocatable :: XS_H_SM_9713(:),XS_H_SM_9674(:)
   double precision, allocatable :: XS_ttH_SM(:)
+  double precision, allocatable :: XS_tH_tchan_SM(:) ! HB-5  
+  double precision, allocatable :: XS_tH_schan_SM(:) ! HB-5  
   double precision, allocatable :: XS_vbf_SM(:)
   ! Higgs produced in association with b, where b is tagged, comes uncut and with various cuts
   ! see subroutines in theory_XS_SM_functions.f90 for details
-  double precision, allocatable :: XS_Hb_SM(:),XS_Hb_c1_SM(:),XS_Hb_c2_SM(:)
-  double precision, allocatable :: XS_Hb_c3_SM(:),XS_Hb_c4_SM(:)
+  double precision, allocatable :: XS_Hb_SM(:)
+  double precision, allocatable :: XS_Hb_c1_SM(:),XS_Hb_c2_SM(:), XS_Hb_c3_SM(:),XS_Hb_c4_SM(:)
+  ! HB-5: Charged Higgs production cross sections (in pb)
+  double precision, allocatable :: XS_vbf_Hpj(:) ! for Hp_j production in VBF
+  double precision, allocatable :: XS_Hpjtb(:)   ! for Hp_j + t + b production
+  double precision, allocatable :: XS_Hpjcb(:)   ! for Hp_j + c + b production      
+  double precision, allocatable :: XS_Hpjbjet(:)   ! for Hp_j + b + jet production  
+  double precision, allocatable :: XS_Hpjcjet(:)   ! for Hp_j + b + jet production    
+  double precision, allocatable :: XS_Hpjjetjet(:)   ! for Hp_j + jet + jet production
+  double precision, allocatable :: XS_HpjW(:)   ! for Hp_j + W production    
+  double precision, allocatable :: XS_HpjZ(:)   ! for Hp_j + Z production      
+  double precision, allocatable :: XS_HpjHmj(:) ! (j,i), for Hp_j Hm_j production  
+  double precision, allocatable :: XS_Hpjhi(:,:) ! (j,i), for Hp_j h_i production  
+! HB-5.2 beyond the narrow-width approximation matrix: holds the SM normalized channel rates
+! with the dimensions (N_H, N_production-modes, N_decay-modes) = (N_H, 7, 9), where the
+! ordering is the following
+! 1: singleH, 2: VBF, 3: WH, 4: ZH, 5: ttH, 6: gg->phi, 7: bb->phi
+! 1: gaga, 2: WW, 3: ZZ, 4: tautau, 5:bb, 6: Zga, 7: cc, 8: mumu, 9: gg
+  double precision, allocatable :: channelrates(:,:,:)
+! We need a temporary copy for the interface (will be copied in complete_theo)  
+  double precision, allocatable :: channelrates_tmp(:,:,:)  
+! This one holds the corresponding SM rates (in pb), assuming the NWA:  
+  double precision, allocatable :: channelrates_SM(:,:,:)  
  end type
 
  type dataset        
@@ -146,9 +193,14 @@ module usefulbits
   double precision, allocatable :: additional(:)
   type(particlemasses), allocatable :: particle(:)
   double precision, allocatable :: BR_hjss(:),BR_hjcc(:)
-  double precision, allocatable :: BR_hjbb(:),BR_hjmumu(:),BR_hjtautau(:)   
+  double precision, allocatable :: BR_hjbb(:),BR_hjtt(:)  !HB-5 new H->tt
+  double precision, allocatable :: BR_hjmumu(:),BR_hjtautau(:)   
   double precision, allocatable :: BR_hjinvisible(:)
-  double precision, allocatable :: BR_hjhihi(:,:)  
+  double precision, allocatable :: BR_hjhihi(:,:)     ! legacy HB-4
+  double precision, allocatable :: BR_hkhjhi(:,:,:)   ! HB-5: for the decay h_k -> h_j h_i
+  double precision, allocatable :: BR_hjhiZ(:,:)      ! HB-5: for the decay h_j -> h_i Z
+  double precision, allocatable :: BR_hjemu(:), BR_hjetau(:), BR_hjmutau(:) ! HB-5
+  double precision, allocatable :: BR_hjHpiW(:,:)   ! HB-5: for the decay h_j -> Hp_i W    
   type(lepdataset) :: lep 
   !-------------------------------------------
   double precision, allocatable :: BR_hjWW(:),BR_hjgaga(:)
@@ -161,6 +213,10 @@ module usefulbits
   double precision, allocatable :: BR_Hpjcs(:)
   double precision, allocatable :: BR_Hpjcb(:)
   double precision, allocatable :: BR_Hpjtaunu(:)
+  double precision, allocatable :: BR_Hpjtb(:)    ! HB-5: for the decay Hp_j -> t b
+  double precision, allocatable :: BR_HpjWZ(:)   ! HB-5: for the decay Hp_j -> W Z
+  double precision, allocatable :: BR_HpjhiW(:,:)   ! HB-5: for the decay Hp_j -> h_i W  
+
  
   double precision, allocatable :: BR_CjqqNi(:,:)
   double precision, allocatable :: BR_CjlnuNi(:,:)
@@ -171,12 +227,15 @@ module usefulbits
   type(hadroncolliderdataset) :: tev 
   type(hadroncolliderdataset) :: lhc7 
   type(hadroncolliderdataset) :: lhc8
+  type(hadroncolliderdataset) :: lhc13 ! HB-5  
   
 ! NEW(24/09/2014, TS):
-  double precision, allocatable :: gg_hj_ratio(:)
-  double precision, allocatable :: bb_hj_ratio(:)    
+!   double precision, allocatable :: gg_hj_ratio(:)
+!   double precision, allocatable :: bb_hj_ratio(:)    
   
-  double precision, allocatable :: BR_Hbb_SM(:),BR_Hcc_SM(:), BR_Hss_SM(:),BR_Hmumu_SM(:),BR_Htautau_SM(:)  
+  double precision, allocatable :: BR_Htt_SM(:), BR_Hbb_SM(:) !HB-5 new H->tt
+  double precision, allocatable :: BR_Hcc_SM(:),BR_Hss_SM(:)
+  double precision, allocatable :: BR_Hmumu_SM(:),BR_Htautau_SM(:)  
   double precision, allocatable :: BR_HWW_SM(:),BR_HZZ_SM(:),BR_HZga_SM(:),BR_Hgaga_SM(:),BR_Hgg_SM(:)
   double precision, allocatable :: BR_Hjets_SM(:)
   double precision, allocatable :: GammaTot_SM(:) 
@@ -189,7 +248,7 @@ module usefulbits
   double precision, allocatable :: hjss_s(:),hjss_p(:)
   double precision, allocatable :: hjcc_s(:),hjcc_p(:)
   double precision, allocatable :: hjbb_s(:),hjbb_p(:)
-  double precision, allocatable :: hjtoptop_s(:),hjtoptop_p(:)
+  double precision, allocatable :: hjtoptop_s(:),hjtoptop_p(:)  ! ToDo: Change name top -> t !
   double precision, allocatable :: hjmumu_s(:),hjmumu_p(:)
   double precision, allocatable :: hjtautau_s(:),hjtautau_p(:)
 
@@ -200,6 +259,24 @@ module usefulbits
  end type
  
  type(sqcouplratio), allocatable :: g2(:)  
+
+! HB-5: NEW! -->
+ type couplratio 
+  double precision, allocatable :: hjcc_s(:),hjcc_p(:)
+  double precision, allocatable :: hjss_s(:),hjss_p(:)
+  double precision, allocatable :: hjtt_s(:),hjtt_p(:)
+  double precision, allocatable :: hjbb_s(:),hjbb_p(:)
+  double precision, allocatable :: hjmumu_s(:),hjmumu_p(:)
+  double precision, allocatable :: hjtautau_s(:),hjtautau_p(:)
+
+  double precision, allocatable :: hjWW(:),hjZZ(:)
+  double precision, allocatable :: hjZga(:)
+  double precision, allocatable :: hjgaga(:),hjgg(:) !,hjggZ(:)
+  double precision, allocatable :: hjhiZ(:,:)  
+ end type
+! <--- !
+ type(couplratio), allocatable :: effC(:)
+ 
  
  type hadroncolliderextras  
   !nq_hjWp,nq_hjWm,nq_hj,nq_hjZ are set in allocate_hadroncolliderextras_parts below 
@@ -228,6 +305,7 @@ module usefulbits
  type results                  
   integer, allocatable :: chan(:)            
   double precision, allocatable :: obsratio(:)
+  double precision, allocatable :: predratio(:)  
   double precision, allocatable :: sfactor(:)
   double precision, allocatable :: axis_i(:)
   double precision, allocatable :: axis_j(:)
@@ -249,6 +327,10 @@ module usefulbits
  type(fullresults), allocatable :: fullHBres(:)
 
  integer, allocatable :: allocate_if_stats_required(:)
+ 
+! Needed to store relevant information on next-to-most sensitive channels: 
+ integer,allocatable ::  HBresult_all(:,:), chan_all(:,:), ncombined_all(:,:)
+ double precision,allocatable :: obsratio_all(:,:),predratio_all(:,:) 
  !-------------------------------------------
              
  contains
@@ -261,9 +343,8 @@ module usefulbits
   write(*,*)"~                                                        ~"
   write(*,*)"~                   HiggsBounds "//adjustl(vers)//"                ~"
   write(*,*)"~                                                        ~"
-  write(*,*)"~     Philip Bechtle, Oliver Brein, Sven Heinemeyer,     ~"
-  write(*,*)"~       Oscar Stål, Tim Stefaniak, Georg Weiglein,       ~"
-  write(*,*)"~                   Karina E. Williams                   ~"
+  write(*,*)"~     Philip Bechtle, Daniel Dercks, Sven Heinemeyer,    ~"
+  write(*,*)"~      Tobias Klingl, Tim Stefaniak, Georg Weiglein      ~"
   write(*,*)"~                                                        ~"
   write(*,*)"~            arXiv:0811.4169, arXiv:1102.1898,           ~"
   write(*,*)"~            arXiv:1301.2345, arXiv:1311.0055            ~"
@@ -278,12 +359,14 @@ module usefulbits
   write(*,*)"    * the CDF and D0 Collaborations"
   write(*,*)"    * the ATLAS and CMS Collaborations"
   write(*,*)"    * the program HDECAY (arXiv:hep-ph/9704448)"
+  write(*,*)"    * the program VH@NNLO"
+  write(*,*)"      (arXiv:1210.5347,arXiv:1802.04817)"
   write(*,*)"    * TeV4LHC Higgs Working Group report"
-  write(*,*)"      (see arXiv:hep-ph/0612172 and ref. therein)"
+  write(*,*)"      (see arXiv:hep-ph/0612172 and refs. therein)"
   write(*,*)"    * LHC Higgs Cross Section Working Group"
-  write(*,*)"      (arXiv:1101.0593, arXiv:1201.3084,"
-  write(*,*)"       arXiv:1307.1347 and ref. therein)"
-  write(*,*)
+  write(*,*)"      (arXiv:1101.0593, arXiv:1201.3084, arXiv:1307.1347,"
+  write(*,*)"       arXiv:1610.07922 and refs. therein, including the "
+  write(*,*)"       gluon fusion N3LO prediction (arXiv:1602.00695).)"
   
   
  end subroutine HiggsBounds_info
@@ -425,22 +508,32 @@ module usefulbits
 
    allocate(d(x)%BR_hjss(                np_t(Hneut)    ))
    allocate(d(x)%BR_hjcc(                np_t(Hneut)    ))
-   allocate(d(x)%BR_hjbb(                np_t(Hneut)    ))        
+   allocate(d(x)%BR_hjbb(                np_t(Hneut)    ))
+   allocate(d(x)%BR_hjtt(                np_t(Hneut)    ))
    allocate(d(x)%BR_hjmumu(              np_t(Hneut)    ))      
    allocate(d(x)%BR_hjtautau(            np_t(Hneut)    ))            
  
-   allocate(d(x)%BR_hjhihi(              np_t(Hneut),np_t(Hneut)    ))
+   allocate(d(x)%BR_hkhjhi( np_t(Hneut),np_t(Hneut),np_t(Hneut) ))
+   allocate(d(x)%BR_hjhihi( np_t(Hneut),np_t(Hneut) ))
+   allocate(d(x)%BR_hjhiZ(  np_t(Hneut),np_t(Hneut) ))
+   allocate(d(x)%BR_hjHpiW( np_t(Hneut),np_t(Hplus) ))   
    allocate(d(x)%BR_hjWW(                np_t(Hneut)    ))
    allocate(d(x)%BR_hjZZ(                np_t(Hneut)    ))
    allocate(d(x)%BR_hjZga(               np_t(Hneut)    ))
    allocate(d(x)%BR_hjgaga(              np_t(Hneut)    ))
    allocate(d(x)%BR_hjgg(                np_t(Hneut)    ))
    allocate(d(x)%BR_hjinvisible(         np_t(Hneut)    ))
+   allocate(d(x)%BR_hjemu(               np_t(Hneut)    ))
+   allocate(d(x)%BR_hjetau(              np_t(Hneut)    ))
+   allocate(d(x)%BR_hjmutau(             np_t(Hneut)    ))   
 
    allocate(d(x)%BR_tHpjb(               np_t(Hplus)    ))
    allocate(d(x)%BR_Hpjcs(               np_t(Hplus)    ))
    allocate(d(x)%BR_Hpjcb(               np_t(Hplus)    ))
    allocate(d(x)%BR_Hpjtaunu(            np_t(Hplus)    ))
+   allocate(d(x)%BR_Hpjtb(               np_t(Hplus)    ))
+   allocate(d(x)%BR_HpjWZ(               np_t(Hplus)    ))
+   allocate(d(x)%BR_HpjhiW(   np_t(Hplus),np_t(Hneut)   ))   
 
    allocate(d(x)%BR_CjqqNi(              np_t(Chiplus),np_t(Chineut)    ))
    allocate(d(x)%BR_CjlnuNi(             np_t(Chiplus),np_t(Chineut)    ))
@@ -451,29 +544,107 @@ module usefulbits
    allocate(d(x)%tev%XS_hjb_ratio(       np_t(Hneut)    ))
    allocate(d(x)%tev%XS_tthj_ratio(      np_t(Hneut)    ))
    allocate(d(x)%tev%XS_vbf_ratio(       np_t(Hneut)    ))
-    
    allocate(d(x)%tev%XS_hjZ_ratio(       np_t(Hneut)    ))   
+   allocate(d(x)%tev%XS_gg_hjZ_ratio(       np_t(Hneut)    ))      
+   allocate(d(x)%tev%XS_qq_hjZ_ratio(       np_t(Hneut)    ))      
    allocate(d(x)%tev%XS_hjW_ratio(       np_t(Hneut)    ))  
    allocate(d(x)%tev%XS_hj_ratio(        np_t(Hneut)    ))
+   allocate(d(x)%tev%XS_gg_hj_ratio( np_t(Hneut) ))
+   allocate(d(x)%tev%XS_bb_hj_ratio( np_t(Hneut) ))   
+   allocate(d(x)%tev%XS_thj_tchan_ratio( np_t(Hneut) ))
+   allocate(d(x)%tev%XS_thj_schan_ratio( np_t(Hneut) ))
+   allocate(d(x)%tev%XS_hjhi( np_t(Hneut),np_t(Hneut) ))   
+   allocate(d(x)%tev%XS_vbf_Hpj( np_t(Hplus) ))
+   allocate(d(x)%tev%XS_Hpjtb( np_t(Hplus) ))
+   allocate(d(x)%tev%XS_Hpjcb( np_t(Hplus) ))
+   allocate(d(x)%tev%XS_Hpjbjet( np_t(Hplus) ))
+   allocate(d(x)%tev%XS_Hpjcjet( np_t(Hplus) ))
+   allocate(d(x)%tev%XS_Hpjjetjet( np_t(Hplus) ))
+   allocate(d(x)%tev%XS_HpjW( np_t(Hplus) ))
+   allocate(d(x)%tev%XS_HpjZ( np_t(Hplus) ))
+   allocate(d(x)%tev%XS_HpjHmj( np_t(Hplus) ))
+   allocate(d(x)%tev%XS_Hpjhi( np_t(Hplus), np_t(Hneut) ))
+   allocate(d(x)%tev%channelrates(np_t(Hneut),Nprod,Ndecay))
+   allocate(d(x)%tev%channelrates_tmp(np_t(Hneut),Nprod,Ndecay))   
+
 
    allocate(d(x)%lhc7%XS_hjb_ratio(       np_t(Hneut)    ))
    allocate(d(x)%lhc7%XS_tthj_ratio(      np_t(Hneut)    ))
-   allocate(d(x)%lhc7%XS_vbf_ratio(       np_t(Hneut)    ))
-    
+   allocate(d(x)%lhc7%XS_vbf_ratio(       np_t(Hneut)    ))    
    allocate(d(x)%lhc7%XS_hjZ_ratio(       np_t(Hneut)    ))   
+   allocate(d(x)%lhc7%XS_gg_hjZ_ratio(       np_t(Hneut)    ))
+   allocate(d(x)%lhc7%XS_qq_hjZ_ratio(       np_t(Hneut)    ))   
    allocate(d(x)%lhc7%XS_hjW_ratio(       np_t(Hneut)    ))  
    allocate(d(x)%lhc7%XS_hj_ratio(        np_t(Hneut)    ))
+   allocate(d(x)%lhc7%XS_gg_hj_ratio( np_t(Hneut) ))
+   allocate(d(x)%lhc7%XS_bb_hj_ratio( np_t(Hneut) )) 
+   allocate(d(x)%lhc7%XS_thj_tchan_ratio( np_t(Hneut) ))
+   allocate(d(x)%lhc7%XS_thj_schan_ratio( np_t(Hneut) ))
+   allocate(d(x)%lhc7%XS_hjhi( np_t(Hneut),np_t(Hneut) ))   
+   allocate(d(x)%lhc7%XS_vbf_Hpj( np_t(Hplus) ))
+   allocate(d(x)%lhc7%XS_Hpjtb( np_t(Hplus) ))
+   allocate(d(x)%lhc7%XS_Hpjcb( np_t(Hplus) ))
+   allocate(d(x)%lhc7%XS_Hpjbjet( np_t(Hplus) ))
+   allocate(d(x)%lhc7%XS_Hpjcjet( np_t(Hplus) ))
+   allocate(d(x)%lhc7%XS_Hpjjetjet( np_t(Hplus) ))
+   allocate(d(x)%lhc7%XS_HpjW( np_t(Hplus) ))
+   allocate(d(x)%lhc7%XS_HpjZ( np_t(Hplus) ))
+   allocate(d(x)%lhc7%XS_HpjHmj( np_t(Hplus) ))
+   allocate(d(x)%lhc7%XS_Hpjhi( np_t(Hplus), np_t(Hneut) ))
+   allocate(d(x)%lhc7%channelrates(np_t(Hneut),Nprod,Ndecay))   
+   allocate(d(x)%lhc7%channelrates_tmp(np_t(Hneut),Nprod,Ndecay))        
 
    allocate(d(x)%lhc8%XS_hjb_ratio(       np_t(Hneut)    ))
    allocate(d(x)%lhc8%XS_tthj_ratio(      np_t(Hneut)    ))
-   allocate(d(x)%lhc8%XS_vbf_ratio(       np_t(Hneut)    ))
-    
+   allocate(d(x)%lhc8%XS_vbf_ratio(       np_t(Hneut)    ))    
    allocate(d(x)%lhc8%XS_hjZ_ratio(       np_t(Hneut)    ))   
+   allocate(d(x)%lhc8%XS_gg_hjZ_ratio( np_t(Hneut) ))
+   allocate(d(x)%lhc8%XS_qq_hjZ_ratio( np_t(Hneut) )) 
    allocate(d(x)%lhc8%XS_hjW_ratio(       np_t(Hneut)    ))  
    allocate(d(x)%lhc8%XS_hj_ratio(        np_t(Hneut)    ))
-
-   allocate(d(x)%gg_hj_ratio( np_t(Hneut) ))
-   allocate(d(x)%bb_hj_ratio( np_t(Hneut) ))   
+   allocate(d(x)%lhc8%XS_gg_hj_ratio( np_t(Hneut) ))
+   allocate(d(x)%lhc8%XS_bb_hj_ratio( np_t(Hneut) ))   
+   allocate(d(x)%lhc8%XS_thj_tchan_ratio( np_t(Hneut) ))
+   allocate(d(x)%lhc8%XS_thj_schan_ratio( np_t(Hneut) ))
+   allocate(d(x)%lhc8%XS_hjhi( np_t(Hneut),np_t(Hneut) ))   
+   allocate(d(x)%lhc8%XS_vbf_Hpj( np_t(Hplus) ))
+   allocate(d(x)%lhc8%XS_Hpjtb( np_t(Hplus) ))
+   allocate(d(x)%lhc8%XS_Hpjcb( np_t(Hplus) ))
+   allocate(d(x)%lhc8%XS_Hpjbjet( np_t(Hplus) ))
+   allocate(d(x)%lhc8%XS_Hpjcjet( np_t(Hplus) ))
+   allocate(d(x)%lhc8%XS_Hpjjetjet( np_t(Hplus) ))
+   allocate(d(x)%lhc8%XS_HpjW( np_t(Hplus) ))
+   allocate(d(x)%lhc8%XS_HpjZ( np_t(Hplus) ))
+   allocate(d(x)%lhc8%XS_HpjHmj( np_t(Hplus) ))
+   allocate(d(x)%lhc8%XS_Hpjhi( np_t(Hplus), np_t(Hneut) ))
+   allocate(d(x)%lhc8%channelrates(np_t(Hneut),Nprod,Ndecay))
+   allocate(d(x)%lhc8%channelrates_tmp(np_t(Hneut),Nprod,Ndecay))   
+     
+   allocate(d(x)%lhc13%XS_hjb_ratio(       np_t(Hneut)    ))
+   allocate(d(x)%lhc13%XS_tthj_ratio(      np_t(Hneut)    ))
+   allocate(d(x)%lhc13%XS_vbf_ratio(       np_t(Hneut)    ))    
+   allocate(d(x)%lhc13%XS_hjZ_ratio(       np_t(Hneut)    ))   
+   allocate(d(x)%lhc13%XS_gg_hjZ_ratio( np_t(Hneut) ))
+   allocate(d(x)%lhc13%XS_qq_hjZ_ratio( np_t(Hneut) )) 
+   allocate(d(x)%lhc13%XS_hjW_ratio(       np_t(Hneut)    ))  
+   allocate(d(x)%lhc13%XS_hj_ratio(        np_t(Hneut)    ))
+   allocate(d(x)%lhc13%XS_gg_hj_ratio( np_t(Hneut) ))
+   allocate(d(x)%lhc13%XS_bb_hj_ratio( np_t(Hneut) ))   
+   allocate(d(x)%lhc13%XS_thj_tchan_ratio( np_t(Hneut) ))
+   allocate(d(x)%lhc13%XS_thj_schan_ratio( np_t(Hneut) ))
+   allocate(d(x)%lhc13%XS_hjhi( np_t(Hneut),np_t(Hneut) ))   
+   allocate(d(x)%lhc13%XS_vbf_Hpj( np_t(Hplus) ))
+   allocate(d(x)%lhc13%XS_Hpjtb( np_t(Hplus) ))
+   allocate(d(x)%lhc13%XS_Hpjcb( np_t(Hplus) ))
+   allocate(d(x)%lhc13%XS_Hpjbjet( np_t(Hplus) ))
+   allocate(d(x)%lhc13%XS_Hpjcjet( np_t(Hplus) ))
+   allocate(d(x)%lhc13%XS_Hpjjetjet( np_t(Hplus) ))
+   allocate(d(x)%lhc13%XS_HpjW( np_t(Hplus) ))
+   allocate(d(x)%lhc13%XS_HpjZ( np_t(Hplus) ))
+   allocate(d(x)%lhc13%XS_HpjHmj( np_t(Hplus) ))
+   allocate(d(x)%lhc13%XS_Hpjhi( np_t(Hplus), np_t(Hneut) ))
+   allocate(d(x)%lhc13%channelrates(np_t(Hneut),Nprod,Ndecay))
+   allocate(d(x)%lhc13%channelrates_tmp(np_t(Hneut),Nprod,Ndecay))      
 
 
    allocate(d(x)%CP_value(               np_t(Hneut)    ))
@@ -497,21 +668,32 @@ module usefulbits
    d(x)%BR_hjss               =0.0D0
    d(x)%BR_hjcc               =0.0D0 
    d(x)%BR_hjbb               =0.0D0
+   d(x)%BR_hjtt               =0.0D0
    d(x)%BR_hjmumu             =0.0D0
    d(x)%BR_hjtautau           =0.0D0
-   d(x)%BR_hjhihi             =0.0D0
    d(x)%BR_hjWW               =0.0D0
    d(x)%BR_hjZZ               =0.0D0
    d(x)%BR_hjZga              =0.0D0
    d(x)%BR_hjgaga             =0.0D0
    d(x)%BR_hjgg               =0.0D0
    d(x)%BR_hjinvisible        =0.0D0
+   d(x)%BR_hjhihi             =0.0D0
+   d(x)%BR_hjhiZ              =0.0D0      
+   d(x)%BR_hkhjhi             =0.0D0
+   d(x)%BR_hjHpiW             =0.0D0   
+   d(x)%BR_hjemu              =0.0D0   
+   d(x)%BR_hjetau             =0.0D0   
+   d(x)%BR_hjmutau            =0.0D0   
+
 
    d(x)%BR_tWpb               =0.0D0
    d(x)%BR_tHpjb              =0.0D0
    d(x)%BR_Hpjcs              =0.0D0
    d(x)%BR_Hpjcb              =0.0D0
    d(x)%BR_Hpjtaunu           =0.0D0
+   d(x)%BR_Hpjtb              =0.0D0
+   d(x)%BR_HpjWZ              =0.0D0
+   d(x)%BR_HpjhiW             =0.0D0
 
    d(x)%BR_CjqqNi             =0.0D0
    d(x)%BR_CjlnuNi            =0.0D0
@@ -522,30 +704,99 @@ module usefulbits
    d(x)%tev%XS_hjb_ratio      =0.0D0
    d(x)%tev%XS_tthj_ratio     =0.0D0
    d(x)%tev%XS_vbf_ratio      =0.0D0
-
    d(x)%tev%XS_hj_ratio       =0.0D0
    d(x)%tev%XS_hjW_ratio      =0.0D0
    d(x)%tev%XS_hjZ_ratio      =0.0D0
+   d(x)%tev%XS_gg_hj_ratio = 0.0D0
+   d(x)%tev%XS_bb_hj_ratio = 0.0D0
+   d(x)%tev%XS_thj_tchan_ratio = 0.0D0
+   d(x)%tev%XS_thj_schan_ratio = 0.0D0
+   d(x)%tev%XS_hjhi = 0.0D0   
+   d(x)%tev%XS_vbf_Hpj       =0.0D0
+   d(x)%tev%XS_Hpjtb         =0.0D0
+   d(x)%tev%XS_Hpjcb         =0.0D0   
+   d(x)%tev%XS_Hpjbjet       =0.0D0
+   d(x)%tev%XS_Hpjcjet       =0.0D0
+   d(x)%tev%XS_Hpjjetjet       =0.0D0
+   d(x)%tev%XS_HpjW          =0.0D0
+   d(x)%tev%XS_HpjZ          =0.0D0
+   d(x)%tev%XS_HpjHmj        =0.0D0
+   d(x)%tev%XS_Hpjhi         =0.0D0
+   d(x)%tev%channelrates = 0.0D0
+   d(x)%tev%channelrates_tmp = -1.0D0   
 
    d(x)%lhc7%XS_hjb_ratio      =0.0D0
    d(x)%lhc7%XS_tthj_ratio     =0.0D0
    d(x)%lhc7%XS_vbf_ratio      =0.0D0
-
    d(x)%lhc7%XS_hj_ratio       =0.0D0
    d(x)%lhc7%XS_hjW_ratio      =0.0D0
    d(x)%lhc7%XS_hjZ_ratio      =0.0D0
-
+   d(x)%lhc7%XS_gg_hj_ratio = 0.0D0
+   d(x)%lhc7%XS_bb_hj_ratio = 0.0D0
+   d(x)%lhc7%XS_thj_tchan_ratio = 0.0D0
+   d(x)%lhc7%XS_thj_schan_ratio = 0.0D0
+   d(x)%lhc7%XS_hjhi = 0.0D0   
+   d(x)%lhc7%XS_vbf_Hpj       =0.0D0
+   d(x)%lhc7%XS_Hpjtb         =0.0D0
+   d(x)%lhc7%XS_Hpjcb         =0.0D0   
+   d(x)%lhc7%XS_Hpjbjet       =0.0D0
+   d(x)%lhc7%XS_Hpjcjet       =0.0D0
+   d(x)%lhc7%XS_Hpjjetjet     =0.0D0
+   d(x)%lhc7%XS_HpjW          =0.0D0
+   d(x)%lhc7%XS_HpjZ          =0.0D0
+   d(x)%lhc7%XS_HpjHmj        =0.0D0
+   d(x)%lhc7%XS_Hpjhi         =0.0D0
+   d(x)%lhc7%channelrates = 0.0D0
+   d(x)%lhc7%channelrates_tmp = -1.0D0   
+      
    d(x)%lhc8%XS_hjb_ratio      =0.0D0
    d(x)%lhc8%XS_tthj_ratio     =0.0D0
    d(x)%lhc8%XS_vbf_ratio      =0.0D0
-
    d(x)%lhc8%XS_hj_ratio       =0.0D0
    d(x)%lhc8%XS_hjW_ratio      =0.0D0
    d(x)%lhc8%XS_hjZ_ratio      =0.0D0
+   d(x)%lhc8%XS_gg_hj_ratio = 0.0D0
+   d(x)%lhc8%XS_bb_hj_ratio = 0.0D0
+   d(x)%lhc8%XS_thj_tchan_ratio = 0.0D0
+   d(x)%lhc8%XS_thj_schan_ratio = 0.0D0
+   d(x)%lhc8%XS_hjhi = 0.0D0   
+   d(x)%lhc8%XS_vbf_Hpj       =0.0D0
+   d(x)%lhc8%XS_Hpjtb         =0.0D0
+   d(x)%lhc8%XS_Hpjcb         =0.0D0   
+   d(x)%lhc8%XS_Hpjbjet       =0.0D0
+   d(x)%lhc8%XS_Hpjcjet       =0.0D0
+   d(x)%lhc8%XS_Hpjjetjet     =0.0D0
+   d(x)%lhc8%XS_HpjW          =0.0D0
+   d(x)%lhc8%XS_HpjZ          =0.0D0
+   d(x)%lhc8%XS_HpjHmj        =0.0D0
+   d(x)%lhc8%XS_Hpjhi         =0.0D0
+   d(x)%lhc8%channelrates = 0.0D0
+   d(x)%lhc8%channelrates_tmp = -1.0D0   
 
-   d(x)%gg_hj_ratio = -1.0D0
-   d(x)%bb_hj_ratio = -1.0D0
-
+   d(x)%lhc13%XS_hjb_ratio      =0.0D0
+   d(x)%lhc13%XS_tthj_ratio     =0.0D0
+   d(x)%lhc13%XS_vbf_ratio      =0.0D0
+   d(x)%lhc13%XS_hj_ratio       =0.0D0
+   d(x)%lhc13%XS_hjW_ratio      =0.0D0
+   d(x)%lhc13%XS_hjZ_ratio      =0.0D0
+   d(x)%lhc13%XS_gg_hj_ratio = 0.0D0
+   d(x)%lhc13%XS_bb_hj_ratio = 0.0D0
+   d(x)%lhc13%XS_thj_tchan_ratio = 0.0D0
+   d(x)%lhc13%XS_thj_schan_ratio = 0.0D0
+   d(x)%lhc13%XS_hjhi = 0.0D0   
+   d(x)%lhc13%XS_vbf_Hpj       =0.0D0
+   d(x)%lhc13%XS_Hpjtb         =0.0D0
+   d(x)%lhc13%XS_Hpjcb         =0.0D0   
+   d(x)%lhc13%XS_Hpjbjet       =0.0D0
+   d(x)%lhc13%XS_Hpjcjet       =0.0D0
+   d(x)%lhc13%XS_Hpjjetjet     =0.0D0
+   d(x)%lhc13%XS_HpjW          =0.0D0
+   d(x)%lhc13%XS_HpjZ          =0.0D0
+   d(x)%lhc13%XS_HpjHmj        =0.0D0
+   d(x)%lhc13%XS_Hpjhi         =0.0D0
+   d(x)%lhc13%channelrates = 0.0D0   
+   d(x)%lhc13%channelrates_tmp = -1.0D0   
+   
    d(x)%additional            =0.0D0
 
    d(x)%CP_value=0  
@@ -555,10 +806,17 @@ module usefulbits
   case('onlyH','LandH','onlyP','list ')
    do x=lbound(d,dim=1),ubound(d,dim=1)
     allocate(d(x)%tev%XS_HZ_SM(         np_t(Hneut)    ))
+    allocate(d(x)%tev%XS_gg_HZ_SM(      np_t(Hneut)    ))
+    allocate(d(x)%tev%XS_qq_HZ_SM(      np_t(Hneut)    ))
     allocate(d(x)%tev%XS_HW_SM(         np_t(Hneut)    ))
     allocate(d(x)%tev%XS_H_SM(          np_t(Hneut)    ))  
     allocate(d(x)%tev%XS_ttH_SM(        np_t(Hneut)    ))  
     allocate(d(x)%tev%XS_vbf_SM(        np_t(Hneut)    ))
+    allocate(d(x)%tev%XS_gg_H_SM(       np_t(Hneut)    ))  
+    allocate(d(x)%tev%XS_bb_H_SM(       np_t(Hneut)    ))
+    allocate(d(x)%tev%XS_tH_tchan_SM(   np_t(Hneut)    ))
+    allocate(d(x)%tev%XS_tH_schan_SM(   np_t(Hneut)    ))
+    allocate(d(x)%tev%channelrates_SM(np_t(Hneut),Nprod,Ndecay))
      
     allocate(d(x)%tev%XS_Hb_SM(         np_t(Hneut)    )) 
     allocate(d(x)%tev%XS_Hb_c1_SM(      np_t(Hneut)    )) 
@@ -567,31 +825,59 @@ module usefulbits
     allocate(d(x)%tev%XS_Hb_c4_SM(      np_t(Hneut)    ))
  
     allocate(d(x)%lhc7%XS_HZ_SM(         np_t(Hneut)    ))
+    allocate(d(x)%lhc7%XS_gg_HZ_SM(      np_t(Hneut)    ))
+    allocate(d(x)%lhc7%XS_qq_HZ_SM(      np_t(Hneut)    ))
     allocate(d(x)%lhc7%XS_HW_SM(         np_t(Hneut)    ))
     allocate(d(x)%lhc7%XS_H_SM(          np_t(Hneut)    ))  
     allocate(d(x)%lhc7%XS_ttH_SM(        np_t(Hneut)    ))  
     allocate(d(x)%lhc7%XS_vbf_SM(        np_t(Hneut)    ))
+    allocate(d(x)%lhc7%XS_gg_H_SM(       np_t(Hneut)    ))  
+    allocate(d(x)%lhc7%XS_bb_H_SM(       np_t(Hneut)    ))
+    allocate(d(x)%lhc7%XS_tH_tchan_SM(   np_t(Hneut)    ))
+    allocate(d(x)%lhc7%XS_tH_schan_SM(   np_t(Hneut)    ))
+    allocate(d(x)%lhc7%channelrates_SM(np_t(Hneut),Nprod,Ndecay))
      
     allocate(d(x)%lhc7%XS_Hb_SM(         np_t(Hneut)    )) 
-    allocate(d(x)%lhc7%XS_Hb_c1_SM(      np_t(Hneut)    )) 
-    allocate(d(x)%lhc7%XS_Hb_c2_SM(      np_t(Hneut)    )) 
-    allocate(d(x)%lhc7%XS_Hb_c3_SM(      np_t(Hneut)    )) 
+!     allocate(d(x)%lhc7%XS_Hb_c1_SM(      np_t(Hneut)    )) 
+!     allocate(d(x)%lhc7%XS_Hb_c2_SM(      np_t(Hneut)    )) 
+!     allocate(d(x)%lhc7%XS_Hb_c3_SM(      np_t(Hneut)    )) 
 
     allocate(d(x)%lhc8%XS_HZ_SM(         np_t(Hneut)    ))
+    allocate(d(x)%lhc8%XS_gg_HZ_SM(      np_t(Hneut)    ))
+    allocate(d(x)%lhc8%XS_qq_HZ_SM(      np_t(Hneut)    ))
     allocate(d(x)%lhc8%XS_HW_SM(         np_t(Hneut)    ))
     allocate(d(x)%lhc8%XS_H_SM(          np_t(Hneut)    ))  
     allocate(d(x)%lhc8%XS_ttH_SM(        np_t(Hneut)    ))  
     allocate(d(x)%lhc8%XS_vbf_SM(        np_t(Hneut)    ))
+    allocate(d(x)%lhc8%XS_gg_H_SM(       np_t(Hneut)    ))  
+    allocate(d(x)%lhc8%XS_bb_H_SM(       np_t(Hneut)    ))
+    allocate(d(x)%lhc8%XS_tH_tchan_SM(   np_t(Hneut)    ))
+    allocate(d(x)%lhc8%XS_tH_schan_SM(   np_t(Hneut)    ))
+    allocate(d(x)%lhc8%channelrates_SM(np_t(Hneut),Nprod,Ndecay))
      
     allocate(d(x)%lhc8%XS_Hb_SM(         np_t(Hneut)    )) 
-    allocate(d(x)%lhc8%XS_Hb_c1_SM(      np_t(Hneut)    )) 
-    allocate(d(x)%lhc8%XS_Hb_c2_SM(      np_t(Hneut)    )) 
-    allocate(d(x)%lhc8%XS_Hb_c3_SM(      np_t(Hneut)    )) 
+!     allocate(d(x)%lhc8%XS_Hb_c1_SM(      np_t(Hneut)    )) 
+!     allocate(d(x)%lhc8%XS_Hb_c2_SM(      np_t(Hneut)    )) 
+!     allocate(d(x)%lhc8%XS_Hb_c3_SM(      np_t(Hneut)    )) 
 
-
+    allocate(d(x)%lhc13%XS_HZ_SM(         np_t(Hneut)    ))
+    allocate(d(x)%lhc13%XS_gg_HZ_SM(      np_t(Hneut)    ))
+    allocate(d(x)%lhc13%XS_qq_HZ_SM(      np_t(Hneut)    ))
+    allocate(d(x)%lhc13%XS_HW_SM(         np_t(Hneut)    ))
+    allocate(d(x)%lhc13%XS_H_SM(          np_t(Hneut)    ))  
+    allocate(d(x)%lhc13%XS_ttH_SM(        np_t(Hneut)    ))  
+    allocate(d(x)%lhc13%XS_vbf_SM(        np_t(Hneut)    ))
+    allocate(d(x)%lhc13%XS_gg_H_SM(       np_t(Hneut)    ))  
+    allocate(d(x)%lhc13%XS_bb_H_SM(       np_t(Hneut)    ))
+    allocate(d(x)%lhc13%XS_tH_tchan_SM(   np_t(Hneut)    ))
+    allocate(d(x)%lhc13%XS_tH_schan_SM(   np_t(Hneut)    ))     
+    allocate(d(x)%lhc13%channelrates_SM(np_t(Hneut),Nprod,Ndecay))    
+!     allocate(d(x)%lhc8%XS_Hb_SM(         np_t(Hneut)    )) 
+    
     allocate(d(x)%BR_Hbb_SM(            np_t(Hneut)    ))   
     allocate(d(x)%BR_Hcc_SM(            np_t(Hneut)    ))   
     allocate(d(x)%BR_Hss_SM(            np_t(Hneut)    ))       
+    allocate(d(x)%BR_Htt_SM(            np_t(Hneut)    ))  
     allocate(d(x)%BR_Hmumu_SM(          np_t(Hneut)    ))
     allocate(d(x)%BR_Htautau_SM(        np_t(Hneut)    ))  
     allocate(d(x)%BR_HWW_SM(            np_t(Hneut)    ))  
@@ -666,6 +952,63 @@ module usefulbits
   enddo 
  
  end subroutine allocate_sqcouplratio_parts
+ !**********************************************************            
+ subroutine allocate_couplratio_parts(g)
+ ! to use this, gsq must be an array
+ !********************************************************** 
+  implicit none
+  !------------------------------------------- 
+  type(couplratio) :: g(:)
+  !-----------------------------------internal
+  integer :: x
+  integer :: nHiggsneut
+  !-------------------------------------------       
+  
+  if(np(Hneut)>0)then
+    nHiggsneut=np(Hneut)
+  elseif(np(Hneut).eq.0)then
+    nHiggsneut=1
+  else
+    stop 'error in subroutine allocate_couplratio_parts (1)'
+  endif
+
+  do x=lbound(g,dim=1),ubound(g,dim=1) 
+   allocate(g(x)%hjss_s(nHiggsneut)    ,g(x)%hjss_p(nHiggsneut))
+   allocate(g(x)%hjcc_s(nHiggsneut)    ,g(x)%hjcc_p(nHiggsneut))
+   allocate(g(x)%hjbb_s(nHiggsneut)    ,g(x)%hjbb_p(nHiggsneut))
+   allocate(g(x)%hjtt_s(nHiggsneut)    ,g(x)%hjtt_p(nHiggsneut))
+   allocate(g(x)%hjmumu_s(nHiggsneut)  ,g(x)%hjmumu_p(nHiggsneut))
+   allocate(g(x)%hjtautau_s(nHiggsneut),g(x)%hjtautau_p(nHiggsneut))
+
+   allocate(g(x)%hjWW(nHiggsneut) ,g(x)%hjZZ(nHiggsneut))
+   allocate(g(x)%hjZga(nHiggsneut))
+   allocate(g(x)%hjgaga(nHiggsneut) ,g(x)%hjgg(nHiggsneut))
+!    allocate(g(x)%hjggZ(nHiggsneut)    )
+   allocate(g(x)%hjhiZ(nHiggsneut,nHiggsneut))  
+
+   g(x)%hjss_s           =0.0D0
+   g(x)%hjss_p           =0.0D0
+   g(x)%hjcc_s           =0.0D0
+   g(x)%hjcc_p           =0.0D0
+   g(x)%hjbb_s           =0.0D0
+   g(x)%hjbb_p           =0.0D0
+   g(x)%hjtt_s           =0.0D0
+   g(x)%hjtt_p           =0.0D0
+   g(x)%hjmumu_s         =0.0D0
+   g(x)%hjmumu_p         =0.0D0
+   g(x)%hjtautau_s       =0.0D0
+   g(x)%hjtautau_p       =0.0D0
+
+   g(x)%hjWW           =0.0D0
+   g(x)%hjZZ           =0.0D0
+   g(x)%hjZga          =0.0D0
+   g(x)%hjgaga         =0.0D0
+   g(x)%hjgg           =0.0D0
+!    g(x)%hjggZ          =0.0D0
+   g(x)%hjhiZ          =0.0D0
+  enddo 
+ 
+ end subroutine allocate_couplratio_parts
 
 !  !**********************************************************            
 !  subroutine deallocate_sqcouplratio_parts(gsq)
@@ -791,9 +1134,13 @@ module usefulbits
    deallocate(theo(x)%BR_hjss)
    deallocate(theo(x)%BR_hjcc)
    deallocate(theo(x)%BR_hjbb)
+   deallocate(theo(x)%BR_hjtt)   
    deallocate(theo(x)%BR_hjmumu)
    deallocate(theo(x)%BR_hjtautau)
    deallocate(theo(x)%BR_hjhihi)
+   deallocate(theo(x)%BR_hjhiZ)
+   deallocate(theo(x)%BR_hkhjhi)   
+   deallocate(theo(x)%BR_hjHpiW)   
    deallocate(theo(x)%BR_hjWW)   
    deallocate(theo(x)%BR_hjZZ)   
    deallocate(theo(x)%BR_hjZga)  
@@ -805,6 +1152,9 @@ module usefulbits
    deallocate(theo(x)%BR_Hpjcs) 
    deallocate(theo(x)%BR_Hpjcb)
    deallocate(theo(x)%BR_Hpjtaunu)
+   deallocate(theo(x)%BR_Hpjtb)
+   deallocate(theo(x)%BR_HpjWZ)
+   deallocate(theo(x)%BR_HpjhiW)
 
    deallocate(theo(x)%BR_CjqqNi)
    deallocate(theo(x)%BR_CjlnuNi)
@@ -815,26 +1165,106 @@ module usefulbits
    deallocate(theo(x)%tev%XS_hjb_ratio)  
    deallocate(theo(x)%tev%XS_tthj_ratio)   
    deallocate(theo(x)%tev%XS_vbf_ratio)       
-                 
    deallocate(theo(x)%tev%XS_hjZ_ratio)
    deallocate(theo(x)%tev%XS_hjW_ratio)
    deallocate(theo(x)%tev%XS_hj_ratio)      
+   deallocate(theo(x)%tev%XS_gg_hj_ratio)
+   deallocate(theo(x)%tev%XS_bb_hj_ratio)
+   deallocate(theo(x)%tev%XS_thj_tchan_ratio)
+   deallocate(theo(x)%tev%XS_thj_schan_ratio)
+   deallocate(theo(x)%tev%XS_hjhi)
+   deallocate(theo(x)%tev%XS_vbf_Hpj)
+   deallocate(theo(x)%tev%XS_Hpjtb)
+   deallocate(theo(x)%tev%XS_Hpjcb)
+   deallocate(theo(x)%tev%XS_Hpjbjet)
+   deallocate(theo(x)%tev%XS_Hpjcjet)
+   deallocate(theo(x)%tev%XS_Hpjjetjet)
+   deallocate(theo(x)%tev%XS_HpjW)
+   deallocate(theo(x)%tev%XS_HpjZ)
+   deallocate(theo(x)%tev%XS_HpjHmj)
+   deallocate(theo(x)%tev%XS_Hpjhi)
+   deallocate(theo(x)%tev%channelrates)
+   deallocate(theo(x)%tev%channelrates_tmp)
+
 
    deallocate(theo(x)%lhc7%XS_hjb_ratio)  
    deallocate(theo(x)%lhc7%XS_tthj_ratio)   
-   deallocate(theo(x)%lhc7%XS_vbf_ratio)       
-                 
+   deallocate(theo(x)%lhc7%XS_vbf_ratio)                        
    deallocate(theo(x)%lhc7%XS_hjZ_ratio)
+   deallocate(theo(x)%lhc7%XS_qq_hjZ_ratio)
+   deallocate(theo(x)%lhc7%XS_gg_hjZ_ratio)   
    deallocate(theo(x)%lhc7%XS_hjW_ratio)
    deallocate(theo(x)%lhc7%XS_hj_ratio) 
+   deallocate(theo(x)%lhc7%XS_gg_hj_ratio)
+   deallocate(theo(x)%lhc7%XS_bb_hj_ratio)
+   deallocate(theo(x)%lhc7%XS_thj_tchan_ratio)
+   deallocate(theo(x)%lhc7%XS_thj_schan_ratio)
+   deallocate(theo(x)%lhc7%XS_hjhi)
+   deallocate(theo(x)%lhc7%XS_vbf_Hpj)
+   deallocate(theo(x)%lhc7%XS_Hpjtb)
+   deallocate(theo(x)%lhc7%XS_Hpjcb)
+   deallocate(theo(x)%lhc7%XS_Hpjbjet)
+   deallocate(theo(x)%lhc7%XS_Hpjcjet)
+   deallocate(theo(x)%lhc7%XS_Hpjjetjet)
+   deallocate(theo(x)%lhc7%XS_HpjW)
+   deallocate(theo(x)%lhc7%XS_HpjZ)
+   deallocate(theo(x)%lhc7%XS_HpjHmj)
+   deallocate(theo(x)%lhc7%XS_Hpjhi)
+   deallocate(theo(x)%lhc7%channelrates)
+   deallocate(theo(x)%lhc7%channelrates_tmp)
 
    deallocate(theo(x)%lhc8%XS_hjb_ratio)  
    deallocate(theo(x)%lhc8%XS_tthj_ratio)   
-   deallocate(theo(x)%lhc8%XS_vbf_ratio)       
-                 
+   deallocate(theo(x)%lhc8%XS_vbf_ratio)                        
    deallocate(theo(x)%lhc8%XS_hjZ_ratio)
+   deallocate(theo(x)%lhc8%XS_qq_hjZ_ratio)
+   deallocate(theo(x)%lhc8%XS_gg_hjZ_ratio)    
    deallocate(theo(x)%lhc8%XS_hjW_ratio)
    deallocate(theo(x)%lhc8%XS_hj_ratio) 
+   deallocate(theo(x)%lhc8%XS_gg_hj_ratio)
+   deallocate(theo(x)%lhc8%XS_bb_hj_ratio)
+   deallocate(theo(x)%lhc8%XS_thj_tchan_ratio)
+   deallocate(theo(x)%lhc8%XS_thj_schan_ratio)
+   deallocate(theo(x)%lhc8%XS_hjhi)
+   deallocate(theo(x)%lhc8%XS_vbf_Hpj)
+   deallocate(theo(x)%lhc8%XS_Hpjtb)
+   deallocate(theo(x)%lhc8%XS_Hpjcb)
+   deallocate(theo(x)%lhc8%XS_Hpjbjet)
+   deallocate(theo(x)%lhc8%XS_Hpjcjet)
+   deallocate(theo(x)%lhc8%XS_Hpjjetjet)
+   deallocate(theo(x)%lhc8%XS_HpjW)
+   deallocate(theo(x)%lhc8%XS_HpjZ)
+   deallocate(theo(x)%lhc8%XS_HpjHmj)
+   deallocate(theo(x)%lhc8%XS_Hpjhi)
+   deallocate(theo(x)%lhc8%channelrates)
+   deallocate(theo(x)%lhc8%channelrates_tmp)
+
+   deallocate(theo(x)%lhc13%XS_hjb_ratio)  
+   deallocate(theo(x)%lhc13%XS_tthj_ratio)   
+   deallocate(theo(x)%lhc13%XS_vbf_ratio)                        
+   deallocate(theo(x)%lhc13%XS_hjZ_ratio)
+   deallocate(theo(x)%lhc13%XS_qq_hjZ_ratio)
+   deallocate(theo(x)%lhc13%XS_gg_hjZ_ratio)    
+   deallocate(theo(x)%lhc13%XS_hjW_ratio)
+   deallocate(theo(x)%lhc13%XS_hj_ratio) 
+   deallocate(theo(x)%lhc13%XS_gg_hj_ratio)
+   deallocate(theo(x)%lhc13%XS_bb_hj_ratio)
+   deallocate(theo(x)%lhc13%XS_thj_tchan_ratio)
+   deallocate(theo(x)%lhc13%XS_thj_schan_ratio)
+   deallocate(theo(x)%lhc13%XS_hjhi)
+   deallocate(theo(x)%lhc13%XS_vbf_Hpj)
+   deallocate(theo(x)%lhc13%XS_Hpjtb)
+   deallocate(theo(x)%lhc13%XS_Hpjcb)
+   deallocate(theo(x)%lhc13%XS_Hpjbjet)
+   deallocate(theo(x)%lhc13%XS_Hpjcjet)
+   deallocate(theo(x)%lhc13%XS_Hpjjetjet)
+   deallocate(theo(x)%lhc13%XS_HpjW)
+   deallocate(theo(x)%lhc13%XS_HpjZ)
+   deallocate(theo(x)%lhc13%XS_HpjHmj)
+   deallocate(theo(x)%lhc13%XS_Hpjhi)
+   deallocate(theo(x)%lhc13%channelrates)
+   deallocate(theo(x)%lhc13%channelrates_tmp)
+
 
 
    !deallocate(theo(x)%inLEPrange_Hpj) 
@@ -860,12 +1290,19 @@ module usefulbits
     deallocate(theo(x)%GammaTot_SM)
                     
     deallocate(theo(x)%tev%XS_HZ_SM)
+    deallocate(theo(x)%tev%XS_gg_HZ_SM)    
+    deallocate(theo(x)%tev%XS_qq_HZ_SM)  
     deallocate(theo(x)%tev%XS_HW_SM)
     deallocate(theo(x)%tev%XS_H_SM) 
+    deallocate(theo(x)%tev%XS_gg_H_SM) 
+    deallocate(theo(x)%tev%XS_bb_H_SM) 
     deallocate(theo(x)%tev%XS_ttH_SM)
     deallocate(theo(x)%tev%XS_vbf_SM) 
     !deallocate(theo(x)%tev%XS_H_SM_9713) 
     !deallocate(theo(x)%tev%XS_H_SM_9674) 
+    deallocate(theo(x)%tev%XS_tH_tchan_SM) 
+    deallocate(theo(x)%tev%XS_tH_schan_SM)
+    deallocate(theo(x)%tev%channelrates_SM)
     
     deallocate(theo(x)%tev%XS_Hb_SM) 
     deallocate(theo(x)%tev%XS_Hb_c1_SM) 
@@ -874,27 +1311,51 @@ module usefulbits
     deallocate(theo(x)%tev%XS_Hb_c4_SM)
 
     deallocate(theo(x)%lhc7%XS_HZ_SM)
+    deallocate(theo(x)%lhc7%XS_gg_HZ_SM)    
+    deallocate(theo(x)%lhc7%XS_qq_HZ_SM)  
     deallocate(theo(x)%lhc7%XS_HW_SM)
-    deallocate(theo(x)%lhc7%XS_H_SM) 
+    deallocate(theo(x)%lhc7%XS_H_SM)
+    deallocate(theo(x)%lhc7%XS_gg_H_SM) 
+    deallocate(theo(x)%lhc7%XS_bb_H_SM) 
     deallocate(theo(x)%lhc7%XS_ttH_SM)
     deallocate(theo(x)%lhc7%XS_vbf_SM) 
-    
-    deallocate(theo(x)%lhc7%XS_Hb_SM) 
-    deallocate(theo(x)%lhc7%XS_Hb_c1_SM) 
-    deallocate(theo(x)%lhc7%XS_Hb_c2_SM)  
-    deallocate(theo(x)%lhc7%XS_Hb_c3_SM)   
+    deallocate(theo(x)%lhc7%XS_tH_tchan_SM) 
+    deallocate(theo(x)%lhc7%XS_tH_schan_SM)     
+    deallocate(theo(x)%lhc7%XS_Hb_SM)
+    deallocate(theo(x)%lhc7%channelrates_SM)     
+!     deallocate(theo(x)%lhc7%XS_Hb_c1_SM) 
+!     deallocate(theo(x)%lhc7%XS_Hb_c2_SM)  
+!     deallocate(theo(x)%lhc7%XS_Hb_c3_SM)   
 
     deallocate(theo(x)%lhc8%XS_HZ_SM)
+    deallocate(theo(x)%lhc8%XS_gg_HZ_SM)    
+    deallocate(theo(x)%lhc8%XS_qq_HZ_SM)
     deallocate(theo(x)%lhc8%XS_HW_SM)
     deallocate(theo(x)%lhc8%XS_H_SM) 
+    deallocate(theo(x)%lhc8%XS_gg_H_SM) 
+    deallocate(theo(x)%lhc8%XS_bb_H_SM)
     deallocate(theo(x)%lhc8%XS_ttH_SM)
     deallocate(theo(x)%lhc8%XS_vbf_SM) 
-    
+    deallocate(theo(x)%lhc8%XS_tH_tchan_SM) 
+    deallocate(theo(x)%lhc8%XS_tH_schan_SM) 
     deallocate(theo(x)%lhc8%XS_Hb_SM) 
-    deallocate(theo(x)%lhc8%XS_Hb_c1_SM) 
-    deallocate(theo(x)%lhc8%XS_Hb_c2_SM)  
-    deallocate(theo(x)%lhc8%XS_Hb_c3_SM)   
+    deallocate(theo(x)%lhc8%channelrates_SM)         
+!     deallocate(theo(x)%lhc8%XS_Hb_c1_SM) 
+!     deallocate(theo(x)%lhc8%XS_Hb_c2_SM)  
+!     deallocate(theo(x)%lhc8%XS_Hb_c3_SM)   
 
+    deallocate(theo(x)%lhc13%XS_HZ_SM)
+    deallocate(theo(x)%lhc13%XS_gg_HZ_SM)    
+    deallocate(theo(x)%lhc13%XS_qq_HZ_SM)
+    deallocate(theo(x)%lhc13%XS_HW_SM)
+    deallocate(theo(x)%lhc13%XS_H_SM) 
+    deallocate(theo(x)%lhc13%XS_gg_H_SM) 
+    deallocate(theo(x)%lhc13%XS_bb_H_SM)
+    deallocate(theo(x)%lhc13%XS_ttH_SM)
+    deallocate(theo(x)%lhc13%XS_vbf_SM) 
+    deallocate(theo(x)%lhc13%XS_tH_tchan_SM) 
+    deallocate(theo(x)%lhc13%XS_tH_schan_SM) 
+    deallocate(theo(x)%lhc13%channelrates_SM)         
                 
    enddo 
   case('onlyL')
@@ -909,6 +1370,7 @@ module usefulbits
    do x=lbound(res,dim=1),ubound(res,dim=1)  
     deallocate(res(x)%chan)   
     deallocate(res(x)%obsratio)
+    deallocate(res(x)%predratio)    
     deallocate(res(x)%axis_i)
     deallocate(res(x)%axis_j)
     deallocate(res(x)%sfactor) 
@@ -948,6 +1410,32 @@ module usefulbits
   enddo 
   deallocate(g2) 
   
+  
+  do x=lbound(effC,dim=1),ubound(effC,dim=1) 
+
+   deallocate(effC(x)%hjss_s)
+   deallocate(effC(x)%hjss_p)
+   deallocate(effC(x)%hjcc_s)
+   deallocate(effC(x)%hjcc_p)
+   deallocate(effC(x)%hjbb_s)
+   deallocate(effC(x)%hjbb_p)
+   deallocate(effC(x)%hjtt_s)
+   deallocate(effC(x)%hjtt_p)
+   deallocate(effC(x)%hjmumu_s)
+   deallocate(effC(x)%hjmumu_p)
+   deallocate(effC(x)%hjtautau_s)
+   deallocate(effC(x)%hjtautau_p)
+
+   deallocate(effC(x)%hjWW)  
+   deallocate(effC(x)%hjZZ)
+   deallocate(effC(x)%hjZga)
+   deallocate(effC(x)%hjgaga)
+   deallocate(effC(x)%hjgg)
+!    deallocate(effC(x)%hjggZ)
+   deallocate(effC(x)%hjhiZ) 
+  enddo 
+  deallocate(effC)   
+  
   !these are allocated in subroutine do_input 
   call deallocate_hadroncolliderextras_parts(partR)          
   deallocate(partR) !allocated in subroutine do_input      
@@ -963,6 +1451,13 @@ module usefulbits
   
   if(allocated(analysislist)) deallocate(analysislist)
   if(allocated(analysis_exclude_list)) deallocate(analysis_exclude_list)  
+
+ if(allocated(HBresult_all)) deallocate(HBresult_all)
+ if(allocated(chan_all)) deallocate(chan_all)
+ if(allocated(ncombined_all)) deallocate(ncombined_all) 
+ if(allocated(obsratio_all)) deallocate(obsratio_all)  
+ if(allocated(predratio_all)) deallocate(predratio_all)   
+
   
  end subroutine deallocate_usefulbits
  !**********************************************************            

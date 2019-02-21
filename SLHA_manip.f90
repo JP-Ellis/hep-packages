@@ -10,8 +10,9 @@ module SLHA_manip
     &      get_SPhenocrosssection,get_SPhenocrosssectionCMenergy,&
     &      get_threebodybranchingratio,get_modsel,get_HBresults_obsratio,&
     &      get_HiggsCouplingsBosons,get_HiggsCouplingsFermions, &
+    &      HB5_get_HiggsCouplingsBosons,HB5_get_HiggsCouplingsFermions,&
     &      writeSLHAfile_except,check_validity,get_HBresults_channel_id, &
-    &      get_mass_uncertainty
+    &      get_mass_uncertainty,get_crosssection_threeparticles
 
 
  type array_of_strings      
@@ -36,13 +37,14 @@ module SLHA_manip
 
  
  !********************************************************
- subroutine readSLHAfile(fileid)
+ subroutine readSLHAfile(fileid,silent)
  !reads in contents of SLHA file, and stores it in 'contents_of_input_file'
  ! strips off comments and tabs and
  ! stores it in 'edited_contents_of_input_file' line-by-line 
  !********************************************************
   implicit none 
   integer,intent(in) :: fileid
+  logical, intent(in) :: silent
   integer :: i,a
   integer :: stringlength
   character(len=200) :: temp_line
@@ -77,8 +79,8 @@ module SLHA_manip
   enddo 
 
   call store_line_numbers_of_blocks_and_decays
-  call fill_store_masses
-  call fill_store_mass_uncertainties
+  call fill_store_masses(silent)
+  call fill_store_mass_uncertainties(silent)
 
   !do i=1,ubound(names_of_blocks_and_decays,dim=1)
   ! write(*,*)'hello block',names_of_blocks_and_decays(i)%id, &
@@ -496,6 +498,62 @@ module SLHA_manip
  end function get_SPhenocrosssection
 
  !********************************************************
+ function get_crosssection_threeparticles(blockname,particlePDGcode1, &
+ &                                        particlePDGcode2,particlePDGcode3,silent)
+ !********************************************************
+  implicit none
+  integer,intent(in) :: particlePDGcode1,particlePDGcode2,particlePDGcode3
+  logical,intent(in) :: silent
+  character(len=*),intent(in) :: blockname
+  integer :: integer_fromblock_da(3),integer_req(3)
+  integer :: blocklines(2)
+  double precision :: get_crosssection_threeparticles
+  character(len=50),allocatable :: col(:)
+  character(len=200) :: temp_line
+  integer :: stringlength,stringlength2
+  integer :: i
+!   integer :: nda
+
+  allocate(col(4))
+  get_crosssection_threeparticles=0.0D0
+  blocklines=line_numbers_of_block(trim(adjustl(blockname)))
+  integer_req(1)=particlePDGcode1
+  integer_req(2)=particlePDGcode2
+  integer_req(3)=particlePDGcode3  
+
+  if(minval(blocklines).le.0.and.(.not.silent))then 
+    write(*,*)'WARNING: not able to read the SLHA block '//trim(adjustl(blockname))
+  else
+
+    do i=1+blocklines(1),blocklines(2)
+     temp_line=edited_contents_of_input_file(i)%line
+
+     if(trim(temp_line).ne.'')then
+
+       stringlength =len(temp_line)
+       stringlength2=len(col) 
+
+       call split_into_col(temp_line,stringlength,col,stringlength2)
+
+!        call saferead_int(col(2),nda)
+!        if(nda.eq.2)then
+       call saferead_int(col(1),integer_fromblock_da(1))
+       call saferead_int(col(2),integer_fromblock_da(2))
+       call saferead_int(col(3),integer_fromblock_da(3))       
+
+       if(same_particles(integer_req,integer_fromblock_da))then
+        call saferead_dble(col(4),get_crosssection_threeparticles)    
+       endif
+!       endif
+     endif
+    enddo
+  endif
+
+  deallocate(col)
+
+ end function get_crosssection_threeparticles
+
+ !********************************************************
  function get_HiggsCouplingsBosons(particlePDGcode_1,particlePDGcode_2, &
      &   particlePDGcode_3,particlePDGcode_4)
  !********************************************************
@@ -596,6 +654,85 @@ module SLHA_manip
 
  end function get_HiggsCouplingsBosons
 
+
+ !********************************************************
+ function HB5_get_HiggsCouplingsBosons(particlePDGcode_1,particlePDGcode_2, &
+     &   particlePDGcode_3,particlePDGcode_4)
+ !********************************************************
+ !doesn't matter if particles or antiparticles are used: takes abs() of the PDG number anyway
+  implicit none
+  integer,intent(in) :: particlePDGcode_1,particlePDGcode_2,particlePDGcode_3
+  integer,optional,intent(in) :: particlePDGcode_4
+  integer,allocatable :: particlePDGcode_req(:)
+  integer,allocatable :: particlePDGcode_fromblock(:)
+  integer :: blocklines(2)
+  double precision :: HB5_get_HiggsCouplingsBosons
+  character(len=50),allocatable :: col(:)
+  character(len=200) :: temp_line
+  !integer :: stringlength,stringlength2
+  integer :: i,n
+  integer :: np,np_req
+  integer :: ios
+  double precision :: coup_fromblock
+
+  if(present(particlePDGcode_4))then
+    np_req=4
+  else
+    np_req=3
+  endif
+ 
+  allocate(col(np_req+2))
+  allocate(particlePDGcode_req(np_req))
+  allocate(particlePDGcode_fromblock(np_req))
+
+  HB5_get_HiggsCouplingsBosons=0.0D0
+  blocklines=line_numbers_of_block('HiggsCouplingsBosons')
+  particlePDGcode_req(1)=particlePDGcode_1
+  particlePDGcode_req(2)=particlePDGcode_2
+  particlePDGcode_req(3)=particlePDGcode_3
+
+  if(np_req.eq.4)then
+    particlePDGcode_req(4)=particlePDGcode_4
+  endif
+
+  particlePDGcode_req=abs(particlePDGcode_req)
+
+  if(minval(blocklines).le.0)then
+   write(*,*)'Problem reading HiggsBounds-5 block HiggsCouplingsBosons:'
+   write(*,*)'trying to read old block HiggsBoundsInputHiggsCouplingsBosons...'
+   HB5_get_HiggsCouplingsBosons = get_HiggsCouplingsBosons(particlePDGcode_1,&
+&                             particlePDGcode_2,particlePDGcode_3,particlePDGcode_4)
+   HB5_get_HiggsCouplingsBosons = sqrt(abs(HB5_get_HiggsCouplingsBosons))
+  else
+
+    do i=1+blocklines(1),blocklines(2)
+     temp_line=edited_contents_of_input_file(i)%line
+     temp_line=adjustl(temp_line)
+
+     if(trim(temp_line).ne.'')then
+
+       read(temp_line,*,iostat=ios)coup_fromblock,np, &
+                      & (particlePDGcode_fromblock(n),n=1,np_req)
+       particlePDGcode_fromblock=abs(particlePDGcode_fromblock)
+       if(ios.eq.0)then
+         if(np.eq.np_req)then
+           if(same_particles(particlePDGcode_req,particlePDGcode_fromblock))then
+             HB5_get_HiggsCouplingsBosons=coup_fromblock
+           endif
+         endif
+       endif
+
+     endif
+    enddo
+  endif
+
+
+  deallocate(col)
+  deallocate(particlePDGcode_req)
+  deallocate(particlePDGcode_fromblock)
+
+ end function HB5_get_HiggsCouplingsBosons
+
  !********************************************************
  function get_HiggsCouplingsFermions(particlePDGcode_1,particlePDGcode_2,particlePDGcode_3)
  !********************************************************
@@ -645,25 +782,6 @@ module SLHA_manip
          endif
         endif
        endif
-       !old method: safe but takes too long
-       !stringlength =len(temp_line)
-       !stringlength2=len(col) 
-
-       !call split_into_col(temp_line,stringlength,col,stringlength2)
-
-       !call saferead_int(col(3),np)
-       !if(np.eq.3)then
-       ! call saferead_int(col(4),particlePDGcode_fromblock(1))
-       ! call saferead_int(col(5),particlePDGcode_fromblock(2))
-       ! call saferead_int(col(6),particlePDGcode_fromblock(3))
-       ! particlePDGcode_fromblock=abs(particlePDGcode_fromblock)
-
-       ! if(same_particles(particlePDGcode_req,particlePDGcode_fromblock))then
-
-       !   call saferead_dble(col(1),get_HiggsCouplingsFermions(1))
-       !   call saferead_dble(col(2),get_HiggsCouplingsFermions(2))   
-       ! endif
-       !endif
      endif
     enddo
   endif
@@ -672,11 +790,70 @@ module SLHA_manip
   deallocate(col)
 
  end function get_HiggsCouplingsFermions
-
  !********************************************************
- subroutine fill_store_masses
+ function HB5_get_HiggsCouplingsFermions(particlePDGcode_1,particlePDGcode_2,particlePDGcode_3)
+ !********************************************************
+ !doesn't matter if particles or antiparticles are used: takes abs() of the PDG number anyway
+  implicit none
+  integer,intent(in) :: particlePDGcode_1,particlePDGcode_2,particlePDGcode_3
+  integer :: particlePDGcode_req(3)
+  integer :: particlePDGcode_fromblock(3)
+  integer :: blocklines(2)
+  double precision :: HB5_get_HiggsCouplingsFermions(2)
+  character(len=50),allocatable :: col(:)
+  character(len=200) :: temp_line
+  !integer :: stringlength,stringlength2
+  integer :: i
+  integer :: np
+  integer :: ios
+  double precision :: coup_fromblock(2)
+
+  allocate(col(6))
+  HB5_get_HiggsCouplingsFermions=0.0D0
+  blocklines=line_numbers_of_block('HiggsCouplingsFermions')
+  particlePDGcode_req(1)=particlePDGcode_1
+  particlePDGcode_req(2)=particlePDGcode_2
+  particlePDGcode_req(3)=particlePDGcode_3
+  particlePDGcode_req=abs(particlePDGcode_req)
+
+  if(minval(blocklines).le.0)then
+     write(*,*)'Problem reading HiggsBounds-5 block HiggsCouplingsFermions:'
+   write(*,*)'trying to read old block HiggsBoundsInputHiggsCouplingsFermions...'
+   HB5_get_HiggsCouplingsFermions = get_HiggsCouplingsFermions(particlePDGcode_1,&
+&                                   particlePDGcode_2,particlePDGcode_3)
+   HB5_get_HiggsCouplingsFermions = sqrt(abs(HB5_get_HiggsCouplingsFermions))
+  else
+
+    do i=1+blocklines(1),blocklines(2)
+     temp_line=edited_contents_of_input_file(i)%line
+     temp_line=adjustl(temp_line)
+
+     if(trim(temp_line).ne.'')then
+
+       read(temp_line,*,iostat=ios)coup_fromblock(1),coup_fromblock(2),np, &
+                      & particlePDGcode_fromblock(1),particlePDGcode_fromblock(2), &
+                      & particlePDGcode_fromblock(3)
+       particlePDGcode_fromblock=abs(particlePDGcode_fromblock)
+       if(ios.eq.0)then
+        if(np.eq.3)then
+         if(same_particles(particlePDGcode_req,particlePDGcode_fromblock))then
+           HB5_get_HiggsCouplingsFermions=coup_fromblock
+         endif
+        endif
+       endif
+     endif
+    enddo
+  endif
+
+
+  deallocate(col)
+
+ end function HB5_get_HiggsCouplingsFermions
+ !********************************************************
+ subroutine fill_store_masses(silent)
  !********************************************************
   implicit none
+  logical, intent(in) :: silent
   integer :: blocklines(2)
   integer :: i,n
   integer :: stringlength,stringlength2
@@ -688,8 +865,10 @@ module SLHA_manip
   blocklines=line_numbers_of_block('mass')
 
   if(minval(blocklines).le.0)then
-   write(*,*)'Problem reading the block MASS'
-   write(*,*)'This block is necessary input to HiggsBounds.' 
+   if(.not.silent) then
+    write(*,*)'Problem reading the block MASS'
+    write(*,*)'This block is necessary input to HiggsBounds.' 
+   endif 
    allocate(store_masses(1))
    store_masses(1)%id =0
    store_masses(1)%val=0.0d0
@@ -729,9 +908,10 @@ module SLHA_manip
 
  end subroutine fill_store_masses
  !********************************************************
- subroutine fill_store_mass_uncertainties
+ subroutine fill_store_mass_uncertainties(silent)
  !********************************************************
   implicit none
+  logical, intent(in) :: silent
   integer :: blocklines(2)
   integer :: i,n
   integer :: stringlength,stringlength2
@@ -743,9 +923,11 @@ module SLHA_manip
   blocklines=line_numbers_of_block('dmass')
 
   if(minval(blocklines).le.0)then
-   write(*,*)'Problem reading the block DMASS'
-   write(*,*)'This block is optional input to HiggsBounds.' 
-   write(*,*)'Mass uncertainties will be set to zero.'
+   if(.not.silent) then
+    write(*,*)'WARNING: not able to read the SLHA block DMASS'
+!     write(*,*)'This block is optional input to HiggsBounds.' 
+!     write(*,*)'Mass uncertainties will be set to zero.'
+   endif 
    allocate(store_mass_uncertainties(1))
    store_mass_uncertainties(1)%id =0
    store_mass_uncertainties(1)%val=0.0d0

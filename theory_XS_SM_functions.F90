@@ -20,6 +20,20 @@
 
 module theory_XS_SM_functions 
 
+ use interpolate
+ use S95tables_type1
+ use usefulbits, only : div
+ 
+ implicit none
+
+ type(table1),allocatable :: XSSM(:)
+! For the WH and ZH approximation from effective couplings:
+ type(table1),allocatable :: VHcoeff(:)
+! For the full ZH approximation:
+ type(table1),allocatable :: ZHcoeff(:) 
+ ! index: Tev, LHC7, LHC8, LHC13
+  integer :: Ncollider = 4
+
 ! this must be narrower than range of 
 ! XS_bg_Hb_SM,XS_bg_Hb_c1_SM,XS_bg_Hb_c2_SM ([10:400])
 ! XS_tev_gg_H_SM (currently [50:350])
@@ -28,16 +42,29 @@ module theory_XS_SM_functions
 !outside the range of XS_tev_gg_H_SM, because the very high Mh are only used for
 !tev%XS_Hb_c1_SM at the moment, but we need to be careful (we should calculate XS_tev_gg_H_SM for a bigger range
 !as soon as possible)
+
+!  double precision :: tevXS_SM_functions_xmin=60.0D0
+!  double precision :: tevXS_SM_functions_xmax=361.0D0
+! 
+!  double precision :: lhc7XS_SM_functions_xmin=79.0D0
+!  double precision :: lhc7XS_SM_functions_xmax=1001.0D0
+! 
+!  double precision :: lhc8XS_SM_functions_xmin=45.0D0
+!  double precision :: lhc8XS_SM_functions_xmax=1120.0D0
+
+! NEW BOUNDARIES:
  double precision :: tevXS_SM_functions_xmin=60.0D0
  double precision :: tevXS_SM_functions_xmax=361.0D0
 
- double precision :: lhc7XS_SM_functions_xmin=79.0D0
- double precision :: lhc7XS_SM_functions_xmax=1001.0D0
+ double precision :: lhc7XS_SM_functions_xmin=10.0D0
+ double precision :: lhc7XS_SM_functions_xmax=3000.0D0
 
-! double precision :: lhc8XS_SM_functions_xmin=79.0D0
- double precision :: lhc8XS_SM_functions_xmin=45.0D0
-! double precision :: lhc8XS_SM_functions_xmax=1020.0D0
- double precision :: lhc8XS_SM_functions_xmax=1120.0D0
+ double precision :: lhc8XS_SM_functions_xmin=10.0D0
+ double precision :: lhc8XS_SM_functions_xmax=3000.0D0
+
+ double precision :: lhc13XS_SM_functions_xmin=10.0D0
+ double precision :: lhc13XS_SM_functions_xmax=3000.0D0
+
 
  contains 
 
@@ -50,11 +77,1922 @@ module theory_XS_SM_functions
 #include "cs-ratios_sigma-bg-Hb/Tevatron.sigma_bg_Hb.ptmin15.etamax2.5.h"
 #include "cs-ratios_sigma-bg-Hb/Tevatron.sigma_bg_Hb.ptmin12.etamax5.h"
 
+
+ !  NEW ROUTINES FOR HB-5  !
+ 
+ !****************************************************** 
+ subroutine setup_XSSM
+ ! reads in the Standard Model Cross Sections from files,
+ ! currently using the YR4 predictions
+ !****************************************************** 
+  use store_pathname
+  use usefulbits, only: file_id_common2
+  implicit none
+  !------------------------------------internal
+  integer :: x,xbeg,xend
+  character(len=100),allocatable :: filename(:)
+  character(LEN=pathname_length+150) :: fullfilename
+  integer :: col,ios
+  !--------------------------------------------
+ 
+  allocate(XSSM(12))
+  
+  xbeg=lbound(XSSM,dim=1)
+  xend=ubound(XSSM,dim=1)
+  
+  allocate(filename(xbeg:xend))    
+  x=xbeg-1
+ 
+! NOTE: The %id placeholder is abused to specify the number of columns in the file
+ 
+  x=x+1 
+  XSSM(x)%xmin=10.0D0
+  XSSM(x)%xmax=3000.0D0
+  XSSM(x)%sep=5.0D0
+  XSSM(x)%id=4 
+  filename(x)='YR4/BSM_XS_7_ggHVBFbbH.dat' 
+
+  x=x+1 
+  XSSM(x)%xmin=10.0D0
+  XSSM(x)%xmax=2000.0D0
+  XSSM(x)%sep=5.0D0 
+  XSSM(x)%id=3  
+  filename(x)='YR4/BSM_XS_7_WHZH.dat' 
+
+  x=x+1 
+  XSSM(x)%xmin=120.0D0
+  XSSM(x)%xmax=130.0D0
+  XSSM(x)%sep=0.1D0 
+  XSSM(x)%id=9  
+!   filename(x)='YR4/SM_XS_7_all.dat' 
+  filename(x)='YR4/SM_XS_7_all_YR4update.dat' 
+  
+  x=x+1 
+  XSSM(x)%xmin=10.0D0
+  XSSM(x)%xmax=3000.0D0
+  XSSM(x)%sep=5.0D0 
+  XSSM(x)%id=4  
+  filename(x)='YR4/BSM_XS_8_ggHVBFbbH.dat' 
+
+  x=x+1 
+  XSSM(x)%xmin=10.0D0
+  XSSM(x)%xmax=2000.0D0
+  XSSM(x)%sep=5.0D0
+  XSSM(x)%id=3   
+  filename(x)='YR4/BSM_XS_8_WHZH.dat' 
+
+  x=x+1 
+  XSSM(x)%xmin=10.0D0
+  XSSM(x)%xmax=3000.0D0
+  XSSM(x)%sep=5.0D0 
+  XSSM(x)%id=2  
+  filename(x)='YR4/BSM_XS_8_ttH.dat' 
+
+  x=x+1 
+  XSSM(x)%xmin=120.0D0
+  XSSM(x)%xmax=130.0D0
+  XSSM(x)%sep=0.1D0
+  XSSM(x)%id=9   
+!   filename(x)='YR4/SM_XS_8_all.dat' 
+  filename(x)='YR4/SM_XS_8_all_YR4update.dat' 
+
+  x=x+1 
+  XSSM(x)%xmin=10.0D0
+  XSSM(x)%xmax=3000.0D0
+  XSSM(x)%sep=5.0D0 
+  XSSM(x)%id=4  
+!   filename(x)='YR4/BSM_XS_13_ggHVBFbbH.dat' 
+  filename(x)='YR4/BSM_XS_13_ggHVBFbbH_YR4update.dat' 
+
+  x=x+1 
+  XSSM(x)%xmin=10.0D0
+  XSSM(x)%xmax=2000.0D0
+  XSSM(x)%sep=5.0D0 
+  XSSM(x)%id=3  
+  filename(x)='YR4/BSM_XS_13_WHZH.dat' 
+
+  x=x+1 
+  XSSM(x)%xmin=10.0D0
+  XSSM(x)%xmax=3000.0D0
+  XSSM(x)%sep=5.0D0 
+  XSSM(x)%id=2  
+  filename(x)='YR4/BSM_XS_13_ttH.dat' 
+
+  x=x+1 
+  XSSM(x)%xmin=10.0D0
+  XSSM(x)%xmax=3000.0D0
+  XSSM(x)%sep=5.0D0 
+  XSSM(x)%id=3  
+  filename(x)='YR4/BSM_XS_13_tH.dat' 
+
+  x=x+1 
+  XSSM(x)%xmin=120.0D0
+  XSSM(x)%xmax=130.0D0
+  XSSM(x)%sep=0.1D0 
+  XSSM(x)%id=9
+!   filename(x)='YR4/SM_XS_13_all.dat' 
+  filename(x)='YR4/SM_XS_13_all_YR4update.dat'   
+  
+  ! checks we've filled the whole array
+  if(x.ne.xend)then
+   stop 'error in setup_XSSM (a)'
+  endif 
+ 
+
+  ! do loop to read in S95 tables 
+  do x=xbeg,xend
+   XSSM(x)%nx=nint((XSSM(x)%xmax-XSSM(x)%xmin)/XSSM(x)%sep)+1   
+   allocate(XSSM(x)%dat(XSSM(x)%nx,XSSM(x)%id-1))
+  enddo     
+
+  open(file_id_common2,file = trim(adjustl(pathname))//'Theory_tables/' // &
+      &  'XSSM.binary',form='unformatted')
+
+  read(file_id_common2,iostat=ios)XSSM(xbeg)%dat
+
+  if(ios.eq.0)then
+
+    do x=xbeg+1,xend
+     read(file_id_common2)XSSM(x)%dat
+    enddo
+
+  else            
+    rewind(file_id_common2)
+    do x=xbeg,xend
+     fullfilename=trim(adjustl(pathname))//'Theory_tables/' &
+             &   //trim(filename(x))
+         
+     call read_tabletype1(XSSM(x),0,XSSM(x)%id,fullfilename)              
+#ifndef WEBVERSION
+     write(file_id_common2)XSSM(x)%dat
+#endif     
+    enddo
+  endif
+  close(file_id_common2)
+  deallocate(filename)
+
+!****************************************************
+! Read in the WH/ZH coefficients for the effective coupling approximation
+!****************************************************
+allocate(VHcoeff(20))
+  
+  xbeg=lbound(VHcoeff,dim=1)
+  xend=ubound(VHcoeff,dim=1)
+  
+  allocate(filename(xbeg:xend))    
+  x=xbeg-1
+ 
+ 
+! NOTE: The %id placeholder is abused to specify the number of columns in the file
+
+! Tevatron
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=1850.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/Teva__coefficients_WH_NOEW.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=1850.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/Teva__coefficients_WH.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=1850.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/Teva__coefficients_ZH_NOEW.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=1850.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/Teva__coefficients_ZH.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=1850.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/Teva__coefficients_ZH_CPodd.dat'
+
+! LHC7
+
+  x=x+1 
+  VHcoeff(x)%xmin=2.0D0
+  VHcoeff(x)%xmax=2950.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC7__coefficients_WH_NOEW.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=2.0D0
+  VHcoeff(x)%xmax=2950.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC7__coefficients_WH.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=2.0D0
+  VHcoeff(x)%xmax=2950.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC7__coefficients_ZH_NOEW.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=2.0D0
+  VHcoeff(x)%xmax=2950.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC7__coefficients_ZH.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=1850.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC7__coefficients_ZH_CPodd.dat'
+
+! LHC8
+
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=2950.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC8__coefficients_WH_NOEW.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=2950.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC8__coefficients_WH.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=2950.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC8__coefficients_ZH_NOEW.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=2950.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC8__coefficients_ZH.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=1850.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC8__coefficients_ZH_CPodd.dat'
+
+
+! LHC13
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=2950.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC13__coefficients_WH_NOEW.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=2950.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC13__coefficients_WH.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=2950.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC13__coefficients_ZH_NOEW.dat'
+ 
+  
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=2950.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC13__coefficients_ZH.dat'
+
+  x=x+1 
+  VHcoeff(x)%xmin=1.0D0
+  VHcoeff(x)%xmax=1850.0D0
+  VHcoeff(x)%sep=1.0D0
+  VHcoeff(x)%id=8 
+  filename(x)='VH_coefficients/LHC8__coefficients_ZH_CPodd.dat'
+
+  ! checks we've filled the whole array
+  if(x.ne.xend)then
+   stop 'error in setup_XSSM (b)'
+  endif 
+
+  ! do loop to read in S95 tables 
+  do x=xbeg,xend
+   VHcoeff(x)%nx=nint((VHcoeff(x)%xmax-VHcoeff(x)%xmin)/VHcoeff(x)%sep)+1   
+   allocate(VHcoeff(x)%dat(VHcoeff(x)%nx,VHcoeff(x)%id-1))
+  enddo     
+
+  open(file_id_common2,file = trim(adjustl(pathname))//'Theory_tables/' // &
+      &  'VHcoeff.binary',form='unformatted')
+
+  read(file_id_common2,iostat=ios)VHcoeff(xbeg)%dat
+
+  if(ios.eq.0)then
+
+    do x=xbeg+1,xend
+     read(file_id_common2)VHcoeff(x)%dat
+    enddo
+
+  else            
+    rewind(file_id_common2)
+    do x=xbeg,xend
+     fullfilename=trim(adjustl(pathname))//'Theory_tables/' &
+             &   //trim(filename(x))
+!      write(*,*) "Reading in "//fullfilename
+     call read_tabletype1(VHcoeff(x),1,VHcoeff(x)%id,fullfilename)              
+#ifndef WEBVERSION
+     write(file_id_common2)VHcoeff(x)%dat
+#endif     
+    enddo
+  endif
+  close(file_id_common2)
+  deallocate(filename)
+
+
+
+!****************************************************
+! Read in the full ZH coefficients for the effective coupling approximation
+! (TS/DD 2018-08-23)
+!****************************************************
+allocate(ZHcoeff(Ncollider))
+  
+  xbeg=lbound(ZHcoeff,dim=1)
+  xend=ubound(ZHcoeff,dim=1)
+  
+  allocate(filename(xbeg:xend))    
+  x=xbeg-1
+ 
+! NOTE: The %id placeholder is abused to specify the number of columns in the file
+ 
+  x=x+1
+  ZHcoeff(x)%xmin=1.0D0
+  ZHcoeff(x)%xmax=1000.0D0
+  ZHcoeff(x)%sep=1.0D0
+  ZHcoeff(x)%id=133 
+  filename(x)='VH_coefficients/Teva_fulltable.dat'
+  
+  x=x+1
+  ZHcoeff(x)%xmin=1.0D0
+  ZHcoeff(x)%xmax=4999.0D0
+  ZHcoeff(x)%sep=1.0D0
+  ZHcoeff(x)%id=133 
+  filename(x)='VH_coefficients/LHC7_fulltable.dat'
+
+  x=x+1
+  ZHcoeff(x)%xmin=1.0D0
+  ZHcoeff(x)%xmax=4999.0D0
+  ZHcoeff(x)%sep=1.0D0
+  ZHcoeff(x)%id=133 
+  filename(x)='VH_coefficients/LHC8_fulltable.dat'
+  
+  x=x+1
+  ZHcoeff(x)%xmin=1.0D0
+  ZHcoeff(x)%xmax=4999.0D0
+  ZHcoeff(x)%sep=1.0D0
+  ZHcoeff(x)%id=133
+  filename(x)='VH_coefficients/LHC13_fulltable.dat'    
+
+  ! checks we've filled the whole array
+  if(x.ne.xend)then
+   stop 'error in setup_XSSM (c)'
+  endif 
+
+  ! do loop to read in S95 tables 
+  do x=xbeg,xend
+   ZHcoeff(x)%nx=nint((ZHcoeff(x)%xmax-ZHcoeff(x)%xmin)/ZHcoeff(x)%sep)+1   
+   allocate(ZHcoeff(x)%dat(ZHcoeff(x)%nx,ZHcoeff(x)%id-1))
+  enddo
+
+  open(file_id_common2,file = trim(adjustl(pathname))//'Theory_tables/' // &
+      &  'ZHcoeff.binary',form='unformatted')
+
+  read(file_id_common2,iostat=ios) ZHcoeff(xbeg)%dat
+
+  if(ios.eq.0)then
+    do x=xbeg+1,xend
+     read(file_id_common2) ZHcoeff(x)%dat
+    enddo
+
+  else            
+    rewind(file_id_common2)
+    do x=xbeg,xend
+     fullfilename=trim(adjustl(pathname))//'Theory_tables/' &
+             &   //trim(filename(x))
+!       write(*,*) "Reading in "//fullfilename
+     call read_tabletype1(ZHcoeff(x),1,ZHcoeff(x)%id,fullfilename)              
+#ifndef WEBVERSION
+     write(file_id_common2)ZHcoeff(x)%dat
+#endif     
+    enddo
+  endif
+  close(file_id_common2)
+  
+  deallocate(filename)
+! -----------------------
+
+ end subroutine setup_XSSM
+ 
+  !************************************************************   
+ subroutine deallocate_XSSM
+ !************************************************************
+  implicit none
+  !-----------------------------------internal
+  integer x
+  !-------------------------------------------
+  do x=lbound(XSSM,dim=1),ubound(XSSM,dim=1)
+   deallocate(XSSM(x)%dat)
+  enddo 
+  
+  deallocate(XSSM)
+
+  do x=lbound(VHcoeff,dim=1),ubound(VHcoeff,dim=1)
+   deallocate(VHcoeff(x)%dat)
+  enddo 
+  
+  deallocate(VHcoeff)
+
+  do x=lbound(ZHcoeff,dim=1),ubound(ZHcoeff,dim=1)
+   deallocate(ZHcoeff(x)%dat)
+  enddo 
+  
+  deallocate(ZHcoeff)
+ 
+ end subroutine deallocate_XSSM
+ !************************************************************
+ 
+ !******************************************************  
+ ! New coefficient functions for HB-5 for effective coupling
+ ! approximation of WH, ZH production.
+ !******************************************************  
+  function XS_WHcoeff(x,collider,coeff_i,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  integer, intent(in) :: coeff_i
+  character(LEN=5), intent(in) :: collider
+  double precision :: interpol
+  double precision :: XS_WHcoeff
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+  integer :: iwEW, iwoEW
+
+  call testXSSM(x)
+
+ select case(trim(adjustl(collider)))
+  case("TEV")
+   iwoEW = 1
+   iwEW = 2   
+  case("LHC7")
+   iwoEW = 6
+   iwEW = 7  
+  case("LHC8") 
+   iwoEW = 11
+   iwEW = 12   
+  case("LHC13") 
+   iwoEW = 16
+   iwEW = 17
+  case default
+   stop 'wrong input for collider to subroutine XS_WHcoeff'
+ end select
+     
+  call interpolate_tabletype1(x,VHcoeff(iwoEW),coeff_i,interpol,.True.)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,VHcoeff(iwEW),coeff_i,interpol,.True.)
+    endif
+   endif 
+
+! else
+!  interpol=badvalue
+! endif 
+
+  XS_WHcoeff=interpol
+ 
+ end function XS_WHcoeff
+ 
+  function WH_nnlo(x,collider,ghw,ght,ghb,strict,EWcorr)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghw,ght,ghb
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  double precision :: WH_nnlo
+
+  WH_nnlo = XS_WHcoeff(x,collider,1,strict, EWcorr) *  ght**2.0D0 + &
+    &       XS_WHcoeff(x,collider,2,strict, EWcorr) *  ghb**2.0D0 + &
+    &       XS_WHcoeff(x,collider,3,strict, EWcorr) *  ghw**2.0D0 + &
+    &       XS_WHcoeff(x,collider,4,strict, EWcorr) *  ght * ghw + &
+    &       XS_WHcoeff(x,collider,5,strict, EWcorr) *  ghb * ghw + &
+    &       XS_WHcoeff(x,collider,6,strict, EWcorr) *  ght * ghb
+  
+  end function WH_nnlo
+  
+  function WH_nnlo_SM(x,collider,strict,EWcorr)
+  implicit none
+  double precision, intent(in) :: x
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  logical,optional :: EWcorr    
+  double precision :: WH_nnlo_SM
+  
+  WH_nnlo_SM = XS_WHcoeff(x,collider,7,strict,EWcorr)
+
+  end function WH_nnlo_SM
+
+ !****************************************************** 
+  function XS_ZHcoeff(x,collider,coeff_i,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  integer, intent(in) :: coeff_i
+  character(LEN=5), intent(in) :: collider  
+  double precision :: interpol
+  double precision :: XS_ZHcoeff
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+  integer :: iwEW, iwoEW  
+
+  call testXSSM(x)
+
+ select case(trim(adjustl(collider)))
+  case("TEV")
+   iwoEW = 3
+   iwEW = 4   
+  case("LHC7")
+   iwoEW = 8
+   iwEW = 9  
+  case("LHC8") 
+   iwoEW = 13
+   iwEW = 14   
+  case("LHC13") 
+   iwoEW = 18
+   iwEW = 19
+  case default
+   stop 'wrong input for collider to subroutine XS_ZHcoeff'
+ end select
+ 
+  call interpolate_tabletype1(x,VHcoeff(iwoEW),coeff_i,interpol,.True.)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,VHcoeff(iwEW),coeff_i,interpol,.True.)
+    endif
+   endif 
+
+  XS_ZHcoeff=interpol
+ 
+ end function XS_ZHcoeff
+ !******************************************************  
+  function XS_ZHcoeff_CPodd(x,collider,coeff_i,strict)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  integer, intent(in) :: coeff_i
+  character(LEN=5), intent(in) :: collider  
+  double precision :: interpol
+  double precision :: XS_ZHcoeff_CPodd
+  logical,optional :: strict 
+  logical :: rangeok
+  double precision :: func,badvalue
+  integer :: i
+
+  call testXSSM(x)
+
+ select case(trim(adjustl(collider)))
+  case("TEV")
+   i = 5
+  case("LHC7")
+   i = 10
+   case("LHC8") 
+   i = 15
+   case("LHC13") 
+   i = 20
+   case default
+   stop 'wrong input for collider to subroutine XS_ZHcoeff_CPodd'
+ end select
+ 
+  call interpolate_tabletype1(x,VHcoeff(i),coeff_i,interpol,.True.)
+
+  XS_ZHcoeff_CPodd=interpol
+ 
+ end function XS_ZHcoeff_CPodd
+  !****************************************************** 
+  function ZHcoeff_func(x,collider,coeff_i,strict)!,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  integer, intent(in) :: coeff_i
+  character(LEN=5), intent(in) :: collider  
+  double precision :: interpol
+  double precision :: ZHcoeff_func
+  logical,optional :: strict
+!   logical,optional :: EWcorr  
+!   logical :: rangeok
+!   double precision :: func,badvalue
+  integer :: i! wEW, iwoEW  
+
+  call testXSSM(x)
+
+ select case(trim(adjustl(collider)))
+  case("TEV")
+   i=1
+  case("LHC7")
+   i=2
+  case("LHC8") 
+   i=3
+  case("LHC13") 
+   i=4
+  case default
+   stop 'wrong input for collider to subroutine XS_ZHcoeff_full'
+ end select
+ 
+! as long as only LHC13 is implemented:
+!    i = 1
+    
+ 
+  call interpolate_tabletype1(x,ZHcoeff(i),coeff_i,interpol,.True.)
+   
+!    if(present(EWcorr))then
+!     if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+!      call interpolate_tabletype1(x,VHcoeff(iwEW),coeff_i,interpol,.True.)
+!     endif
+!    endif 
+
+  ZHcoeff_func=interpol
+ 
+ end function ZHcoeff_func
+ !******************************************************  
+ ! Internal functions to obtain the ZH cross section
+ !******************************************************  
+!***********************<<<<START ZH FUNCTION BLOCK >>>>>****************
+
+function ZH_cp0_nlo(x,collider,ghz,ght,ghb,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cp0_nlo  
+  
+  
+  ZH_cp0_nlo= ghz**2.0D0 * ZHcoeff_func(x,collider,7,strict) + &
+&     ght**2.0D0 * ZHcoeff_func(x,collider,1,strict) + &
+&     ght*ghz * ZHcoeff_func(x,collider,9,strict) + &
+&     ght*ghb * ZHcoeff_func(x,collider,5,strict) + &
+&     ghb**2.0D0 * ZHcoeff_func(x,collider,3,strict) + &
+&     ghb*ghz * ZHcoeff_func(x,collider,11,strict) 
+  ZH_cp0_nlo = ZH_cp0_nlo/1000.0D0 ! convert from fb to pb  
+ end function ZH_cp0_nlo
+                    
+function ZH_cp0_nlo_gg(x,collider,ghz,ght,ghb,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cp0_nlo_gg  
+  
+  
+  ZH_cp0_nlo_gg= ghz**2.0D0 * ZHcoeff_func(x,collider,37,strict) + &
+&     ght**2.0D0 * ZHcoeff_func(x,collider,31,strict) + &
+&     ght*ghz * ZHcoeff_func(x,collider,39,strict) + &
+&     ght*ghb * ZHcoeff_func(x,collider,35,strict) + &
+&     ghb**2.0D0 * ZHcoeff_func(x,collider,33,strict) + &
+&     ghb*ghz * ZHcoeff_func(x,collider,41,strict) 
+  ZH_cp0_nlo_gg = ZH_cp0_nlo_gg/1000.0D0 ! convert from fb to pb  
+ end function ZH_cp0_nlo_gg
+                    
+function ZH_cp0_nlo_qq(x,collider,ghz,ght,ghb,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cp0_nlo_qq  
+  
+  
+  ZH_cp0_nlo_qq= ghz**2.0D0 * ZHcoeff_func(x,collider,67,strict) + &
+&     ght**2.0D0 * ZHcoeff_func(x,collider,61,strict) + &
+&     ght*ghz * ZHcoeff_func(x,collider,69,strict) + &
+&     ght*ghb * ZHcoeff_func(x,collider,65,strict) + &
+&     ghb**2.0D0 * ZHcoeff_func(x,collider,63,strict) + &
+&     ghb*ghz * ZHcoeff_func(x,collider,71,strict) 
+  ZH_cp0_nlo_qq = ZH_cp0_nlo_qq/1000.0D0 ! convert from fb to pb  
+ end function ZH_cp0_nlo_qq
+                    
+function ZH_cp0_nlo_bb(x,collider,ghb,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghb
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cp0_nlo_bb  
+  
+  
+  ZH_cp0_nlo_bb= ghb**2.0D0 * ZHcoeff_func(x,collider,91,strict) 
+  ZH_cp0_nlo_bb = ZH_cp0_nlo_bb/1000.0D0 ! convert from fb to pb  
+ end function ZH_cp0_nlo_bb
+                    
+function ZH_cp0_nlo_ggqqbb(x,collider,ghz,ght,ghb,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cp0_nlo_ggqqbb  
+  
+  ZH_cp0_nlo_ggqqbb = ZH_cp0_nlo_gg(x,collider,ghz,ght,ghb,strict) + &
+&     ZH_cp0_nlo_qq(x,collider,ghz,ght,ghb,strict) + &
+&     ZH_cp0_nlo_bb(x,collider,ghb,strict) 
+    
+ end function ZH_cp0_nlo_ggqqbb
+                    
+function ZH_cp0_nnlo(x,collider,ghz,ght,ghb,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cp0_nnlo  
+  
+  
+  ZH_cp0_nnlo= ghz**2.0D0 * ZHcoeff_func(x,collider,99,strict) + &
+&     ght**2.0D0 * ZHcoeff_func(x,collider,95,strict) + &
+&     ght*ghz * ZHcoeff_func(x,collider,101,strict) + &
+&     ght*ghb * ZHcoeff_func(x,collider,105,strict) + &
+&     ghb**2.0D0 * ZHcoeff_func(x,collider,97,strict) + &
+&     ghb*ghz * ZHcoeff_func(x,collider,103,strict) 
+  ZH_cp0_nnlo = ZH_cp0_nnlo/1000.0D0 ! convert from fb to pb  
+ end function ZH_cp0_nnlo
+                    
+function ZH_cp0_nnlo_gg(x,collider,ghz,ght,ghb,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cp0_nnlo_gg  
+  
+  
+  ZH_cp0_nnlo_gg= ghz**2.0D0 * ZHcoeff_func(x,collider,111,strict) + &
+&     ght**2.0D0 * ZHcoeff_func(x,collider,107,strict) + &
+&     ght*ghz * ZHcoeff_func(x,collider,113,strict) + &
+&     ght*ghb * ZHcoeff_func(x,collider,117,strict) + &
+&     ghb**2.0D0 * ZHcoeff_func(x,collider,109,strict) + &
+&     ghb*ghz * ZHcoeff_func(x,collider,115,strict) 
+  ZH_cp0_nnlo_gg = ZH_cp0_nnlo_gg/1000.0D0 ! convert from fb to pb  
+ end function ZH_cp0_nnlo_gg
+                    
+function ZH_cp0_nnlo_qq(x,collider,ghz,ght,ghb,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cp0_nnlo_qq  
+  
+  
+  ZH_cp0_nnlo_qq= ghz**2.0D0 * ZHcoeff_func(x,collider,123,strict) + &
+&     ght**2.0D0 * ZHcoeff_func(x,collider,119,strict) + &
+&     ght*ghz * ZHcoeff_func(x,collider,125,strict) + &
+&     ght*ghb * ZHcoeff_func(x,collider,129,strict) + &
+&     ghb**2.0D0 * ZHcoeff_func(x,collider,121,strict) + &
+&     ghb*ghz * ZHcoeff_func(x,collider,127,strict) 
+  ZH_cp0_nnlo_qq = ZH_cp0_nnlo_qq/1000.0D0 ! convert from fb to pb  
+ end function ZH_cp0_nnlo_qq
+                    
+function ZH_cp0_nnlo_bb(x,collider,ghb,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghb
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cp0_nnlo_bb  
+  
+  
+  ZH_cp0_nnlo_bb= ghb**2.0D0 * ZHcoeff_func(x,collider,131,strict) 
+  ZH_cp0_nnlo_bb = ZH_cp0_nnlo_bb/1000.0D0 ! convert from fb to pb  
+ end function ZH_cp0_nnlo_bb
+                    
+function ZH_cp0_nnlo_ggqqbb(x,collider,ghz,ght,ghb,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cp0_nnlo_ggqqbb  
+  
+  ZH_cp0_nnlo_ggqqbb = ZH_cp0_nnlo_gg(x,collider,ghz,ght,ghb,strict) + &
+&     ZH_cp0_nnlo_qq(x,collider,ghz,ght,ghb,strict) + &
+&     ZH_cp0_nnlo_bb(x,collider,ghb,strict) 
+    
+ end function ZH_cp0_nnlo_ggqqbb
+                    
+function ZH_cpmix_nlo(x,collider,ghz,ght,ghb,gat,gab,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb,gat,gab
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cpmix_nlo  
+  
+  
+  ZH_cpmix_nlo= ghz**2.0D0 * ZHcoeff_func(x,collider,7,strict) + &
+&     ghz*ght * ZHcoeff_func(x,collider,9,strict) + &
+&     ghz*ghb * ZHcoeff_func(x,collider,11,strict) + &
+&     gat**2.0D0 * ZHcoeff_func(x,collider,13,strict) + &
+&     gat*ghz * ZHcoeff_func(x,collider,19,strict) + &
+&     gat*ght * ZHcoeff_func(x,collider,15,strict) + &
+&     gat*ghb * ZHcoeff_func(x,collider,17,strict) + &
+&     ght**2.0D0 * ZHcoeff_func(x,collider,1,strict) + &
+&     ght*ghb * ZHcoeff_func(x,collider,5,strict) + &
+&     gab**2.0D0 * ZHcoeff_func(x,collider,21,strict) + &
+&     gab*ghz * ZHcoeff_func(x,collider,27,strict) + &
+&     gab*gat * ZHcoeff_func(x,collider,29,strict) + &
+&     gab*ght * ZHcoeff_func(x,collider,23,strict) + &
+&     gab*ghb * ZHcoeff_func(x,collider,25,strict) + &
+&     ghb**2.0D0 * ZHcoeff_func(x,collider,3,strict) 
+  ZH_cpmix_nlo = ZH_cpmix_nlo/1000.0D0 ! convert from fb to pb  
+ end function ZH_cpmix_nlo
+                    
+function ZH_cpmix_nlo_gg(x,collider,ghz,ght,ghb,gat,gab,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb,gat,gab
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cpmix_nlo_gg  
+  
+  
+  ZH_cpmix_nlo_gg= ghz**2.0D0 * ZHcoeff_func(x,collider,37,strict) + &
+&     ghz*ght * ZHcoeff_func(x,collider,39,strict) + &
+&     ghz*ghb * ZHcoeff_func(x,collider,41,strict) + &
+&     gat**2.0D0 * ZHcoeff_func(x,collider,43,strict) + &
+&     gat*ghz * ZHcoeff_func(x,collider,49,strict) + &
+&     gat*ght * ZHcoeff_func(x,collider,45,strict) + &
+&     gat*ghb * ZHcoeff_func(x,collider,47,strict) + &
+&     ght**2.0D0 * ZHcoeff_func(x,collider,31,strict) + &
+&     ght*ghb * ZHcoeff_func(x,collider,35,strict) + &
+&     gab**2.0D0 * ZHcoeff_func(x,collider,51,strict) + &
+&     gab*ghz * ZHcoeff_func(x,collider,57,strict) + &
+&     gab*gat * ZHcoeff_func(x,collider,59,strict) + &
+&     gab*ght * ZHcoeff_func(x,collider,53,strict) + &
+&     gab*ghb * ZHcoeff_func(x,collider,55,strict) + &
+&     ghb**2.0D0 * ZHcoeff_func(x,collider,33,strict) 
+  ZH_cpmix_nlo_gg = ZH_cpmix_nlo_gg/1000.0D0 ! convert from fb to pb  
+ end function ZH_cpmix_nlo_gg
+                    
+function ZH_cpmix_nlo_qq(x,collider,ghz,ght,ghb,gat,gab,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb,gat,gab
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cpmix_nlo_qq  
+  
+  
+  ZH_cpmix_nlo_qq= ghz**2.0D0 * ZHcoeff_func(x,collider,67,strict) + &
+&     ghz*ght * ZHcoeff_func(x,collider,69,strict) + &
+&     ghz*ghb * ZHcoeff_func(x,collider,71,strict) + &
+&     gat**2.0D0 * ZHcoeff_func(x,collider,73,strict) + &
+&     gat*ghz * ZHcoeff_func(x,collider,79,strict) + &
+&     gat*ght * ZHcoeff_func(x,collider,75,strict) + &
+&     gat*ghb * ZHcoeff_func(x,collider,77,strict) + &
+&     ght**2.0D0 * ZHcoeff_func(x,collider,61,strict) + &
+&     ght*ghb * ZHcoeff_func(x,collider,65,strict) + &
+&     gab**2.0D0 * ZHcoeff_func(x,collider,81,strict) + &
+&     gab*ghz * ZHcoeff_func(x,collider,87,strict) + &
+&     gab*gat * ZHcoeff_func(x,collider,89,strict) + &
+&     gab*ght * ZHcoeff_func(x,collider,83,strict) + &
+&     gab*ghb * ZHcoeff_func(x,collider,85,strict) + &
+&     ghb**2.0D0 * ZHcoeff_func(x,collider,63,strict) 
+  ZH_cpmix_nlo_qq = ZH_cpmix_nlo_qq/1000.0D0 ! convert from fb to pb  
+ end function ZH_cpmix_nlo_qq
+                    
+function ZH_cpmix_nlo_bb(x,collider,ghb,gab,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghb,gab
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cpmix_nlo_bb  
+  
+  
+  ZH_cpmix_nlo_bb= (ghb**2.0D0+gab**2.0D0) * ZHcoeff_func(x,collider,91,strict) 
+  ZH_cpmix_nlo_bb = ZH_cpmix_nlo_bb/1000.0D0 ! convert from fb to pb  
+ end function ZH_cpmix_nlo_bb
+                    
+function ZH_cpmix_nlo_ggqqbb(x,collider,ghz,ght,ghb,gat,gab,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb,gat,gab
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cpmix_nlo_ggqqbb  
+  
+  ZH_cpmix_nlo_ggqqbb = ZH_cpmix_nlo_gg(x,collider,ghz,ght,ghb,gat,gab,strict) + &
+&     ZH_cpmix_nlo_qq(x,collider,ghz,ght,ghb,gat,gab,strict) + &
+&     ZH_cpmix_nlo_bb(x,collider,ghb,gab,strict) 
+    
+ end function ZH_cpmix_nlo_ggqqbb
+                    
+function ZH_cpmix_nnlo_qq(x,collider,ghz,ght,ghb,gat,gab,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb,gat,gab
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cpmix_nnlo_qq  
+  
+
+  if((ghz.eq.0.0D0).and.(ght.eq.0.0D0).and.(ghb.eq.0.0D0))then
+      ZH_cpmix_nnlo_qq =  ZH_cpmix_nlo_qq(x,collider,ghz,ght,ghb,gat,gab,strict) * &
+ div(ZH_cp0_nnlo_qq(x,collider,1.0D0,1.0D0,1.0D0,strict), &
+ ZH_cp0_nlo_qq(x,collider,1.0D0,1.0D0,1.0D0,strict),1.0D0, 0.0D0)  
+
+  else
+      ZH_cpmix_nnlo_qq =  ZH_cpmix_nlo_qq(x,collider,ghz,ght,ghb,gat,gab,strict) * &
+ div(ZH_cp0_nnlo_qq(x,collider,ghz,ght,ghb,strict), &
+ ZH_cp0_nlo_qq(x,collider,ghz,ght,ghb,strict),1.0D0, 0.0D0)  
+
+  endif
+                          
+ end function ZH_cpmix_nnlo_qq
+                    
+function ZH_cpmix_nnlo_bb(x,collider,ghb,gab,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghb,gab
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cpmix_nnlo_bb  
+  
+
+  if((ghb.eq.0.0D0))then
+      ZH_cpmix_nnlo_bb =  ZH_cpmix_nlo_bb(x,collider,ghb,gab,strict) * &
+ div(ZH_cp0_nnlo_bb(x,collider,1.0D0,strict), &
+ ZH_cp0_nlo_bb(x,collider,1.0D0,strict),1.0D0, 0.0D0)  
+
+  else
+      ZH_cpmix_nnlo_bb =  ZH_cpmix_nlo_bb(x,collider,ghb,gab,strict) * &
+ div(ZH_cp0_nnlo_bb(x,collider,ghb,strict), &
+ ZH_cp0_nlo_bb(x,collider,ghb,strict),1.0D0, 0.0D0)  
+
+  endif
+                          
+ end function ZH_cpmix_nnlo_bb
+                    
+function ZH_cpmix_nnlo_gg(x,collider,ghz,ght,ghb,gat,gab,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb,gat,gab
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cpmix_nnlo_gg  
+  
+
+  if((ghz.eq.0.0D0).and.(ght.eq.0.0D0).and.(ghb.eq.0.0D0))then
+      ZH_cpmix_nnlo_gg =  ZH_cpmix_nlo_gg(x,collider,ghz,ght,ghb,gat,gab,strict) * &
+ div(ZH_cp0_nnlo_gg(x,collider,1.0D0,1.0D0,1.0D0,strict), &
+ ZH_cp0_nlo_gg(x,collider,1.0D0,1.0D0,1.0D0,strict),1.0D0, 0.0D0)  
+
+  else
+      ZH_cpmix_nnlo_gg =  ZH_cpmix_nlo_gg(x,collider,ghz,ght,ghb,gat,gab,strict) * &
+ div(ZH_cp0_nnlo_gg(x,collider,ghz,ght,ghb,strict), &
+ ZH_cp0_nlo_gg(x,collider,ghz,ght,ghb,strict),1.0D0, 0.0D0)  
+
+  endif
+                          
+ end function ZH_cpmix_nnlo_gg
+                    
+function ZH_cpmix_nnlo(x,collider,ghz,ght,ghb,gat,gab,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb,gat,gab
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cpmix_nnlo  
+  
+
+  if((ghz.eq.0.0D0).and.(ght.eq.0.0D0).and.(ghb.eq.0.0D0))then
+      ZH_cpmix_nnlo =  ZH_cpmix_nlo(x,collider,ghz,ght,ghb,gat,gab,strict) * &
+ div(ZH_cp0_nnlo(x,collider,1.0D0,1.0D0,1.0D0,strict), &
+ ZH_cp0_nlo(x,collider,1.0D0,1.0D0,1.0D0,strict),1.0D0, 0.0D0)  
+
+  else
+      ZH_cpmix_nnlo =  ZH_cpmix_nlo(x,collider,ghz,ght,ghb,gat,gab,strict) * &
+ div(ZH_cp0_nnlo(x,collider,ghz,ght,ghb,strict), &
+ ZH_cp0_nlo(x,collider,ghz,ght,ghb,strict),1.0D0, 0.0D0)  
+
+  endif
+                          
+ end function ZH_cpmix_nnlo
+                    
+function ZH_cpmix_nnlo_ggqqbb(x,collider,ghz,ght,ghb,gat,gab,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb,gat,gab
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cpmix_nnlo_ggqqbb  
+  
+  ZH_cpmix_nnlo_ggqqbb = ZH_cpmix_nnlo_qq(x,collider,ghz,ght,ghb,gat,gab,strict) + &
+&     ZH_cpmix_nnlo_bb(x,collider,ghb,gab,strict) + &
+&     ZH_cpmix_nnlo_gg(x,collider,ghz,ght,ghb,gat,gab,strict) 
+    
+ end function ZH_cpmix_nnlo_ggqqbb
+                    
+function ZH_cpmix_nnlo_qqbb(x,collider,ghz,ght,ghb,gat,gab,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb,gat,gab
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: ZH_cpmix_nnlo_qqbb  
+  
+  ZH_cpmix_nnlo_qqbb = ZH_cpmix_nnlo_qq(x,collider,ghz,ght,ghb,gat,gab,strict) + &
+&     ZH_cpmix_nnlo_bb(x,collider,ghb,gab,strict) 
+    
+ end function ZH_cpmix_nnlo_qqbb
+                                        
+
+
+
+!***********************<<<<END ZH FUNCTION BLOCK >>>>>****************
+
+ subroutine check_kfactor_ZH(x,collider,ghz,ght,ghb,gat,gab,strict)
+  implicit none
+  double precision, intent(in) :: x
+  double precision, intent(in) :: ghz,ght,ghb,gat,gab
+  character(LEN=5), intent(in) :: collider  
+  logical,optional :: strict
+  double precision :: NLOsum, NLOincl
+
+  NLOsum = ZH_cpmix_nlo_ggqqbb(x,collider,ghz,ght,ghb,gat,gab,strict)
+  NLOincl = ZH_cpmix_nlo(x,collider,ghz,ght,ghb,gat,gab,strict)
+  
+!   write(*,*) NLOsum, NLOincl
+   if((abs(NLOsum - NLOincl)/NLOincl).gt.1E-04) then
+!-- usually values of 1E-08 or less!   
+   write(*,*) "WARNING for ZH XS approximation: NNLO/NLO k-factor may not be accurate: ",&
+&             abs(NLOsum - NLOincl)/NLOincl    
+   endif
+ 
+ end subroutine check_kfactor_ZH
+
+ !******************************************************  
+ !***                                                ***  
+ !***                  LHC 7 TeV                     ***
+ !***                                                ***
+ !******************************************************  
+  function XS_lhc7_gg_H_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc7_gg_H_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC7 ',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(1),1,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(3),1,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc7_gg_H_SM=interpol
+ 
+ end function XS_lhc7_gg_H_SM
+ !******************************************************  
+  function XS_lhc7_bb_H_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc7_bb_H_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC7 ',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(1),3,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(3),6,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc7_bb_H_SM=interpol
+ 
+ end function XS_lhc7_bb_H_SM
+ !******************************************************  
+   function XS_lhc7_vbf_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc7_vbf_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC7 ',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(1),2,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(3),2,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc7_vbf_SM=interpol
+ 
+ end function XS_lhc7_vbf_SM
+ !****************************************************** 
+  function XS_lhc7_HW_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc7_HW_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+
+  badvalue=0.0D0
+  if(present(strict))then
+   if(strict)then
+    badvalue=-1.0D0
+   endif
+  endif     
+  rangeok=.False.
+  if(x.ge.10.0D0.and.x.le.2000) then
+   rangeok=.True.
+  endif   
+
+!   call check_range('LHC7 ',x,rangeok,badvalue,strict)
+
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(2),1,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(3),3,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc7_HW_SM=interpol
+ 
+ end function XS_lhc7_HW_SM
+ !******************************************************  
+  function XS_lhc7_HZ_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc7_HZ_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+
+  badvalue=0.0D0
+  if(present(strict))then
+   if(strict)then
+    badvalue=-1.0D0
+   endif
+  endif     
+  rangeok=.False.
+  if(x.ge.10.0D0.and.x.le.2000) then
+   rangeok=.True.
+  endif   
+
+!   call check_range('LHC7 ',x,rangeok,badvalue,strict)
+
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(2),2,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(3),4,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc7_HZ_SM=interpol
+ 
+ end function XS_lhc7_HZ_SM
+ !******************************************************  
+   function XS_lhc7_ttH_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc7_ttH_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC7 ',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   interpol = XS_lhc7_ttH_SM_func(x,strict)   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(3),5,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc7_ttH_SM=interpol
+ 
+ end function XS_lhc7_ttH_SM
+ !******************************************************  
+   function XS_lhc7_tH_tchan_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc7_tH_tchan_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC7 ',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   interpol=badvalue
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(3),7,interpol)
+    endif
+   endif
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc7_tH_tchan_SM=interpol
+ 
+ end function XS_lhc7_tH_tchan_SM
+ !******************************************************  
+   function XS_lhc7_tH_schan_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc7_tH_schan_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC7 ',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   interpol=badvalue
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(3),8,interpol)
+    endif
+   endif
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc7_tH_schan_SM=interpol
+ 
+ end function XS_lhc7_tH_schan_SM
+ !******************************************************  
+ !***                                                ***  
+ !***                  LHC 8 TeV                     ***
+ !***                                                ***
+ !******************************************************  
+  function XS_lhc8_gg_H_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc8_gg_H_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC8 ',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(4),1,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(7),1,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc8_gg_H_SM=interpol
+ 
+ end function XS_lhc8_gg_H_SM
+ !******************************************************  
+  function XS_lhc8_bb_H_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc8_bb_H_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC8 ',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(4),3,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(7),6,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc8_bb_H_SM=interpol
+ 
+ end function XS_lhc8_bb_H_SM
+ !******************************************************  
+   function XS_lhc8_vbf_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc8_vbf_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC8 ',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(4),2,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(7),2,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc8_vbf_SM=interpol
+ 
+ end function XS_lhc8_vbf_SM
+ !****************************************************** 
+  function XS_lhc8_HW_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc8_HW_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+
+  badvalue=0.0D0
+  if(present(strict))then
+   if(strict)then
+    badvalue=-1.0D0
+   endif
+  endif     
+  rangeok=.False.
+  if(x.ge.10.0D0.and.x.le.2000) then
+   rangeok=.True.
+  endif   
+
+!   call check_range('LHC8 ',x,rangeok,badvalue,strict)
+
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(5),1,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(7),3,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc8_HW_SM=interpol
+ 
+ end function XS_lhc8_HW_SM
+ !******************************************************  
+  function XS_lhc8_HZ_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc8_HZ_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+
+  badvalue=0.0D0
+  if(present(strict))then
+   if(strict)then
+    badvalue=-1.0D0
+   endif
+  endif     
+  rangeok=.False.
+  if(x.ge.10.0D0.and.x.le.2000) then
+   rangeok=.True.
+  endif   
+
+!   call check_range('LHC8 ',x,rangeok,badvalue,strict)
+
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(5),2,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(7),4,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc8_HZ_SM=interpol
+ 
+ end function XS_lhc8_HZ_SM
+ !******************************************************  
+   function XS_lhc8_ttH_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc8_ttH_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC8 ',x,rangeok,badvalue,strict)
+  if(rangeok)then
+!    call interpolate_tabletype1(x,XSSM(6),1,interpol)
+   interpol = XS_lhc8_ttH_SM_func(x,strict)
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(3),5,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc8_ttH_SM=interpol
+ 
+ end function XS_lhc8_ttH_SM
+ !******************************************************  
+   function XS_lhc8_tH_tchan_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc8_tH_tchan_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC8 ',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   interpol=badvalue
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(7),7,interpol)
+    endif
+   endif
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc8_tH_tchan_SM=interpol
+ 
+ end function XS_lhc8_tH_tchan_SM
+ !******************************************************  
+   function XS_lhc8_tH_schan_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc8_tH_schan_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC8 ',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   interpol=badvalue
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(7),8,interpol)
+    endif
+   endif
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc8_tH_schan_SM=interpol
+ 
+ end function XS_lhc8_tH_schan_SM
+ !******************************************************  
+ !***                                                ***  
+ !***                  LHC 13 TeV                     ***
+ !***                                                ***
+ !******************************************************  
+  function XS_lhc13_gg_H_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc13_gg_H_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC13',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(8),1,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(12),1,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc13_gg_H_SM=interpol
+ 
+ end function XS_lhc13_gg_H_SM
+ !******************************************************  
+  function XS_lhc13_bb_H_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc13_bb_H_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC13',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(8),3,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(12),6,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc13_bb_H_SM=interpol
+ 
+ end function XS_lhc13_bb_H_SM
+ !******************************************************  
+   function XS_lhc13_vbf_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc13_vbf_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC13',x,rangeok,badvalue,strict)
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(8),2,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(12),2,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc13_vbf_SM=interpol
+ 
+ end function XS_lhc13_vbf_SM
+ !****************************************************** 
+  function XS_lhc13_HW_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc13_HW_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+
+  badvalue=0.0D0
+  if(present(strict))then
+   if(strict)then
+    badvalue=-1.0D0
+   endif
+  endif     
+  rangeok=.False.
+  if(x.ge.10.0D0.and.x.le.2000) then
+   rangeok=.True.
+  endif   
+
+!   call check_range('lhc13',x,rangeok,badvalue,strict)
+
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(9),1,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(12),3,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc13_HW_SM=interpol
+ 
+ end function XS_lhc13_HW_SM
+ !******************************************************  
+  function XS_lhc13_HZ_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc13_HZ_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+
+  badvalue=0.0D0
+  if(present(strict))then
+   if(strict)then
+    badvalue=-1.0D0
+   endif
+  endif     
+  rangeok=.False.
+  if(x.ge.10.0D0.and.x.le.2000) then
+   rangeok=.True.
+  endif   
+
+!   call check_range('lhc13',x,rangeok,badvalue,strict)
+
+  if(rangeok)then
+   call interpolate_tabletype1(x,XSSM(9),2,interpol)
+   
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(12),4,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc13_HZ_SM=interpol
+ 
+ end function XS_lhc13_HZ_SM
+ !******************************************************  
+   function XS_lhc13_ttH_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc13_ttH_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC13',x,rangeok,badvalue,strict)
+  if(rangeok)then
+!    call interpolate_tabletype1(x,XSSM(10),1,interpol)
+   interpol = XS_lhc13_ttH_SM_func(x,strict)
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(12),5,interpol)
+    endif
+   endif 
+
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc13_ttH_SM=interpol
+ 
+ end function XS_lhc13_ttH_SM
+ !******************************************************  
+   function XS_lhc13_tH_tchan_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc13_tH_tchan_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC13',x,rangeok,badvalue,strict)
+  if(rangeok)then
+!    call interpolate_tabletype1(x,XSSM(11),1,interpol)
+   interpol = XS_lhc13_tH_tchan_SM_func(x,strict)
+
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(12),7,interpol)
+    endif
+   endif
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc13_tH_tchan_SM=interpol
+ 
+ end function XS_lhc13_tH_tchan_SM
+ !******************************************************  
+   function XS_lhc13_tH_schan_SM(x,strict,EWcorr)
+ !******************************************************
+  implicit none
+  double precision, intent(in) :: x
+  double precision :: interpol
+  double precision :: XS_lhc13_tH_schan_SM
+  logical,optional :: strict
+  logical,optional :: EWcorr  
+  logical :: rangeok
+  double precision :: func,badvalue
+
+  call testXSSM(x)
+    
+  call check_range('LHC13',x,rangeok,badvalue,strict)
+  if(rangeok)then
+!    call interpolate_tabletype1(x,XSSM(11),2,interpol)
+   interpol = XS_lhc13_tH_schan_SM_func(x,strict)
+      
+   if(present(EWcorr))then
+    if(EWcorr.and.(abs(x-125.0D0).le.5.0D0)) then
+     call interpolate_tabletype1(x,XSSM(12),8,interpol)
+    endif
+   endif
+  else
+   interpol=badvalue
+  endif 
+
+  XS_lhc13_tH_schan_SM=interpol
+ 
+ end function XS_lhc13_tH_schan_SM
+
  !****************************************************** 
  subroutine check_range(coll,Mh,rangeok,badvalue,strict)
  !****************************************************** 
   implicit none
-  character(LEN=4), intent(in) :: coll ! coll should be the same as the elements of 
+  character(LEN=5), intent(in) :: coll ! coll should be the same as the elements of 
                                        ! collider in S95tables.f90
   double precision, intent(in) :: Mh 
   logical :: rangeok
@@ -66,22 +2004,28 @@ module theory_XS_SM_functions
      rangeok=.False.
   else 
      select case(coll)
-     case('TEV ')
+     case('TEV  ')
       if(    Mh.lt.tevXS_SM_functions_xmin)then 
        rangeok=.False.
       elseif(Mh.gt.tevXS_SM_functions_xmax)then
        rangeok=.False.
       endif
-     case('LHC7')
+     case('LHC7 ')
       if(    Mh.lt.lhc7XS_SM_functions_xmin)then 
        rangeok=.False.
       elseif(Mh.gt.lhc7XS_SM_functions_xmax)then
        rangeok=.False.
       endif
-     case('LHC8')
+     case('LHC8 ')
       if(    Mh.lt.lhc8XS_SM_functions_xmin)then 
        rangeok=.False.
       elseif(Mh.gt.lhc8XS_SM_functions_xmax)then
+       rangeok=.False.
+      endif
+     case('LHC13 ')
+      if(    Mh.lt.lhc13XS_SM_functions_xmin)then 
+       rangeok=.False.
+      elseif(Mh.gt.lhc13XS_SM_functions_xmax)then
        rangeok=.False.
       endif
      case default 
@@ -94,7 +2038,7 @@ module theory_XS_SM_functions
    if(strict)then
     badvalue=-1.0D0
     if(.not.rangeok)then
-      write(*,*)'Warning: Higgs mass is outside valid range for the SM cross section functions' 
+!       write(*,*)'Warning: Higgs mass is outside valid range for the SM cross section functions' 
     endif
    endif
   endif
@@ -111,7 +2055,7 @@ module theory_XS_SM_functions
   double precision :: func,badvalue
   logical,optional :: strict
 
-  call check_range('TEV ',x,rangeok,badvalue,strict)
+  call check_range('TEV  ',x,rangeok,badvalue,strict)
   if(rangeok)then
     func=1.0D3*tev_cs_bg_Hb_SM(x) !convert from pb to fb
   else
@@ -131,7 +2075,7 @@ module theory_XS_SM_functions
   double precision :: func,badvalue
   logical,optional :: strict
 
-  call check_range('TEV ',x,rangeok,badvalue,strict)
+  call check_range('TEV  ',x,rangeok,badvalue,strict)
   if(rangeok)then
     func=1.0D3*tev_cs_bg_Hb_c1_SM(x) !convert from pb to fb
   else
@@ -151,7 +2095,7 @@ module theory_XS_SM_functions
   double precision :: func,badvalue
   logical,optional :: strict
 
-  call check_range('TEV ',x,rangeok,badvalue,strict)
+  call check_range('TEV  ',x,rangeok,badvalue,strict)
   if(rangeok)then
     func=1.0D3*tev_cs_bg_Hb_c2_SM(x) !convert from pb to fb
   else
@@ -171,7 +2115,7 @@ module theory_XS_SM_functions
   double precision :: func,badvalue
   logical,optional :: strict
 
-  call check_range('TEV ',x,rangeok,badvalue,strict)
+  call check_range('TEV  ',x,rangeok,badvalue,strict)
   if(rangeok)then
     func=1.0D3*SMCS_tev_bg_Hb_c3(x) !convert from pb to fb
   else
@@ -191,7 +2135,7 @@ module theory_XS_SM_functions
   double precision :: func,badvalue
   logical,optional :: strict
 
-  call check_range('TEV ',x,rangeok,badvalue,strict)
+  call check_range('TEV  ',x,rangeok,badvalue,strict)
   if(rangeok)then
     func=1.0D3*tev_cs_bg_Hb_c4_SM(x) !convert from pb to fb
   else             
@@ -217,7 +2161,7 @@ module theory_XS_SM_functions
   a1 = 0.0049451487167627D0
   a2 = -3.77008582179264D-06
   
-  call check_range('TEV ',x,rangeok,badvalue,strict)
+  call check_range('TEV  ',x,rangeok,badvalue,strict)
   if(rangeok)then
     func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
   else
@@ -243,7 +2187,7 @@ module theory_XS_SM_functions
   a1 = 0.0047848452802514D0
   a2 = -3.82425969474559D-06 
 
-  call check_range('TEV ',x,rangeok,badvalue,strict)
+  call check_range('TEV  ',x,rangeok,badvalue,strict)
   if(rangeok)then
     func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
   else
@@ -269,7 +2213,7 @@ module theory_XS_SM_functions
  ! a1 = 0.000365613425058581D0
  ! a2 = 2.66122261164927D-06  
 	
- ! call check_range('TEV ',x,rangeok,badvalue,strict)
+ ! call check_range('TEV  ',x,rangeok,badvalue,strict)
  ! if(rangeok)then
  !   func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
  ! else
@@ -296,7 +2240,7 @@ module theory_XS_SM_functions
   a1 = -0.00244189137753305
   a2 = 7.90070235250398e-06 
 	
-  call check_range('TEV ',x,rangeok,badvalue,strict)
+  call check_range('TEV  ',x,rangeok,badvalue,strict)
   if(rangeok)then
     func=10.0D0**3.0D0*10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
   else
@@ -325,7 +2269,7 @@ module theory_XS_SM_functions
   a1 = 0.00367931930924978D0
   a2 =  -5.18285806787161D-06 
 
-  call check_range('TEV ',x,rangeok,badvalue,strict)
+  call check_range('TEV  ',x,rangeok,badvalue,strict)
   if((x.lt.100.0D0).or.(x.gt.200.0D0))then
    !stop 'function XS_gg_H_SM_9713: need to check validity at this MH'
    write(*,*)'WARNING: function XS_tev_gg_H_SM_9713: need to check validity at this MH'
@@ -359,7 +2303,7 @@ module theory_XS_SM_functions
   a1 = 0.00426592493420152D0
   a2 = -9.15606785912482D-06
 
-  call check_range('TEV ',x,rangeok,badvalue,strict)
+  call check_range('TEV  ',x,rangeok,badvalue,strict)
   if((x.lt.100.0D0).or.(x.gt.200.0D0))then
    !stop 'function XS_gg_H_SM_9674: need to check validity at this MH'
    write(*,*)'WARNING: function XS_gg_H_SM_9674: need to check validity at this MH'
@@ -390,7 +2334,7 @@ module theory_XS_SM_functions
   a1 = 0.00514220061294974D0
   a2 = -3.31488355831377D-06
 	
-  call check_range('TEV ',x,rangeok,badvalue,strict)
+  call check_range('TEV  ',x,rangeok,badvalue,strict)
   if(rangeok)then
     func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
   else
@@ -416,7 +2360,7 @@ module theory_XS_SM_functions
   a1 = -0.00424395931917914D0
   a2 = 7.67964289500027D-08
 	
-  call check_range('TEV ',x,rangeok,badvalue,strict)
+  call check_range('TEV  ',x,rangeok,badvalue,strict)
   if(rangeok)then
     func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
   else
@@ -442,7 +2386,7 @@ module theory_XS_SM_functions
   a1 = -0.0240486573108739D0
   a2 = 1.90098085776576D-05
 
-  call check_range('TEV ',x,rangeok,badvalue,strict)
+  call check_range('TEV  ',x,rangeok,badvalue,strict)
   if(rangeok)then
     func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
   else
@@ -491,10 +2435,10 @@ module theory_XS_SM_functions
  ! nb: These functions are in units of pb
  !******************************************************
  !******************************************************
- function XS_lhc7_gg_H_SM(x,strict)
+ function XS_lhc7_gg_H_SM_old(x,strict)
  !******************************************************
   implicit none
-  double precision :: XS_lhc7_gg_H_SM
+  double precision :: XS_lhc7_gg_H_SM_old
   double precision, intent(in) :: x 
   logical :: rangeok
   double precision :: func,badvalue
@@ -516,7 +2460,7 @@ module theory_XS_SM_functions
   c4 = 395.248606977478D0
   c5 = -31.7761947614136D0
 		
-  call check_range('LHC7',x,rangeok,badvalue,strict)
+  call check_range('LHC7 ',x,rangeok,badvalue,strict)
   if(rangeok)then
     func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0 &
 	& +b1*exp(-(x-b2)**2.0D0/(b3**2.0D0))/((x-b4)**2.0D0+b5**2.0D0) &
@@ -525,12 +2469,12 @@ module theory_XS_SM_functions
     func=badvalue
   endif
 
-  XS_lhc7_gg_H_SM=  func
+  XS_lhc7_gg_H_SM_old=  func
  
- end function XS_lhc7_gg_H_SM
+ end function XS_lhc7_gg_H_SM_old
  
  !******************************************************
- function XS_lhc7_bb_H_SM(x,strict)
+ function XS_lhc7_bb_H_SM_old(x,strict)
  !******************************************************
  !* fit to single Higgs production via b b-bar annihilation 
  !* for a 7 TeV pp collider (NNLO QCD).
@@ -543,7 +2487,7 @@ module theory_XS_SM_functions
  !* 28/4/2011, Oliver Brein (revised: 29/4/2011)
  !******************************
   implicit none
-  double precision :: XS_lhc7_bb_H_SM
+  double precision :: XS_lhc7_bb_H_SM_old
   double precision, intent(in) :: x 
   logical :: rangeok
   double precision :: func,badvalue
@@ -562,7 +2506,7 @@ module theory_XS_SM_functions
   g1 = 2.52072437882796d-17
   h1 = -4.83311237805624d-21
 
-  call check_range('LHC7',x,rangeok,badvalue,strict)
+  call check_range('LHC7 ',x,rangeok,badvalue,strict)
   if(rangeok)then       
     func=exp( i1/x**3+j1/x**2+k1/x+a1+b1*x+c1*x**2 &
           &   +d1*x**3+e1*x**4+f1*x**5+g1*x**6+h1*x**7  )
@@ -570,14 +2514,14 @@ module theory_XS_SM_functions
     func=badvalue
   endif
 
-  XS_lhc7_bb_H_SM=func
+  XS_lhc7_bb_H_SM_old=func
  
- end function XS_lhc7_bb_H_SM
+ end function XS_lhc7_bb_H_SM_old
  !****************************************************** 
- function XS_lhc7_HW_SM(x,strict)
+ function XS_lhc7_HW_SM_old(x,strict)
  !******************************************************
   implicit none
-  double precision :: XS_lhc7_HW_SM
+  double precision :: XS_lhc7_HW_SM_old
   double precision, intent(in) :: x 
   double precision :: xtemp
   logical :: rangeok
@@ -596,21 +2540,21 @@ module theory_XS_SM_functions
    xtemp=x
   endif
 
-  call check_range('LHC7',xtemp,rangeok,badvalue,strict)
+  call check_range('LHC7 ',xtemp,rangeok,badvalue,strict)
   if(rangeok)then
     func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
   else
     func=badvalue
   endif
 
-  XS_lhc7_HW_SM=func
+  XS_lhc7_HW_SM_old=func
 
- end function XS_lhc7_HW_SM
+ end function XS_lhc7_HW_SM_old
  !****************************************************** 
- function XS_lhc7_HZ_SM(x,strict)
+ function XS_lhc7_HZ_SM_old(x,strict)
  !****************************************************** 
   implicit none
-  double precision :: XS_lhc7_HZ_SM
+  double precision :: XS_lhc7_HZ_SM_old
   double precision, intent(in) :: x 
   double precision :: xtemp
   logical :: rangeok
@@ -629,21 +2573,21 @@ module theory_XS_SM_functions
    xtemp=x
   endif
 
-  call check_range('LHC7',xtemp,rangeok,badvalue,strict)
+  call check_range('LHC7 ',xtemp,rangeok,badvalue,strict)
   if(rangeok)then
     func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
   else
     func=badvalue
   endif
 
-  XS_lhc7_HZ_SM=func
+  XS_lhc7_HZ_SM_old=func
 
- end function XS_lhc7_HZ_SM 
+ end function XS_lhc7_HZ_SM_old
  !****************************************************** 
- function XS_lhc7_vbf_SM(x,strict)
+ function XS_lhc7_vbf_SM_old(x,strict)
  !******************************************************
   implicit none
-  double precision :: XS_lhc7_vbf_SM
+  double precision :: XS_lhc7_vbf_SM_old
   double precision, intent(in) :: x 
   logical :: rangeok
   double precision :: func,badvalue
@@ -655,21 +2599,23 @@ module theory_XS_SM_functions
   a1 = -0.000788771622392916D0
   a2 = 2.55014215205304D-07
 	
-  call check_range('LHC7',x,rangeok,badvalue,strict)
+  call check_range('LHC7 ',x,rangeok,badvalue,strict)
   if(rangeok)then
     func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
   else
     func=badvalue
   endif
 
-  XS_lhc7_vbf_SM= func
+  XS_lhc7_vbf_SM_old= func
 
- end function XS_lhc7_vbf_SM
+ end function XS_lhc7_vbf_SM_old
  !****************************************************** 
- function XS_lhc7_ttH_SM(x,strict)
+ function XS_lhc7_ttH_SM_func(x,strict)
+ ! Fit to YR3 numbers within m<= 300 GeV regime! Extrapolation beyond 300 GeV
+ ! without any guarantees (but looks reasonable).
  !******************************************************
   implicit none
-  double precision :: XS_lhc7_ttH_SM
+  double precision :: XS_lhc7_ttH_SM_func
   double precision, intent(in) :: x 
   double precision :: xtemp
   logical :: rangeok
@@ -682,22 +2628,22 @@ module theory_XS_SM_functions
   a1 = -0.00582434890060432D0
   a2 = 1.00116051386356D-06
 
-  if(x.gt.305.0D0)then !function is not valid at these masses
-   xtemp=1.0D9
-  else
+!   if(x.gt.305.0D0)then !function is not valid at these masses
+!    xtemp=1.0D9
+!   else
    xtemp=x
-  endif
+!   endif
 
-  call check_range('LHC7',xtemp,rangeok,badvalue,strict)
+  call check_range('LHC7 ',xtemp,rangeok,badvalue,strict)
   if(rangeok)then
     func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
   else
     func=badvalue
   endif
 
-  XS_lhc7_ttH_SM=  func
+  XS_lhc7_ttH_SM_func=  func
 
- end function XS_lhc7_ttH_SM
+ end function XS_lhc7_ttH_SM_func
  !******************************************************
 
 
@@ -705,7 +2651,7 @@ module theory_XS_SM_functions
  ! FUNCTIONS FOR LHC AT 8 TEV
  ! nb: These functions are in units of pb
  !******************************************************
- function XS_lhc8_gg_H_SM(x,strict)
+ function XS_lhc8_gg_H_SM_old(x,strict)
  !******************************************************
  ! Update (15/09/2014, TS): New numbers from YR3 in mass
  ! range [80:1000]. Calculated cross section within [60:80]
@@ -716,14 +2662,14 @@ module theory_XS_SM_functions
  ! [60:1000], showing no strange artifacts.
  !******************************************************
   implicit none
-  double precision :: XS_lhc8_gg_H_SM
+  double precision :: XS_lhc8_gg_H_SM_old
   double precision, intent(in) :: x 
   logical :: rangeok
   double precision :: func,badvalue
   double precision :: a0,a0p5,a1,a2,b1,b2,b3,b4,b5,c1,c2,c3,c4,c5
   logical, optional :: strict
 		
-  call check_range('LHC8',x,rangeok,badvalue,strict)
+  call check_range('LHC8 ',x,rangeok,badvalue,strict)
   
 	a0 = 4.80460446867791D0
 	a0p5 = -0.561291516848061D0
@@ -767,12 +2713,12 @@ module theory_XS_SM_functions
     func=badvalue
   endif
 
-  XS_lhc8_gg_H_SM=  func
+  XS_lhc8_gg_H_SM_old=  func
  
- end function XS_lhc8_gg_H_SM
+ end function XS_lhc8_gg_H_SM_old
  
 !******************************************************
- function XS_lhc8_bb_H_SM(x,strict)
+ function XS_lhc8_bb_H_SM_old(x,strict)
  !******************************************************
  !* fit to single Higgs production via b b-bar annihilation 
  !* for a 8 TeV pp collider (NNLO QCD).
@@ -789,7 +2735,7 @@ module theory_XS_SM_functions
  !* for mass range [40, 1100] GeV.
  !******************************************************* 
   implicit none
-  double precision :: XS_lhc8_bb_H_SM
+  double precision :: XS_lhc8_bb_H_SM_old
   double precision, intent(in) :: x 
   logical :: rangeok
   double precision :: func,badvalue
@@ -815,7 +2761,7 @@ module theory_XS_SM_functions
 !        g1 = 1.6391896198688D-17
 !        h1 = -3.03114011105266D-21
 
-  call check_range('LHC8',x,rangeok,badvalue,strict)
+  call check_range('LHC8 ',x,rangeok,badvalue,strict)
   if(rangeok)then       
 !    func=exp( i1/x**3+j1/x**2+k1/x+a1+b1*x+c1*x**2 &
 !          &   +d1*x**3+e1*x**4+f1*x**5+g1*x**6+h1*x**7  )
@@ -824,20 +2770,20 @@ module theory_XS_SM_functions
     func=badvalue
   endif
 
-  XS_lhc8_bb_H_SM=func
+  XS_lhc8_bb_H_SM_old=func
  
- end function XS_lhc8_bb_H_SM
+ end function XS_lhc8_bb_H_SM_old
  !****************************************************** 
   
  !****************************************************** 
- function XS_lhc8_HW_SM(x,strict)
+ function XS_lhc8_HW_SM_old(x,strict)
  !******************************************************
  ! Update (16/09/2014, TS): New fit to updated numbers
  ! of the YR3. Underlying numbers in mass range [80,400]
  ! GeV, fit extends reasonably to mass range [20,450] GeV.
  !******************************************************
   implicit none
-  double precision :: XS_lhc8_HW_SM
+  double precision :: XS_lhc8_HW_SM_old
   double precision, intent(in) :: x 
   double precision :: xtemp
   logical :: rangeok
@@ -864,7 +2810,7 @@ module theory_XS_SM_functions
 	a3 = 2.34931925792847D-08
 	a4 = -3.27458891365096D-11
 
-  call check_range('LHC8',xtemp,rangeok,badvalue,strict)
+  call check_range('LHC8 ',xtemp,rangeok,badvalue,strict)
   if(rangeok)then
 !    func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)   
     func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0+a3*x**3.0D0+a4*x**4.0D0)
@@ -872,18 +2818,18 @@ module theory_XS_SM_functions
     func=badvalue
   endif
 
-  XS_lhc8_HW_SM=func
+  XS_lhc8_HW_SM_old=func
 
- end function XS_lhc8_HW_SM
+ end function XS_lhc8_HW_SM_old
  !****************************************************** 
- function XS_lhc8_HZ_SM(x,strict)
+ function XS_lhc8_HZ_SM_old(x,strict)
  !******************************************************
  ! Update (16/09/2014, TS): New fit to updated numbers
  ! of the YR3. Underlying numbers in mass range [80,400]
  ! GeV, fit extends reasonably to mass range [20,450] GeV. 
  !****************************************************** 
   implicit none
-  double precision :: XS_lhc8_HZ_SM
+  double precision :: XS_lhc8_HZ_SM_old
   double precision, intent(in) :: x 
   double precision :: xtemp
   logical :: rangeok
@@ -911,7 +2857,7 @@ module theory_XS_SM_functions
 	a3 = 1.301339006803D-08
 	a4 = -7.2364967643456D-12
 
-  call check_range('LHC8',xtemp,rangeok,badvalue,strict)
+  call check_range('LHC8 ',xtemp,rangeok,badvalue,strict)
   if(rangeok)then
 !    func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
     func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0+a3*x**3.0D0+a4*x**4.0D0)    
@@ -919,19 +2865,19 @@ module theory_XS_SM_functions
     func=badvalue
   endif
 
-  XS_lhc8_HZ_SM=func
+  XS_lhc8_HZ_SM_old=func
 
- end function XS_lhc8_HZ_SM 
+ end function XS_lhc8_HZ_SM_old 
  
  !****************************************************** 
- function XS_lhc8_vbf_SM(x,strict)
+ function XS_lhc8_vbf_SM_old(x,strict)
  !******************************************************
  ! Update (16/09/2014): Updated to new numbers from YR3,
  ! for mass range [80.,1000.] GeV. Fit extends reasonable
  ! to mass range [20.,1200.] GeV.
  !******************************************************
   implicit none
-  double precision :: XS_lhc8_vbf_SM
+  double precision :: XS_lhc8_vbf_SM_old
   double precision, intent(in) :: x 
   logical :: rangeok
   double precision :: func,badvalue
@@ -950,7 +2896,7 @@ module theory_XS_SM_functions
 !  a1   = -0.00124307978950821D0
 !  a2   =  4.90033650462757D-07
 	
-  call check_range('LHC8',x,rangeok,badvalue,strict)
+  call check_range('LHC8 ',x,rangeok,badvalue,strict)
 
   if(rangeok)then
 !    func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
@@ -960,57 +2906,152 @@ module theory_XS_SM_functions
     func=badvalue
   endif
 
-  XS_lhc8_vbf_SM= func
+  XS_lhc8_vbf_SM_old= func
 
- end function XS_lhc8_vbf_SM
+ end function XS_lhc8_vbf_SM_old
 
 
  !****************************************************** 
- function XS_lhc8_ttH_SM(x,strict)
+ function XS_lhc8_ttH_SM_func(x,strict)
  !******************************************************
- ! Update (16/09/2014, TS): New fit to updated numbers
- ! of the YR3. Underlying numbers in mass range [80,400]
- ! GeV, fit extends reasonably to mass range [20,450] GeV. 
+ ! Update (23/05/2016, TS): New fit to updated numbers
+ ! of the YR4. Applies to mass range [10:3000] GeV. 
  !******************************************************
   implicit none
-  double precision :: XS_lhc8_ttH_SM
+  double precision :: XS_lhc8_ttH_SM_func
   double precision, intent(in) :: x 
   logical :: rangeok
   double precision :: func,badvalue
   double precision :: a0,a0p5,a1,a2,a4
   logical,optional :: strict
-  double precision :: xtemp
-  
-  if(x.gt.450.0D0)then !function is not valid at these masses
-   xtemp=1.0D9
-  else
-   xtemp=x
-  endif
-
-	a0 = 1.07128014006971D0
-	a0p5 = -0.105671543074652D0
-	a1 = -0.00952368203467551D0
-	a2 = 1.53282465914447D-05
-	a4 = -1.13960404229879D-11
-
-!  a0   = 1.45184703448436D0
-!  a0p5 = -0.155124586761319D0
-!  a1   = -0.00621310575330019D0
-!  a2   = 1.1090649496732D-05
+ 
+! NEW FIT (TS 05/23/2016)
+	a0 = 1.88824756082929D0
+	a0p5 = -0.30033317767335D0
+	a1 = 0.00454929867367946D0
+	a2 = -9.97582598986152D-07
+	a4 = 2.10862937419158D-14
 	
-  call check_range('LHC8',xtemp,rangeok,badvalue,strict)
+  call check_range('LHC8 ',x,rangeok,badvalue,strict)
 
   if(rangeok)then
-!    func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0)
     func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0+a4*x**4.0D0)    
   else
     func=badvalue
   endif
 
-  XS_lhc8_ttH_SM=  func
+  XS_lhc8_ttH_SM_func=  func
 
- end function XS_lhc8_ttH_SM
+ end function XS_lhc8_ttH_SM_func
+ !****************************************************** 
+ function XS_lhc13_ttH_SM_func(x,strict)
  !******************************************************
+ ! Fit to the YR4 numbers. Applies to mass range [10:3000] GeV. 
+ !******************************************************
+  implicit none
+  double precision :: XS_lhc13_ttH_SM_func
+  double precision, intent(in) :: x 
+  logical :: rangeok
+  double precision :: func,badvalue
+  double precision :: a0,a0p5,a1,a2,a4
+  logical,optional :: strict
+  
+
+! NEW FIT (TS 05/23/2016)
+
+	a0 = 2.4009372068545D0
+	a0p5 = -0.300654427433046D0
+	a1 = 0.00523830095923711D0
+	a2 = -1.08583378582902D-06
+	a4 = 2.84226058210467D-14
+
+  call check_range('LHC13',x,rangeok,badvalue,strict)
+
+  if(rangeok)then
+    func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0+a4*x**4.0D0)    
+  else
+    func=badvalue
+  endif
+
+  XS_lhc13_ttH_SM_func=  func
+
+ end function XS_lhc13_ttH_SM_func
+ !****************************************************** 
+ function XS_lhc13_tH_tchan_SM_func(x,strict)
+ !******************************************************
+ ! Fit to the YR4 numbers. Applies to mass range [10:3000] GeV. 
+ !******************************************************
+  implicit none
+  double precision :: XS_lhc13_tH_tchan_SM_func
+  double precision, intent(in) :: x 
+  logical :: rangeok
+  double precision :: func,badvalue
+  double precision :: a0,a0p5,a1,a2,am1,am0p5
+  logical,optional :: strict
+  
+	a0 = -3.42127049995874D0
+	a0p5 = 0.102402204465032D0
+	am0p5 = 19.9858075733198D0
+	am1 = -29.3740767399399D0
+	a1 = -0.00295972728178451D0
+	a2 = 1.99209027708294D-07
+	
+  call check_range('LHC13',x,rangeok,badvalue,strict)
+
+  if(rangeok)then
+    func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0+am0p5*x**(-0.5D0)+am1/x)
+  else
+    func=badvalue
+  endif
+
+  XS_lhc13_tH_tchan_SM_func=  func
+
+ end function XS_lhc13_tH_tchan_SM_func
+ !******************************************************
+ function XS_lhc13_tH_schan_SM_func(x,strict)
+ !******************************************************
+ ! Fit to the YR4 numbers. Applies to mass range [10:3000] GeV. 
+ !******************************************************
+  implicit none
+  double precision :: XS_lhc13_tH_schan_SM_func
+  double precision, intent(in) :: x 
+  logical :: rangeok
+  double precision :: func,badvalue
+  double precision :: a0,a0p5,a1,a2,am1,am0p5
+  logical,optional :: strict
+  
+	a0 = -1.14164085109118
+	a0p5 = -0.170205776743063
+	am0p5 = 4.55733135420734
+	am1 = -7.66862942732554
+	a1 = 0.00127845448464183
+	a2 = -1.97339760404829e-07
+	
+  call check_range('LHC13',x,rangeok,badvalue,strict)
+
+  if(rangeok)then
+    func=10.0D0**(a0+a0p5*x**0.5D0+a1*x+a2*x**2.0D0+am0p5*x**(-0.5D0)+am1/x)
+  else
+    func=badvalue
+  endif
+
+  XS_lhc13_tH_schan_SM_func=  func
+
+ end function XS_lhc13_tH_schan_SM_func
+!****************************************************** 
+
+subroutine testXSSM(M)
+  implicit none
+  double precision,intent(in) :: M
+
+  if(.not.allocated(XSSM))then
+   write(*,*) 'XSSM has to be allocated by calling setup_XSSM from'
+   write(*,*)'the theory_XS_SM_functions module (as e.g. done in '
+   write(*,*)'initialize_HiggsBounds)'
+   stop 'error (see standard output for more info)'
+  endif
+
+end subroutine testXSSM
 
 
 end module theory_XS_SM_functions

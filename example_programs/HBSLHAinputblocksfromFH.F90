@@ -19,15 +19,15 @@ program HBSLHAinputblocksfromFH
 !
 !******************************************************
  use extra_bits_for_SLHA, only : addcouplingsblocktoSLHAfile
- use usefulbits, only : sqcouplratio,np,Hneut,Hplus,allocate_sqcouplratio_parts     
+ use usefulbits, only : couplratio,np,Hneut,Hplus,allocate_couplratio_parts     
 #ifdef NAGf90Fortran
  use F90_UNIX_ENV, only : iargc,getarg
 #endif
 
  implicit none
 
- character(len=300) :: infile,outfile
- type(sqcouplratio) :: gsq(1)
+ character(len=300) :: infile,outfile,outfile2
+ type(couplratio) :: effC(1)
 
  character(LEN=300) :: temp
  integer :: number_args
@@ -70,19 +70,24 @@ program HBSLHAinputblocksfromFH
  infile = trim(temp)
 
  outfile=trim(adjustl(infile))//'.fh'
+ outfile2=trim(adjustl(infile))//'.in'
 
+ call system("cp "//trim(infile)//" "//trim(outfile2))
+  
  np=0
  np(Hneut)=3
  np(Hplus)=1
- call allocate_sqcouplratio_parts(gsq)
+ call allocate_couplratio_parts(effC)
 
  call createSLHAfilewithFHwithoutHBinputblocks(infile,outfile,&
-     &          gsq(1)%hjbb_s,gsq(1)%hjbb_p,gsq(1)%hjtoptop_s,gsq(1)%hjtoptop_p, &
-     &          gsq(1)%hjtautau_s,gsq(1)%hjtautau_p,                             &
-     &          gsq(1)%hjWW,gsq(1)%hjZZ,                                         &
-     &          gsq(1)%hjgg,gsq(1)%hjggZ,gsq(1)%hjhiZ                            )
+     &          effC(1)%hjbb_s,effC(1)%hjbb_p,effC(1)%hjtt_s,effC(1)%hjtt_p, &
+     &          effC(1)%hjtautau_s,effC(1)%hjtautau_p,                             &
+     &          effC(1)%hjWW,effC(1)%hjZZ,                                         &
+     &          effC(1)%hjgg,effC(1)%hjhiZ                            )
 
- call addcouplingsblocktoSLHAfile(outfile,gsq(1)) 
+ call addcouplingsblocktoSLHAfile(outfile,effC(1)) 
+
+ call addcouplingsblocktoSLHAfile(outfile2,effC(1))  
 
 end program HBSLHAinputblocksfromFH
 

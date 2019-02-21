@@ -2,8 +2,10 @@
 * HBwithFH
 *
 * Updated demo program for HiggsBounds 4 using MSSM input from 
-* FeynHiggs (FH version > 2.9.4 required)
+* FeynHiggs (FH version > 2.14.x recommended)
 *
+* Parameter point taken from Mh125(light stau) scenario 
+* defined in Bahl et al. (arXiv:1808.07542)
 *********************************************************************
 
        program HBwithFH
@@ -36,56 +38,56 @@ c This is for FH 2.10.x
         double complex DeltaMB
         double precision MGl
         double precision MHtree(4), SAtree
-
+        double precision AlfasMT
 c used by FHRetrieveSMPara: 
-        double precision invAlfa, AlfasMZ, GF
+        double precision invAlfa0, invAlfaMZ, AlfasMZ, GF
         double precision ME, MU, MD, MM, MC, MS, ML, MB
         double precision MW, MZ
         double precision CKMlambda, CKMA, CKMrhobar, CKMetabar
-
+        double precision GammaW, GammaZ
 c used by initialize_HiggsBounds
         integer nHiggsneut,nHiggsplus
        	character(LEN=5) whichanalyses
 
-c used by HiggsBounds_neutral_input_part
+c used by HiggsBounds_neutral_input_hadr
+C       character(LEN=5) collider_str
         double precision Mh(3),GammaTotal_hj(3)
-        integer CP_value(3)
+        integer CP_value(3), collider_s
         double precision  CS_lep_hjZ_ratio(3),          
      &   CS_lep_bbhj_ratio(3),CS_lep_tautauhj_ratio(3),
-     &   CS_lep_hjhi_ratio_nHbynH(3,3),               
-     &   CS_gg_hj_ratio(3),CS_bb_hj_ratio(3),  
-     &   CS_bg_hjb_ratio(3),                       
-     &   CS_ud_hjWp_ratio(3),CS_cs_hjWp_ratio(3),
-     &   CS_ud_hjWm_ratio(3),CS_cs_hjWm_ratio(3), 
-     &   CS_gg_hjZ_ratio(3),
-     &   CS_dd_hjZ_ratio(3),CS_uu_hjZ_ratio(3),
-     &   CS_ss_hjZ_ratio(3),CS_cc_hjZ_ratio(3), 
-     &   CS_bb_hjZ_ratio(3),                        
-     &   CS_tev_vbf_ratio(3),CS_tev_tthj_ratio(3),
-     &   CS_lhc7_vbf_ratio(3),CS_lhc7_tthj_ratio(3),
-     &   CS_lhc8_vbf_ratio(3),CS_lhc8_tthj_ratio(3),
+     &   CS_lep_hjhi_ratio(3,3),CS_hj_ratio(4,3),               
+     &   CS_gg_hj_ratio(4,3),CS_bb_hj_ratio(4,3),
+     &   CS_hjW_ratio(4,3),CS_hjZ_ratio(4,3),
+     &   CS_vbf_ratio(4,3),CS_tthj_ratio(4,3),
+     &   CS_thj_tchan_ratio(4,3),CS_thj_schan_ratio(4,3),
+     &   CS_hjhi(4,3,3),
      &   BR_hjss(3),BR_hjcc(3),                         
-     &   BR_hjbb(3),BR_hjmumu(3),BR_hjtautau(3),                     
+     &   BR_hjbb(3),BR_hjtt(3),BR_hjmumu(3),BR_hjtautau(3),                     
      &   BR_hjWW(3),BR_hjZZ(3),BR_hjZga(3),                     
      &   BR_hjgaga(3),BR_hjgg(3),
-     &   BR_hjinvisible(3),BR_hjhihi_nHbynH(3,3)
+     &   BR_hjinvisible(3),BR_hkhjhi(3,3,3),
+     &   BR_hjhiZ(3,3),BR_hjemu(3),BR_hjetau(3),BR_hjmutau(3),
+     &   BR_hjHpiW(3,1)
 
 c used by HiggsBounds_charged_input
         double precision Mhplus(1),GammaTotal_Hpj(1),
      &   CS_lep_HpjHmj_ratio(1),                    
-     &   BR_tWpb,BR_tHpjb(1),                     
-     &   BR_Hpjcs(1),BR_Hpjcb(1),BR_Hpjtaunu(1) 
+     &   BR_tWpb,BR_tHpjb(1),BR_Hpjcs(1),BR_Hpjcb(1),BR_Hpjtaunu(1),
+     &   BR_Hpjtb(1),BR_HpjWZ(1),BR_HpjhiW(1,3),
+     &   CS_Hpjtb(4,1), CS_Hpjbjet(4,1),CS_Hpjcb(4,1), CS_Hpjcjet(4,1),
+     &   CS_Hpjjetjet(4,1), CS_HpjW(4,1),
+     &   CS_HpjZ(4,1), CS_vbf_Hpj(4,1), CS_HpjHmj(4,1), CS_Hpjhi(4,1,3)
 
 c used by run_HiggsBounds
         integer HBresult,chan,ncombined
         double precision obsratio
 
 c misc:
-        integer i,j,as,t
+        integer i,j,k,as,t,collider
         double precision norm,CW2,Pi
         double precision
      &   g2hjbb(3),g2hjWW(3),g2hjZZ(3),                
-     &   g2hjgg(3),g2hjhiZ_nHbynH(3,3)
+     &   g2hjgg(3),g2hjhiZ(3,3)
         double precision g2hjbb_s(3),g2hjbb_p(3)
         double precision g2hjtautau_s(3),g2hjtautau_p(3)
         integer sneutrino_lspcandidate_number
@@ -131,36 +133,32 @@ c	call setSLHA("tmp.slha")
 
 c       // User this line for FH < 2.9.5
 c	call FHGetPara(error, nmfv, MASf, UASf,
+
 	call FHGetPara(error, nmfv, MSf, USf,MASf, UASf,
      &    MCha, UCha, VCha, MNeu, ZNeu, DeltaMB, MGl,
-     &    MHtree, SAtree)
+     &    MHtree, SAtree, AlfasMT)
 	if( error .ne. 0 ) stop
 
 	call FHHiggsCorr(error, MHiggs, SAeff, UHiggs, ZHiggs)
 	if( error .ne. 0 ) stop
 
 c NOTE: we are setting uzint=uzext
-        mfeff=1
-        uzint=2
-        uzext=2
-        call FHSelectUZ(error, uzint, uzext, mfeff)
-	    if( error .ne. 0 ) stop
+C       mfeff=1
+C       uzint=2
+C       uzext=2
+C       call FHSelectUZ(error, uzint, uzext, mfeff)
+C    if( error .ne. 0 ) stop
 
         fast=1
-	call FHCouplings(error,
+        call FHCouplings(error,
      &    couplings, couplingsms, gammas, gammasms, fast)
-	if( error .ne. 0 ) stop
-
-c We would like FH to calculate LHC cross sections
-        sqrts=7.0D0
-        call FHHiggsProd(error, sqrts, prodxs)
-	if( error .ne. 0 ) stop 
+        if( error .ne. 0 ) stop
 
         call FHRetrieveSMPara(error,
-     &    invAlfa, AlfasMZ, GF,
-     &    ME, MU, MD, MM, MC, MS, ML, MB,
-     &    MW, MZ,
-     &    CKMlambda, CKMA, CKMrhobar, CKMetabar)
+     &   invAlfa0, invAlfaMZ, AlfasMZ, GF,
+     &   ME, MU, MD, MM, MC, MS, ML, MB,
+     &   MW, MZ, GammaW, GammaZ,
+     &   CKMlambda, CKMA, CKMrhobar, CKMetabar)
 
 *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *      
 
@@ -181,30 +179,58 @@ c ratios used in FeynHiggs
          BR_hjss(i)       = BR(H0FF(i,4,2,2))
          BR_hjcc(i)       = BR(H0FF(i,3,2,2))
          BR_hjbb(i)       = BR(H0FF(i,4,3,3))
+         BR_hjtt(i)       = BR(H0FF(i,3,3,3))
          BR_hjmumu(i)     = BR(H0FF(i,2,2,2))
          BR_hjtautau(i)   = BR(H0FF(i,2,3,3)) 
+         BR_hjemu(i)      = BR(H0FF(i,2,1,2))
+         BR_hjetau(i)     = BR(H0FF(i,2,1,3))
+         BR_hjmutau(i)    = BR(H0FF(i,2,2,3))
 
          BR_hjWW(i)     = BR(H0VV(i,4))
          BR_hjgaga(i)   = BR(H0VV(i,1))
          BR_hjZga(i)    = BR(H0VV(i,2))
          BR_hjZZ(i)     = BR(H0VV(i,3))
          BR_hjgg(i)     = BR(H0VV(i,5))
+         
+         BR_hjHpiW(i,1) = 0.0D0 ! NOT CALCULATED BY FH!
 
-         if(GammaSM(H0FF(i,4,3,3)).le.0.0D0)then
-          g2hjbb(i)=0.0D0
-         else
-          g2hjbb(i)=Gamma(H0FF(i,4,3,3)) 
-     &      /GammaSM(H0FF(i,4,3,3))
-         endif
+        do collider=1,4
+c We would like FH to calculate LHC cross sections
+         select case(collider)
+          case(1)
+           sqrts=2.0D0
+          case(2)
+           sqrts=7.0D0
+          case(3)
+           sqrts=8.0D0
+          case(4)
+           sqrts=13.0D0
+         end select
+         
+         call FHHiggsProd(error, sqrts, prodxs)
+         if( error .ne. 0 ) stop 
 
-c Note that this is currently equivalent to
-c         g2hjbb(i)= bbh(i)/bbhSM(i)
-c         g2hjbb(i)= btagbh(i)/btagbhSM(i)
-c as long as MH>80 GeV
-
-         CS_bg_hjb_ratio(i) = g2hjbb(i)
-         CS_bb_hj_ratio(i)  = g2hjbb(i)
-   
+         CS_gg_hj_ratio(collider,i)=ggh(i)/gghSM(i)
+         CS_bb_hj_ratio(collider,i)=bbh(i)/bbhSM(i)
+         CS_hj_ratio(collider,i)=(ggh(i)+bbh(i))/(gghSM(i)+bbhSM(i))
+         CS_hjW_ratio(collider,i)=Wh(i)/WhSM(i)
+         CS_hjZ_ratio(collider,i)=Zh(i)/ZhSM(i)
+         CS_vbf_ratio(collider,i)=qqh(i)/qqhSM(i)
+         CS_tthj_ratio(collider,i)=tth(i)/tthSM(i)
+         CS_thj_tchan_ratio(collider,i)=0.0D0! NOT CALCULATED YET BY FH
+         CS_thj_schan_ratio(collider,i)=0.0D0! NOT CALCULATED YET BY FH
+         do j=1,3
+          CS_hjhi(collider,i,j) = 0.0D0 ! NOT CALCULATED YET BY FH
+         enddo
+		! Charged Higgs cross section
+         CS_Hpjtb(collider,1)=tHm2/1000. ! n.b.: Rescale from fb to pb!
+         CS_Hpjcb(collider,1)=0.0D0  ! NOT CALCULATED YET BY FH
+         CS_Hpjbjet(collider,1)=0.0D0  ! NOT CALCULATED YET BY FH
+         CS_Hpjcjet(collider,1)=0.0D0  ! NOT CALCULATED YET BY FH
+         CS_Hpjjetjet(collider,1)=0.0D0  ! NOT CALCULATED YET BY FH
+         enddo
+         BR_HpjhiW(1,i)=BR(HpHV(i))
+            
          g2hjbb_s(i)=(abs(RCoupling(H0FF(i,4,3,3))
      &                   /RCouplingSM(H0FF(i,4,3,3))+ 
      &                    LCoupling(H0FF(i,4,3,3))
@@ -238,80 +264,33 @@ c as long as MH>80 GeV
      &                   / CouplingSM(H0VV(i,4)) )**2.0D0
      &            + dimag( Coupling(H0VV(i,4)) 
      &                   / CouplingSM(H0VV(i,4)) )**2.0D0
-c Note that this is currently equivalent to
-c         g2hjWW(i)= WhTev(i)/WhTevSM(i
-c	  g2hjWW(i)= qqhTev(i)/qqhTevSM(i)
-c as long as MH>80 GeV and uzint=uzext
 
          g2hjZZ(i)= dble(  Coupling(H0VV(i,3)) 
      &                   / CouplingSM(H0VV(i,3)) )**2.0D0
      &            + dimag( Coupling(H0VV(i,3)) 
      &                   / CouplingSM(H0VV(i,3)) )**2.0D0
-c Note that this is currently equivalent to
-c         g2hjZZ(i)= ZhTev(i)/ZhTevSM(i)
-c as long as MH>80 GeV and uzint=uzext
-c It is also equivalent to g2hjWW(i)
 
          CS_lep_hjZ_ratio(i)        = g2hjZZ(i)
-
-         CS_gg_hjZ_ratio(i)     = 0.0D0
-         CS_dd_hjZ_ratio(i)     = g2hjZZ(i)
-         CS_uu_hjZ_ratio(i)     = g2hjZZ(i)
-         CS_ss_hjZ_ratio(i)     = g2hjZZ(i)
-         CS_cc_hjZ_ratio(i)     = g2hjZZ(i)
-         CS_bb_hjZ_ratio(i)     = g2hjZZ(i)
-
-         CS_ud_hjWp_ratio(i)    = g2hjZZ(i)
-         CS_cs_hjWp_ratio(i)    = g2hjZZ(i)
-         CS_ud_hjWm_ratio(i)    = g2hjZZ(i)
-         CS_cs_hjWm_ratio(i)    = g2hjZZ(i)
-
-         CS_tev_vbf_ratio(i)     = g2hjZZ(i)
-         CS_lhc7_vbf_ratio(i)    = g2hjZZ(i)
-         CS_lhc8_vbf_ratio(i)    = g2hjZZ(i)
-
-
-         if(tthSM(i).gt.0.0D0)then
-           CS_tev_tthj_ratio(i)    = tth(i)/tthSM(i)  
-         else
-           CS_tev_tthj_ratio(i)    = 0.0D0
-         endif
-
-         CS_lhc7_tthj_ratio(i) = CS_tev_tthj_ratio(i)
-         CS_lhc8_tthj_ratio(i) = CS_tev_tthj_ratio(i)
-
-c tevatron gluon fusion XS is not calculated in FH is MH<90 geV
-         if(Mh(i).gt.90.0001D0)then      
-           if(gghSM(i).gt.0.0D0)then
-            CS_gg_hj_ratio(i) = ggh(i)/gghSM(i)
-           else
-            CS_gg_hj_ratio(i) = 0.0D0
-           endif 
-         else
-           if(GammaSM(H0VV(i,5)).le.0.0D0)then
-            CS_gg_hj_ratio(i)=0.0D0
-           else
-            CS_gg_hj_ratio(i)= Gamma(H0VV(i,5))/GammaSM(H0VV(i,5))
-          endif
-         endif
-
-        enddo
   
-        norm=GF*sqrt(2.0D0)*MZ**2.0D0
+         enddo
+         norm=GF*sqrt(2.0D0)*MZ**2.0D0
 
-        do j=1,3
-          do i=1,3   
-            g2hjhiZ_nHbynH(j,i)= (
+         do j=1,3
+           do i=1,3   
+            g2hjhiZ(j,i)= (
      &          dble(  Coupling(H0HV(j,i)) )**2.0D0
      &        + dimag( Coupling(H0HV(j,i)) )**2.0D0
      &          )
      &       /norm
             
-            CS_lep_hjhi_ratio_nHbynH(j,i) = g2hjhiZ_nHbynH(j,i)
+            CS_lep_hjhi_ratio(j,i) = g2hjhiZ(j,i)
 
-            BR_hjhihi_nHbynH(j,i)=BR(H0HH(j,i,i))
+            BR_hjhiZ(j,i)=BR(H0HV(j,i))
+            do k=1,3
+             BR_hkhjhi(k,j,i)=BR(H0HH(k,j,i))
+            enddo
+           enddo
           enddo
-        enddo
 
 c higgs->neutralino1 neutralino1 contributes the invisible Higgs decay width
 c when neutralino1 or sneutrino is the LSP
@@ -370,48 +349,79 @@ c	    Charged Higgs input
         BR_Hpjcs(1)            = BR( HpFF(2,2,2) ) 
         BR_Hpjcb(1)            = BR( HpFF(2,2,3) )
         BR_Hpjtaunu(1)         = BR( HpFF(1,3,3) )
+        BR_Hpjtb(1)            = BR( HpFF(2,3,3) )
+        BR_HpjWZ(1)            = 0.0D0 ! NOT CALCULATED BY FH (0 in the MSSM at tree-level)
 
 *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *
-c calls to HiggsBounds_neutral_input_part,HiggsBounds_charged_input,
-c which give input to HiggsBounds
 
-        print*,'calling HiggsBounds_neutral_input_part'
-   
-C       print*, CS_gg_hj_ratio
-C       print*, CS_bb_hj_ratio
-C       print*,MHiggs
-C       print*,BR_hjhihi_nHbynH
+       write(*,*) "Higgs masses: ", Mh
 
+        call HiggsBounds_set_mass_uncertainties((/2.0D0,0.0D0,0.0D0/), 0.0D0)
 
-        call HiggsBounds_neutral_input_part(Mh,GammaTotal_hj,CP_value, 
-     &          CS_lep_hjZ_ratio,                            
-     &          CS_lep_bbhj_ratio,CS_lep_tautauhj_ratio,     
-     &          CS_lep_hjhi_ratio_nHbynH,                    
-     &          CS_gg_hj_ratio,CS_bb_hj_ratio,       
-     &          CS_bg_hjb_ratio,                         
-     &          CS_ud_hjWp_ratio,CS_cs_hjWp_ratio,    
-     &          CS_ud_hjWm_ratio,CS_cs_hjWm_ratio,    
-     &          CS_gg_hjZ_ratio,     
-     &          CS_dd_hjZ_ratio,CS_uu_hjZ_ratio,     
-     &          CS_ss_hjZ_ratio,CS_cc_hjZ_ratio,     
-     &          CS_bb_hjZ_ratio,                         
-     &          CS_tev_vbf_ratio,CS_tev_tthj_ratio,    
-     &          CS_lhc7_vbf_ratio,CS_lhc7_tthj_ratio,    
-     &          CS_lhc8_vbf_ratio,CS_lhc8_tthj_ratio,    
-     &          BR_hjss,BR_hjcc,                             
-     &          BR_hjbb,BR_hjmumu,BR_hjtautau,               
-     &          BR_hjWW,BR_hjZZ,BR_hjZga, BR_hjgaga,BR_hjgg,  
-     &          BR_hjinvisible,BR_hjhihi_nHbynH              )
+C       print*,'calling HiggsBounds_neutral_input_properties'
+        
+        call HiggsBounds_neutral_input_properties(Mh,GammaTotal_hj,CP_value)
+        
+C       print*,'calling HiggsBounds_charged_input'
+                
+        call HiggsBounds_charged_input(Mhplus,GammaTotal_Hpj,
+     &          CS_lep_HpjHmj_ratio,
+     &          BR_tWpb,BR_tHpjb,
+     &          BR_Hpjcs,BR_Hpjcb,BR_Hpjtaunu,BR_Hpjtb,
+     &          BR_HpjWZ,BR_HpjhiW)
      
-        print*,'calling HiggsBounds_charged_input'
-        call HiggsBounds_charged_input(Mhplus,GammaTotal_Hpj, 
-     &          CS_lep_HpjHmj_ratio,                        
-     &          BR_tWpb,BR_tHpjb,                           
-     &          BR_Hpjcs,BR_Hpjcb,BR_Hpjtaunu)
+C       print*,'calling HiggsBounds_neutral_input_SMBR'
+        
+        call HiggsBounds_neutral_input_SMBR(BR_hjss,BR_hjcc,BR_hjbb,
+     &                           BR_hjtt,BR_hjmumu,
+     &                           BR_hjtautau,BR_hjWW,
+     &                           BR_hjZZ,BR_hjZga,BR_hjgaga,
+     &                           BR_hjgg)
 
+C       print*,'calling HiggsBounds_neutral_input_nonSMBR'
+      
+        call HiggsBounds_neutral_input_nonSMBR(BR_hjinvisible,BR_hkhjhi,BR_hjhiZ,
+     &                                 BR_hjemu,BR_hjetau,BR_hjmutau,BR_hjHpiW)
+
+C       print*,'calling HiggsBounds_neutral_input_LEP'
+     
+        call HiggsBounds_neutral_input_LEP(CS_lep_hjZ_ratio,CS_lep_bbhj_ratio,
+     &                                 CS_lep_tautauhj_ratio,CS_lep_hjhi_ratio)
+
+C       print*,'calling HiggsBounds_neutral_input_hadr'
+C       print*,'    and HiggsBounds_charged_input_hadr'        
+     
+        do collider=1,4
+         select case(collider)
+          case(1)
+           collider_s = 2
+          case(2)
+           collider_s = 7
+          case(3)
+           collider_s = 8
+          case(4)
+           collider_s = 13
+         end select 
+        
+        call HiggsBounds_neutral_input_hadr(collider_s,CS_hj_ratio(collider,:),
+     &          CS_gg_hj_ratio(collider,:),CS_bb_hj_ratio(collider,:),
+     &          CS_hjW_ratio(collider,:),CS_hjZ_ratio(collider,:),
+     &          CS_vbf_ratio(collider,:),CS_tthj_ratio(collider,:),
+     &          CS_thj_tchan_ratio(collider,:),CS_thj_schan_ratio(collider,:),
+     &          CS_hjhi(collider,:,:))
+
+        call HiggsBounds_charged_input_hadr(collider_s,CS_Hpjtb(collider,:),
+     &   CS_Hpjcb(collider,:), CS_Hpjbjet(collider,:), CS_Hpjcjet(collider,:),
+     &   CS_Hpjjetjet(collider,:), CS_HpjW(collider,:),
+     &   CS_HpjZ(collider,:), CS_vbf_Hpj(collider,:),
+     &   CS_HpjHmj(collider,:), CS_Hpjhi(collider,:,:))     
+     
+        enddo
+             
 
 *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *
 c call to run_HiggsBounds
+C       print*,' running HiggsBounds...'
         call run_HiggsBounds( HBresult,chan, obsratio, ncombined )
 
         print*,' '      
@@ -453,24 +463,28 @@ c deallocates arrays used by HiggsBounds:
 	implicit none
 
 	integer mssmpart, fieldren, tanbren, higgsmix, p2approx
-	integer looplevel, runningMT, botResum, tlCplxApprox
+	integer looplevel, loglevel, runningMT, botResum, tlCplxApprox
 
 c   Using default (recommended) values of all FH flags
 	parameter (mssmpart = 4)
-	parameter (fieldren = 0)
-	parameter (tanbren = 0)
+Cparameter (fieldren = 0)
+Cparameter (tanbren = 0)
 	parameter (higgsmix = 2)
-	parameter (p2approx = 0)
+	parameter (p2approx = 4)
 	parameter (looplevel = 2)
+	parameter (loglevel = 3)
 	parameter (runningMT = 1)
 	parameter (botResum = 1)
 	parameter (tlCplxApprox = 0)
 
 	integer error
 
-	call FHSetFlags(error, mssmpart, fieldren, tanbren,
-     &    higgsmix, p2approx, looplevel,
-     &    runningMT, botResum, tlCplxApprox)
+Ccall FHSetFlags(error, mssmpart, fieldren, tanbren,
+C    &    higgsmix, p2approx, looplevel, loglevel,
+C    &    runningMT, botResum, tlCplxApprox)
+     
+	call FHSetFlags(error,mssmpart, higgsmix, p2approx,
+     &   looplevel, loglevel, runningMT, botResum, tlCplxApprox)
 	if( error .ne. 0 ) stop
 	end
 
@@ -479,10 +493,12 @@ c   Using default (recommended) values of all FH flags
 	subroutine setPara
 	implicit none
 
-	double precision invAlfa, AlfasMZ, GF
+	double precision invAlfa0, invAlfaMZ,  AlfasMZ, GF
 	double precision ME, MU, MD, MM, MC, MS, ML, MB, MZ, MW
 	double precision CKMlambda, CKMA, CKMrhobar, CKMetabar
-	parameter (invAlfa = -1)
+	double precision GammaW, GammaZ
+	parameter (invAlfa0 = -1)
+	parameter (invAlfaMZ = -1)	
 	parameter (AlfasMZ = -1)
 	parameter (GF = -1)
 	parameter (ME = -1)
@@ -495,15 +511,17 @@ c   Using default (recommended) values of all FH flags
 	parameter (MB = -1)
 	parameter (MW = -1)
 	parameter (MZ = -1)
+	parameter (GammaW = -1)
+	parameter (GammaZ = -1)
 	parameter (CKMlambda = -1)
 	parameter (CKMA = -1)
 	parameter (CKMrhobar = -1)
 	parameter (CKMetabar = -1)
 
 	double precision MT, TB, MA0, MHp
-	parameter (MT = 173.2)
-	parameter (TB = 5.)
-	parameter (MA0 = 500)
+	parameter (MT = 172.5)
+	parameter (TB = 10.)
+	parameter (MA0 = 1000)
 	parameter (MHp = -1)
 
 	double precision MSusy
@@ -512,29 +530,29 @@ c   Using default (recommended) values of all FH flags
 	double precision M3SQ, M2SQ, M1SQ
 	double precision M3SU, M2SU, M1SU
 	double precision M3SD, M2SD, M1SD
-	parameter (MSusy = 1000)
-	parameter (M3SL = MSusy)
-	parameter (M2SL = M3SL)
-	parameter (M1SL = M2SL)
-	parameter (M3SE = MSusy)
-	parameter (M2SE = M3SE)
-	parameter (M1SE = M2SE)
-	parameter (M3SQ = MSusy)
-	parameter (M2SQ = M3SQ)
-	parameter (M1SQ = M2SQ)
-	parameter (M3SU = MSusy)
-	parameter (M2SU = M3SU)
-	parameter (M1SU = M2SU)
-	parameter (M3SD = MSusy)
-	parameter (M2SD = M3SD)
-	parameter (M1SD = M2SD)
+	parameter (MSusy = 2000)
+	parameter (M3SL = 350)
+	parameter (M2SL = MSusy)
+	parameter (M1SL = MSusy)
+	parameter (M3SE = M3SL)
+	parameter (M2SE = MSusy)
+	parameter (M1SE = MSusy)
+	parameter (M3SQ = 1500)
+	parameter (M2SQ = MSusy)
+	parameter (M1SQ = MSusy)
+	parameter (M3SU = M3SQ)
+	parameter (M2SU = MSusy)
+	parameter (M1SU = MSusy)
+	parameter (M3SD = M3SQ)
+	parameter (M2SD = MSusy)
+	parameter (M1SD = MSusy)
 
 	double complex Atau, At, Ab
 	double complex Amu, Ac, As
 	double complex Ae, Au, Ad
-	parameter (At = 2000)
+	parameter (At = 2900)
 	parameter (Ab = At)
-	parameter (Atau = At)
+	parameter (Atau = 800)
 	parameter (Ac = At)
 	parameter (As = Ab)
 	parameter (Amu = Atau)
@@ -543,10 +561,10 @@ c   Using default (recommended) values of all FH flags
 	parameter (Ae = Amu)
 
 	double complex MUE, M_1, M_2, M_3
-	parameter (MUE = 200)
-	parameter (M_1 = 0)
-	parameter (M_2 = 200)
-	parameter (M_3 = 1500)
+	parameter (MUE = 1000)
+	parameter (M_1 = 180)
+	parameter (M_2 = 300)
+	parameter (M_3 = 2500)
 
 	double precision Qtau, Qt, Qb
 	parameter (Qtau = 0)
@@ -558,11 +576,14 @@ c   Using default (recommended) values of all FH flags
 
 	integer error
 
+	write(*,*) "Xt/M3SQ = ", At/M3SQ - MUE/(M3SQ*TB)
+
 	call FHSetSMPara(error,
-     &    invAlfa, AlfasMZ, GF,
-     &    ME, MU, MD, MM, MC, MS, ML, MB,
-     &    MW, MZ,
-     &    CKMlambda, CKMA, CKMrhobar, CKMetabar)
+     &   invAlfa0, invAlfaMZ, AlfasMZ, GF,
+     &   ME, MU, MD, MM, MC, MS, ML, MB,
+     &   MW, MZ, GammaW, GammaZ,
+     &   CKMlambda, CKMA, CKMrhobar, CKMetabar)
+
 	if( error .ne. 0 ) stop
 
 	call FHSetPara(error, scalefactor,

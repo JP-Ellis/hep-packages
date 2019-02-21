@@ -74,7 +74,7 @@ module S95tables
  !table type 2------------------------------
  type(table2),allocatable :: S95_t2(:)                              
  !------------------------------------------  
-  character(LEN=4),parameter :: colliders(4) = (/'LEP ','TEV ','LHC7','LHC8'/)
+  character(LEN=5),parameter :: colliders(5) = (/'LEP  ','TEV  ','LHC7 ','LHC8 ','LHC13'/)
   !-------------------------------------------  
   double precision, allocatable :: Exptrange_Mhmin_forSMdecays(:), Exptrange_Mhmax_forSMdecays(:)                         
   double precision, allocatable :: Exptrange_Mhmin_forSMXS(:),     Exptrange_Mhmax_forSMXS(:)
@@ -92,7 +92,8 @@ module S95tables
   use theory_BRfunctions, only : BRSMt1Mhmax,BRSMt1Mhmin 
   use theory_XS_SM_functions, only : tevXS_SM_functions_xmin, tevXS_SM_functions_xmax, &
                                    & lhc7XS_SM_functions_xmin,lhc7XS_SM_functions_xmax, &
-                                   & lhc8XS_SM_functions_xmin,lhc8XS_SM_functions_xmax
+                                   & lhc8XS_SM_functions_xmin,lhc8XS_SM_functions_xmax, &
+                                   & lhc13XS_SM_functions_xmin,lhc13XS_SM_functions_xmax                                   
                                    
   implicit none      
   !-----------------------------------internal 
@@ -104,10 +105,10 @@ module S95tables
 
   ! these numbers have to be changed appropriately every time a table is added
   ! or taken away:  
-  ntable1=148
-  ntable2=23               ! table type 2 involves 2 variables
+  ntable1=204
+  ntable2=39              ! table type 2 involves 2 variables
   
-  allocate(S95_t1(ntable1))            
+  allocate(S95_t1(ntable1))
   allocate(S95_t2(ntable2))      
 
   call initializetables_type1_blank(S95_t1)
@@ -245,19 +246,23 @@ module S95tables
 
   ! fill delta_x_default
   do c=1,ubound(colliders,dim=1)
-   if(c.eq.get_collider_element_number('LEP'))then ! for some reason, gfortran didn't like having a case statement here
+   if(c.eq.get_collider_element_number('LEP  '))then ! for some reason, gfortran didn't like having a case statement here
      delta_x_default(:,c)    =delta_M_LEP_default
      delta_x_default(Hneut,c)=delta_Mh_LEP
      delta_x_default(Hplus,c)=delta_Mhplus_LEP
-   elseif(c.eq.get_collider_element_number('TEV'))then
+   elseif(c.eq.get_collider_element_number('TEV  '))then
      delta_x_default(:,c)    =delta_M_TEV_default
      delta_x_default(Hneut,c)=delta_Mh_TEV
      delta_x_default(Hplus,c)=delta_Mhplus_TEV
-   elseif(c.eq.get_collider_element_number('LHC7'))then
+   elseif(c.eq.get_collider_element_number('LHC7 '))then
      delta_x_default(:,c)    =delta_M_LHC_default
      delta_x_default(Hneut,c)=delta_Mh_LHC
      delta_x_default(Hplus,c)=delta_Mhplus_LHC
-   elseif(c.eq.get_collider_element_number('LHC8'))then
+   elseif(c.eq.get_collider_element_number('LHC8 '))then
+     delta_x_default(:,c)    =delta_M_LHC_default
+     delta_x_default(Hneut,c)=delta_Mh_LHC
+     delta_x_default(Hplus,c)=delta_Mhplus_LHC
+   elseif(c.eq.get_collider_element_number('LHC13'))then
      delta_x_default(:,c)    =delta_M_LHC_default
      delta_x_default(Hneut,c)=delta_Mh_LHC
      delta_x_default(Hplus,c)=delta_Mhplus_LHC
@@ -307,44 +312,73 @@ module S95tables
  
   if(debug)write(*,*)'max_expt_delta_Mh',max_expt_delta_Mh
 
-  Exptrange_Mhmin_forSMXS = max(Expttables_Mhmin_forSMXS  - max_expt_delta_Mh,0.0D0)
-  Exptrange_Mhmax_forSMXS =     Expttables_Mhmax_forSMXS  + max_expt_delta_Mh
+!   Exptrange_Mhmin_forSMXS = max(Expttables_Mhmin_forSMXS  - max_expt_delta_Mh,0.0D0)
+!   Exptrange_Mhmax_forSMXS =     Expttables_Mhmax_forSMXS  + max_expt_delta_Mh
+! 
+!   Exptrange_Mhmin_forSMdecays = max(Expttables_Mhmin_forSMdecays  - max_expt_delta_Mh,0.0D0)
+!   Exptrange_Mhmax_forSMdecays =     Expttables_Mhmax_forSMdecays  + max_expt_delta_Mh
 
-  Exptrange_Mhmin_forSMdecays = max(Expttables_Mhmin_forSMdecays  - max_expt_delta_Mh,0.0D0)
-  Exptrange_Mhmax_forSMdecays =     Expttables_Mhmax_forSMdecays  + max_expt_delta_Mh
+  Exptrange_Mhmin_forSMXS = max(Expttables_Mhmin_forSMXS,0.0D0)
+  Exptrange_Mhmax_forSMXS =     Expttables_Mhmax_forSMXS
+
+  Exptrange_Mhmin_forSMdecays = max(Expttables_Mhmin_forSMdecays,0.0D0)
+  Exptrange_Mhmax_forSMdecays =     Expttables_Mhmax_forSMdecays
+
 
   !we need tevXS_SM_functions to have a big enough range to cover the tables
-  if(Exptrange_Mhmax_forSMXS(get_collider_element_number('TEV')).gt.tevXS_SM_functions_xmax)then
+  if(Exptrange_Mhmax_forSMXS(get_collider_element_number('TEV  ')).gt.tevXS_SM_functions_xmax)then
    stop 'need to extend upper range of tevXS_SM_functions or reduce delta_M_TEV'
   endif
 
-  if(Exptrange_Mhmin_forSMXS(get_collider_element_number('TEV')).lt.tevXS_SM_functions_xmin)then
-   write(*,*)Exptrange_Mhmin_forSMXS(get_collider_element_number('TEV')),tevXS_SM_functions_xmin
-   stop 'need to extend lower range of tevXS_SM_functions'
+  if(Exptrange_Mhmin_forSMXS(get_collider_element_number('TEV  ')).lt.tevXS_SM_functions_xmin)then
+   write(*,*)Exptrange_Mhmin_forSMXS(get_collider_element_number('TEV  ')),tevXS_SM_functions_xmin
+! TS 24/03/2017: Commented out the following (because some new analyses for low mass Higgses
+!                do not need these functions (decay from heavier Higgs)
+!    stop 'need to extend lower range of tevXS_SM_functions'
   endif
 
   !we need lhc7XS_SM_functions to have a big enough range to cover the tables
-  if(Exptrange_Mhmax_forSMXS(get_collider_element_number('LHC7')).gt.lhc7XS_SM_functions_xmax)then
+  if(Exptrange_Mhmax_forSMXS(get_collider_element_number('LHC7 ')).gt.lhc7XS_SM_functions_xmax)then
    stop 'need to extend upper range of lhc7XS_SM_functions or reduce delta_M_LHC'
   endif
 
-  if(Exptrange_Mhmin_forSMXS(get_collider_element_number('LHC7')).lt.lhc7XS_SM_functions_xmin)then
-   stop 'need to extend lower range of lhc7XS_SM_functions'
+  if(Exptrange_Mhmin_forSMXS(get_collider_element_number('LHC7 ')).lt.lhc7XS_SM_functions_xmin)then
+! TS 24/03/2017: Commented out the following (because some new analyses for low mass Higgses
+!                do not need these functions (decay from heavier Higgs)
+!    stop 'need to extend lower range of lhc7XS_SM_functions'
   endif
 
-  !we need lhc7XS_SM_functions to have a big enough range to cover the tables
-  if(Exptrange_Mhmax_forSMXS(get_collider_element_number('LHC8')).gt.lhc8XS_SM_functions_xmax)then
+  !we need lhc8XS_SM_functions to have a big enough range to cover the tables
+  if(Exptrange_Mhmax_forSMXS(get_collider_element_number('LHC8 ')).gt.lhc8XS_SM_functions_xmax)then
    stop 'need to extend upper range of lhc8XS_SM_functions or reduce delta_M_LHC'
   endif
 
-  if(Exptrange_Mhmin_forSMXS(get_collider_element_number('LHC8')).lt.lhc8XS_SM_functions_xmin)then
-   write(*,*) Exptrange_Mhmin_forSMXS(get_collider_element_number('LHC8'))
-   stop 'need to extend lower range of lhc8XS_SM_functions'
+  if(Exptrange_Mhmin_forSMXS(get_collider_element_number('LHC8 ')).lt.lhc8XS_SM_functions_xmin)then
+!    write(*,*) Exptrange_Mhmin_forSMXS(get_collider_element_number('LHC8 '))
+! TS 24/03/2017: Commented out the following (because some new analyses for low mass Higgses
+!                do not need these functions (decay from heavier Higgs)
+!    stop 'need to extend lower range of lhc8XS_SM_functions'
   endif
+
+  !we need lhc8XS_SM_functions to have a big enough range to cover the tables
+  if(Exptrange_Mhmax_forSMXS(get_collider_element_number('LHC13')).gt.lhc13XS_SM_functions_xmax)then
+   stop 'need to extend upper range of lhc13XS_SM_functions or reduce delta_M_LHC'
+  endif
+
+  if(Exptrange_Mhmin_forSMXS(get_collider_element_number('LHC13')).lt.lhc13XS_SM_functions_xmin)then
+   write(*,*) Exptrange_Mhmin_forSMXS(get_collider_element_number('LHC13'))
+! TS 24/03/2017: Commented out the following (because some new analyses for low mass Higgses
+!                do not need these functions (decay from heavier Higgs)
+!    stop 'need to extend lower range of lhc13XS_SM_functions'
+  endif
+
+
+
 
   
   ! we need the branching ratios for all the colliders
   if(    maxval(Exptrange_Mhmax_forSMdecays).gt.BRSMt1Mhmax)then
+!   write(*,*) "hello : ", BRSMt1Mhmax, maxval(Exptrange_Mhmax_forSMdecays)
    stop 'need to extend upper range of BRfunctions or reduce delta_M_(LEP/TEV)'
   elseif(minval(Exptrange_Mhmin_forSMdecays).lt.BRSMt1Mhmin)then
    write(*,*)'hello',minval(Exptrange_Mhmin_forSMdecays),BRSMt1Mhmin
@@ -385,18 +419,21 @@ module S95tables
    allocate(Exptrange_Mhmin_forSMXS(size(colliders,dim=1)))
    allocate(Exptrange_Mhmax_forSMXS(size(colliders,dim=1)))
    do i=1, size(colliders)
-    if(i.eq.get_collider_element_number('LEP ')) then
+    if(i.eq.get_collider_element_number('LEP  ')) then
      Exptrange_Mhmin_forSMXS(i)=1.0D0
      Exptrange_Mhmax_forSMXS(i)=180.0D0
-    else if(i.eq.get_collider_element_number('TEV ')) then
+    else if(i.eq.get_collider_element_number('TEV  ')) then
      Exptrange_Mhmin_forSMXS(i)=80.0D0
      Exptrange_Mhmax_forSMXS(i)=350.0D0
-    else if(i.eq.get_collider_element_number('LHC7')) then
+    else if(i.eq.get_collider_element_number('LHC7 ')) then
      Exptrange_Mhmin_forSMXS(i)=90.0D0
-     Exptrange_Mhmax_forSMXS(i)=600.0D0
-    else if(i.eq.get_collider_element_number('LHC8')) then
+     Exptrange_Mhmax_forSMXS(i)=1000.0D0
+    else if(i.eq.get_collider_element_number('LHC8 ')) then
      Exptrange_Mhmin_forSMXS(i)=90.0D0
-     Exptrange_Mhmax_forSMXS(i)=600.0D0
+     Exptrange_Mhmax_forSMXS(i)=1000.0D0
+    else if(i.eq.get_collider_element_number('LHC13')) then
+     Exptrange_Mhmin_forSMXS(i)=90.0D0
+     Exptrange_Mhmax_forSMXS(i)=3000.0D0
     else
      stop 'Error in subroutine inrange. str for XS unknown.'
     endif
@@ -407,18 +444,21 @@ module S95tables
    allocate( Exptrange_Mhmin_forSMdecays(size(colliders,dim=1))) 
    allocate( Exptrange_Mhmax_forSMdecays(size(colliders,dim=1)))
    do i=1, size(colliders)
-    if(i.eq.get_collider_element_number('LEP ')) then
+    if(i.eq.get_collider_element_number('LEP  ')) then
      Exptrange_Mhmin_forSMdecays(i)=1.0D0
      Exptrange_Mhmax_forSMdecays(i)=180.0D0
-    else if(i.eq.get_collider_element_number('TEV ')) then
+    else if(i.eq.get_collider_element_number('TEV  ')) then
      Exptrange_Mhmin_forSMdecays(i)=0.2D0
      Exptrange_Mhmax_forSMdecays(i)=350.0D0
-    else if(i.eq.get_collider_element_number('LHC7')) then
+    else if(i.eq.get_collider_element_number('LHC7 ')) then
      Exptrange_Mhmin_forSMdecays(i)=90.0D0
-     Exptrange_Mhmax_forSMdecays(i)=600.0D0
-    else if(i.eq.get_collider_element_number('LHC8')) then
+     Exptrange_Mhmax_forSMdecays(i)=1000.0D0
+    else if(i.eq.get_collider_element_number('LHC8 ')) then
      Exptrange_Mhmin_forSMdecays(i)=90.0D0
-     Exptrange_Mhmax_forSMdecays(i)=600.0D0
+     Exptrange_Mhmax_forSMdecays(i)=1000.0D0
+    else if(i.eq.get_collider_element_number('LHC13')) then
+     Exptrange_Mhmin_forSMdecays(i)=90.0D0
+     Exptrange_Mhmax_forSMdecays(i)=1000.0D0
     else
      stop 'Error in subroutine inrange. str for decay unknown.'
     endif
@@ -436,7 +476,10 @@ module S95tables
 
   else
     x=get_collider_element_number(str)
- 
+    
+!     write(*,*) 'debugging inrange:'
+!      write(*,*) x, mass, Exptrange_Mhmin_forSMXS(x), Exptrange_Mhmax_forSMXS(x)
+     
     if(     (mass.gt.Exptrange_Mhmin_forSMXS(x)) &
        .and.(mass.lt.Exptrange_Mhmax_forSMXS(x)) )then
       inrange=.True.
@@ -458,7 +501,7 @@ module S95tables
 
   y=0
   
-!!    print *, collidername
+!   print *, collidername
 
 
   
@@ -482,14 +525,16 @@ module S95tables
    double precision :: energy
 
    if(      expt.eq.'LEP' )then 
-    WhichColliderElement=get_collider_element_number('LEP')
+    WhichColliderElement=get_collider_element_number('LEP  ')
    elseif( (expt.eq.'CDF').or.(expt.eq.' D0').or.(expt.eq.'TCB') )then 
-    WhichColliderElement=get_collider_element_number('TEV')
+    WhichColliderElement=get_collider_element_number('TEV  ')
    elseif( (expt.eq.'ATL').or.(expt.eq.'CMS') )then 
     if(energy-7.0D0.le.small) then
-     WhichColliderElement=get_collider_element_number('LHC7')
+     WhichColliderElement=get_collider_element_number('LHC7 ')
     else if(energy-8.0D0.le.small) then
-     WhichColliderElement=get_collider_element_number('LHC8')
+     WhichColliderElement=get_collider_element_number('LHC8 ')
+    else if(energy-13.0D0.le.small) then
+     WhichColliderElement=get_collider_element_number('LHC13')     
     else
      stop 'WhichColliderElement: Collider Energy not correctly specified.'
     endif 
@@ -503,9 +548,10 @@ module S95tables
  ! this will return the contents of the element corresponding to 'expt' in the array 'colliders'
  !****************************************************************** 
    character(LEN=3),intent(in) :: expt   
-   character(LEN=4) :: WhichColliderString
+   character(LEN=5) :: WhichColliderString
    double precision :: energy
 
+!    write(*,*) 'WhichColliderString = ',colliders(WhichColliderElement(expt, energy))
    WhichColliderString=colliders(WhichColliderElement(expt, energy))
 
  end function WhichColliderString
@@ -645,7 +691,7 @@ module S95tables
  ! can be combined with his result
  ! note: numerator and denominator are worked out separately
  !**********************************************************
-  use usefulbits, only : dataset, np, div, vvsmall
+  use usefulbits, only : dataset, np, div, vvsmall, vsmall
   use theory_BRfunctions
   use theory_XS_SM_functions 
     
@@ -657,7 +703,7 @@ module S95tables
   double precision :: cfact_t1,M_av
   integer :: nc
   !-------------------------------------------
-  integer :: f,j
+  integer :: f,j,ii,iii
   double precision :: M_tot
   double precision :: BR_Hbb_SM_av,BR_HWW_SM_av,BR_Htautau_SM_av
   double precision :: tev_XS_HW_SM_av,tev_XS_HZ_SM_av
@@ -668,6 +714,7 @@ module S95tables
   double precision :: lhc7_XS_VBF_SM_av
   double precision :: BR_Zll,BR_Znunu,BR_Wlnu,BR_Ztautau
   double precision :: BR_Whad,BR_Zhad  
+  double precision :: fact_tmp
   double precision,allocatable :: mass(:),fact(:)
   integer,allocatable :: model_like(:)
   integer :: npart !number of particles
@@ -793,11 +840,11 @@ module S95tables
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
     case(0611)
      fact(j)=t%tev%XS_hj_ratio(j)*t%tev%XS_H_SM(j)   *t%BR_hjZga(j)
-    case(1269,1270,2011094,13035)
+    case(1269,1270,2011094,13035,160311)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
     case(1811)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
-    case(1812,2011138,2011151,2760,2013090,2014050,14020,8353,7712,11002,11008)
+    case(1812,2011138,2011151,2760,2013090,2014050,14020,8353,7712,11002,11008,79152)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
     case(6008,9998)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
@@ -830,11 +877,12 @@ module S95tables
       &  *   t%BR_hjZZ(j)*BR_Zll**2     
     case(11025,1997,12041,130021,130022,009361)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
+!      write(*,*) "Analysis(130021) fact(",j,")=",fact(j)
     case(2011026,11005,11016,11026,3478,3357,2011148,2012016)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
     case(110212)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
-    case(2011025,2011085,2011161,5895,1414,2012091,2012168,1487,12001,12015,13001,11010,11030,11021)
+    case(17013,2011025,2011085,2011161,5895,1414,2012091,2012168,1487,12001,12015,13001,11010,11030,11021)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
     case(13006, 13075515,2013009,3051)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
@@ -862,12 +910,20 @@ module S95tables
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
     case(10002,5003,2011132,2012094,110201,110292)
      fact(j)=t%lhc7%XS_hj_ratio(j)*t%lhc7%XS_H_SM(j)   *t%BR_hjtautau(j)
-	case(2014049)
-! Insert correct xsection alias here
-!     fact(j)=t%lhc8%XS_bbhj_ratio(j)*t%lhc8%XS_bbH_SM(j)*t%BR_hjtautau(j)     
     case(20140492)
-! Insert correct xsection alias here
-!     fact(j)=t%lhc8%XS_gghj_ratio(j)*t%lhc8%XS_ggH_SM(j)*t%BR_hjtautau(j)
+!      fact(j)=t%lhc8%XS_gg_hj_ratio(j)*t%lhc8%XS_gg_H_SM(j)*t%BR_hjtautau(j)
+     fact(j)=t%lhc8%channelrates(j,6,4)*t%lhc8%XS_gg_H_SM(j)     
+	case(2014049)
+!      fact(j)=t%lhc8%XS_bb_hj_ratio(j)*t%lhc8%XS_bb_H_SM(j)*t%BR_hjtautau(j)     
+     fact(j)=t%lhc8%channelrates(j,7,4)*t%lhc8%XS_bb_H_SM(j)
+    case(20160851,160371,20170501)
+!      fact(j)=t%lhc13%XS_gg_hj_ratio(j)*t%lhc13%XS_gg_H_SM(j)*t%BR_hjtautau(j)
+!      write(*,*) "debug: ",j,t%lhc13%channelrates(j,6,4)
+     fact(j)=t%lhc13%channelrates(j,6,4)*t%lhc13%XS_gg_H_SM(j)
+	case(20160852,160372,20170502)
+!      write(*,*) "debug: ",j,t%lhc13%channelrates(j,7,4)	
+!      fact(j)=t%lhc13%XS_bb_hj_ratio(j)*t%lhc13%XS_bb_H_SM(j)*t%BR_hjtautau(j)     
+     fact(j)=t%lhc13%channelrates(j,7,4)*t%lhc13%XS_bb_H_SM(j)     
     case(12050,13021)
      fact(j)=t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j)   *t%BR_hjtautau(j)
     case(11009,11020,2011133,2012014,2012160)
@@ -884,6 +940,8 @@ module S95tables
      fact(j)=t%lhc8%XS_vbf_ratio(j)*div(t%BR_hjWW(j),t%BR_HWW_SM(j) ,0.0D0,1.0D0)
     case(13013,13441)
      fact(j)=t%lhc8%XS_vbf_ratio(j)*t%BR_hjinvisible(j)
+    case(6682)
+     fact(j)=t%lhc13%XS_vbf_ratio(j)*t%lhc13%XS_vbf_SM(j)*t%BR_hjinvisible(j)
     case(13018,13442)
      fact(j)=t%lhc8%XS_hjZ_ratio(j)*t%BR_hjinvisible(j)
     case(13443)
@@ -895,20 +953,187 @@ module S95tables
       &    *t%BR_hjinvisible(j) 
 !*(BR_Zll+BR_Ztautau)            
 !       print *, 1000.D0*t%lhc8%XS_hjZ_ratio(j)*t%lhc8%XS_HZ_SM(j)*(BR_Zll+BR_Ztautau), fact(j)
+    case(1508329,2015080)
+     fact(j) = t%lhc8%XS_bb_hj_ratio(j)*t%lhc8%XS_bb_H_SM(j)*t%BR_hjbb(j)    
     case(6583)
 !    Data given in fb - (multiply by 1000)    
-     fact(j)=1000.0D0*( &
+! (TS 2016/10/13: Added conservatively estimated signal efficiency factor of ~0.56)
+     fact(j)=0.56D0*1000.0D0*( &
      t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j) + &
      t%lhc8%XS_vbf_ratio(j)*t%lhc8%XS_vbf_SM(j) + &
      t%lhc8%XS_hjZ_ratio(j)*t%lhc8%XS_HZ_SM(j) + &
      t%lhc8%XS_hjW_ratio(j)*t%lhc8%XS_HW_SM(j) + &
      t%lhc8%XS_tthj_ratio(j)*t%lhc8%XS_ttH_SM(j) ) * t%BR_hjgaga(j)
-!    case(14011)
-!     do ii=1,npart
-!      if((t%particle(Hneut)%M(ii)-125.0D0).lt.5.0D0) then
-!       fact(j)=fact(j)+1000.0D0*(t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j))*t%BR_hjhiZ(j,ii)
-!      endif
-!     enddo           
+   case(14011)
+    do ii=1,npart
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0) then
+      fact(j)=fact(j)+1000.0D0 * t%lhc8%XS_hj_ratio(j) * t%lhc8%XS_H_SM(j) &
+      &        * t%BR_hjhiZ(j,ii) * BR_Zll * t%BR_hjbb(ii)
+     endif
+    enddo
+   case(17006)
+! Data given in fb - (multiply by 1000).
+! Limit on leptonic (e,mu,tau) decays of VV -> lnulnu
+! BR(W->lnu) = 0.3257
+! BR(Z->ll) = 0.10099
+! BR(Z->nunu) = 0.2000
+    do ii=1,npart
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0) then
+      fact(j)=fact(j)+ 1000.0D0 * t%lhc13%XS_gg_hj_ratio(j) * t%lhc13%XS_gg_H_SM(j) &
+      &        * t%BR_hkhjhi(j,ii,ii) * t%BR_hjbb(ii) * &
+      &         (t%BR_hjWW(ii) * 0.3257D0**2 + t%BR_hjZZ(ii) * 0.10099D0 * 0.2D0 *2.0D0)
+     endif
+    enddo 
+   case(1506534)
+    do ii=1,npart
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0) then
+      fact(j)=fact(j)+ t%lhc8%XS_gg_hj_ratio(ii) * t%lhc8%XS_gg_H_SM(ii) &
+      &        * t%BR_hkhjhi(ii,j,j) * t%BR_hjtautau(j)**2.0D0
+     endif
+    enddo 
+   case(5051)
+    do ii=1,npart
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.2.5D0) then
+      fact(j)=fact(j)+ t%lhc8%XS_gg_hj_ratio(ii) * t%BR_hkhjhi(ii,j,j)*t%BR_hjgaga(j)**2.0D0
+     endif
+    enddo 
+   case(7355)
+    do ii=1,npart
+     fact_tmp = 0.0D0
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.(10.0D0+t%particle(Hneut)%dMh(ii))) then     
+      fact_tmp = t%lhc13%XS_hjZ_ratio(j) * t%lhc13%XS_HZ_SM(j) + t%lhc13%XS_hjW_ratio(j) * t%lhc13%XS_HW_SM(j)
+      fact(j) = fact(j) + fact_tmp * t%BR_hkhjhi(ii,j,j) * t%BR_hjbb(j) * t%BR_hjbb(j)
+     endif 
+    enddo   
+
+   case(17020321)
+    do ii=1,npart
+     fact_tmp = 0.0D0
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.(25.0D0+t%particle(Hneut)%dMh(ii))) then          
+     call model_likeness(ii,S95_t1(c)%id,t,model_like(ii),fact_tmp)
+     fact(j) = fact(j) + fact_tmp * t%BR_hkhjhi(ii,j,j) * t%BR_hjtautau(j)**2.0D0
+     endif      
+    enddo   
+   case(17020322,539)
+    do ii=1,npart ! Multiply by 2.0 because limit is set on BR(H->hh->mumubb)
+     fact_tmp = 0.0D0
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.(25.0D0+t%particle(Hneut)%dMh(ii))) then     
+      call model_likeness(ii,S95_t1(c)%id,t,model_like(ii),fact_tmp)
+      fact(j) = fact(j) + fact_tmp * t%BR_hkhjhi(ii,j,j) * 2.0D0 * t%BR_hjmumu(j) * t%BR_hjbb(j)
+     endif 
+    enddo   
+   case(17020323)
+    do ii=1,npart ! Multiply by 2.0 because limit is set on BR(H->hh->mumutautau)
+     fact_tmp = 0.0D0
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.(25.0D0+t%particle(Hneut)%dMh(ii))) then          
+     call model_likeness(ii,S95_t1(c)%id,t,model_like(ii),fact_tmp)
+     fact(j) = fact(j) + fact_tmp * t%BR_hkhjhi(ii,j,j) * 2.0D0 * t%BR_hjmumu(j) * t%BR_hjtautau(j)
+     endif 
+    enddo   
+   case(011812)
+   ! Limit given in fb, multiply by 1000.   
+    do ii=1,npart
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0) then
+      fact(j)=fact(j)+1000.0D0 * t%lhc8%XS_hj_ratio(j) * t%lhc8%XS_H_SM(j) &
+      &        * t%BR_hjhiZ(j,ii) * BR_Zll * t%BR_hjtautau(ii)
+     endif
+    enddo    
+   case(011811)
+   ! Limit given in pb
+    do ii=1,npart
+     do iii=1,npart ! No symmetry factor (1/2) because limit is set on BR(H->hh->bbtautau)
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0.and.abs(t%particle(Hneut)%M(iii)-125.0D0).lt.10.0D0) then
+    fact(j)=fact(j)+ t%lhc8%XS_hj_ratio(j) * t%lhc8%XS_H_SM(j) &
+    &              * t%BR_hkhjhi(j,ii,iii) * ( t%BR_hjtautau(ii) * t%BR_hjbb(iii) + &
+    &                                          t%BR_hjtautau(iii) * t%BR_hjbb(ii) )
+     endif
+     enddo
+    enddo
+   case(16029)
+   ! Limit given in pb
+    do ii=1,npart
+     do iii=1,npart ! No symmetry factor (1/2) because limit is set on BR(H->hh->bbtautau)
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0.and.abs(t%particle(Hneut)%M(iii)-125.0D0).lt.10.0D0) then
+    fact(j)=fact(j)+ t%lhc13%XS_hj_ratio(j) * t%lhc13%XS_H_SM(j) &
+    &              * t%BR_hkhjhi(j,ii,iii) * ( t%BR_hjtautau(ii) * t%BR_hjbb(iii) + &
+    &                                          t%BR_hjtautau(iii) * t%BR_hjbb(ii) )
+     endif
+     enddo
+    enddo
+   case(17002)
+   ! Limit given in fb
+    do ii=1,npart
+     do iii=1,npart ! No symmetry factor (1/2) because limit is set on BR(H->hh->bbtautau)
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0.and.abs(t%particle(Hneut)%M(iii)-125.0D0).lt.10.0D0) then
+    fact(j)=fact(j)+ 1000.0D0 * t%lhc13%XS_hj_ratio(j) * t%lhc13%XS_H_SM(j) &
+    &              * t%BR_hkhjhi(j,ii,iii) * ( t%BR_hjtautau(ii) * t%BR_hjbb(iii) + &
+    &                                          t%BR_hjtautau(iii) * t%BR_hjbb(ii) )
+     endif
+     enddo
+    enddo
+   case(2016071)
+   ! Limit given in pb
+    do ii=1,npart
+     do iii=1,npart ! No symmetry factor (1/2) because limit is set on BR(H->hh->WWgaga)
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.2.5D0.and.abs(t%particle(Hneut)%M(iii)-125.0D0).lt.2.5D0) then
+    fact(j)=fact(j)+ t%lhc13%XS_hj_ratio(j) * t%lhc13%XS_H_SM(j) &
+    &              * t%BR_hkhjhi(j,ii,iii) * ( t%BR_hjWW(ii) * t%BR_hjgaga(iii) + &
+    &                                          t%BR_hjWW(iii) * t%BR_hjgaga(ii) )
+     endif
+     enddo
+    enddo
+   case(16002,2016049)
+   ! Limit given in fb, multiply by 1000.
+    do ii=1,npart
+     do iii=1,npart
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0.and.abs(t%particle(Hneut)%M(iii)-125.0D0).lt.10.0D0) then
+    fact(j)=fact(j)+ 1000.0D0 * t%lhc13%XS_hj_ratio(j) * t%lhc13%XS_H_SM(j) &
+    &              * t%BR_hkhjhi(j,ii,iii) * t%BR_hjbb(iii) * t%BR_hjbb(ii) 
+     endif
+     enddo
+    enddo    
+   case(14013)
+   ! Limit given in fb, multiply by 1000.
+    do ii=1,npart
+     do iii=1,npart
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0.and.abs(t%particle(Hneut)%M(iii)-125.0D0).lt.10.0D0) then
+    fact(j)=fact(j)+ 1000.0D0 * t%lhc8%XS_hj_ratio(j) * t%lhc8%XS_H_SM(j) &
+    &              * t%BR_hkhjhi(j,ii,iii) * t%BR_hjbb(iii) * t%BR_hjbb(ii) 
+     endif
+     enddo
+    enddo    
+   case(044781)
+   ! Limit given in pb (Z->ll unfolded)   
+    do ii=1,npart
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0) then
+      fact(j)=fact(j) + t%lhc8%XS_gg_hj_ratio(j) * t%lhc8%XS_gg_H_SM(j) &
+      &        * t%BR_hjhiZ(j,ii) * t%BR_hjtautau(ii)
+     endif
+    enddo
+   case(044782)
+   ! Limit given in pb (Z->ll unfolded)
+    do ii=1,npart
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0) then
+      fact(j)=fact(j) + t%lhc8%XS_gg_hj_ratio(j) * t%lhc8%XS_gg_H_SM(j) &
+      &        * t%BR_hjhiZ(j,ii) * t%BR_hjbb(ii)
+     endif
+    enddo
+   case(20160151,180051)
+   ! Limit given in pb (Z->ll unfolded)
+    do ii=1,npart
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0) then
+      fact(j)=fact(j) + t%lhc13%XS_gg_hj_ratio(j) * t%lhc13%XS_gg_H_SM(j) &
+      &        * t%BR_hjhiZ(j,ii) * t%BR_hjbb(ii)
+     endif
+    enddo
+   case(20160152,180052)
+   ! Limit given in pb (Z->ll unfolded)
+    do ii=1,npart
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0) then
+      fact(j)=fact(j) + t%lhc13%XS_bb_hj_ratio(j) * t%lhc13%XS_bb_H_SM(j) &
+      &        * t%BR_hjhiZ(j,ii) * t%BR_hjbb(ii)
+     endif
+    enddo
     case(14006,14037)
 !    Data given in pb
      fact(j)= ( &
@@ -917,20 +1142,102 @@ module S95tables
      t%lhc8%XS_hjZ_ratio(j)*t%lhc8%XS_HZ_SM(j) + &
      t%lhc8%XS_hjW_ratio(j)*t%lhc8%XS_HW_SM(j) + &
      t%lhc8%XS_tthj_ratio(j)*t%lhc8%XS_ttH_SM(j) ) * t%BR_hjgaga(j)
+    case(2018025)
+!    Data given in fb (fiducial cross section, multiply here with acceptance functions)
+     fact(j)= 1000.0D0 * ( &
+     (0.574D0 - 2.051 * exp(-0.0311*mass(j))) * t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j) + &
+     (0.663D0 - 1.054 * exp(-0.0182*mass(j))) * t%lhc13%XS_vbf_ratio(j)*t%lhc13%XS_vbf_SM(j) + &
+     (0.547D0 - 1.223 * exp(-0.0222*mass(j))) * t%lhc13%XS_hjZ_ratio(j)*t%lhc13%XS_HZ_SM(j) + &
+     (0.547D0 - 1.223 * exp(-0.0222*mass(j))) * t%lhc13%XS_hjW_ratio(j)*t%lhc13%XS_HW_SM(j) + &
+     (0.663D0 - 1.054 * exp(-0.0182*mass(j))) * t%lhc13%XS_tthj_ratio(j)*t%lhc13%XS_ttH_SM(j) ) * &
+     t%BR_hjgaga(j)     
     case(14031)
      fact(j)=1000.0D0* t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j) * &
                        t%BR_hjZga(j)*BR_Zll
+    case(20160821,20160822,063861)
+     fact(j)=t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j)*t%BR_hjZZ(j)
+    case(20160823)
+     fact(j)=t%lhc13%XS_vbf_ratio(j)*t%lhc13%XS_vbf_SM(j)*t%BR_hjZZ(j)
+    case(20160792)
+    ! Data given in fb
+     fact(j)=1000.0D0*t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j)*t%BR_hjZZ(j)*BR_Zll**2
+    case(20160793)
+    ! Data given in fb
+     fact(j)=1000.0D0*t%lhc13%XS_vbf_ratio(j)*t%lhc13%XS_vbf_SM(j)*t%BR_hjZZ(j)*BR_Zll**2
+    case(20160741,2016062)
+     fact(j)=t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j)*t%BR_hjWW(j)
+    case(20160742)
+     fact(j)=t%lhc13%XS_vbf_ratio(j)*t%lhc13%XS_vbf_SM(j)*t%BR_hjWW(j)    
     case(2011112)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
     case(2011135)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
     case(6224,6225,6226)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
-    case(04670,046701,046702)
+    case(04670,046701,046702,17030,4873,8567,336)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
     case(0038911,0038912,0038913,0038914)
      call model_likeness(j,S95_t1(c)%id,t,model_like(j),fact(j))
+    case(160312,2016088,79151,18014)
+!    Data given in pb (factor 2 because both signs of the charged Higgs are considered in the limit)
+     fact(j)= 2.0D0 * t%lhc13%XS_Hpjtb(j) * t%BR_Hpjtaunu(j)
+    case(1504233)
+!    Data given in fb (factor 2 because both signs of the charged Higgs are considered in the limit)
+     fact(j)= 2.0D0 * 1000.0D0*t%lhc8%XS_vbf_Hpj(j) * t%BR_HpjWZ(j)
+    case(2016089,3599)
+!    Data given in pb (factor 2 because both signs of the charged Higgs are considered in the limit)
+       fact(j)= 2.0D0 * t%lhc13%XS_Hpjtb(j) * t%BR_Hpjtb(j)
+!    Daniel's attempts
+    case(2016025)
+       fact(j) = t%lhc13%XS_hj_ratio(j) * t%lhc13%XS_H_SM(j)  * t%BR_hjbb(j)
+    case(2016044)
+       fact(j) = 1000.0D0*t%lhc13%XS_hj_ratio(j) * t%lhc13%XS_H_SM(j)  * t%BR_hjZga(j)
+    case(201608391)
+     do ii=1,npart
+       if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0) then
+          fact(j)=fact(j) +  t%lhc13%XS_hjW_ratio(ii)   *t%lhc13%XS_HW_SM(ii)  * t%BR_hkhjhi(ii,j,j) &
+           &                 * t%BR_hjbb(j) * t%BR_hjbb(j)
+       endif
+     enddo
+    case(16030)    
+        fact(j) = t%BR_tHpjb(j) * t%BR_Hpjcs(j)
 
+   case(2016004)
+   ! Limit given in pb
+    do ii=1,npart
+     do iii=1,npart ! Multiply fact by symmetry factor, 1/2.
+     if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.2.5D0.and.abs(t%particle(Hneut)%M(iii)-125.0D0).lt.2.5D0) then
+    fact(j)=fact(j)+ 0.5D0 * t%lhc13%XS_gg_hj_ratio(j)*t%lhc13%XS_gg_H_SM(j)  &
+    &        * t%BR_hkhjhi(j,ii,iii) * &
+    &        ( t%BR_hjbb(ii)/t%BR_Hbb_SM(ii) * t%BR_hjgaga(iii)/t%BR_Hgaga_SM(iii) + &
+    &          t%BR_hjbb(iii)/t%BR_Hbb_SM(iii) * t%BR_hjgaga(ii)/t%BR_Hgaga_SM(ii) )
+     endif
+     enddo
+    enddo
+!     case(2016004)
+!      do ii=1,npart
+!        if(abs(t%particle(Hneut)%M(ii)-125.0D0).lt.10.0D0.and.t%BR_Hbb_SM(ii).gt.0D0.and.t%BR_Hgaga_SM(ii).gt.0D0) then
+!           fact(j) + t%lhc13%XS_gg_hj_ratio(j)*t%lhc13%XS_gg_H_SM(j) * t%BR_hkhjhi(j,ii,ii) &
+!            &        * t%BR_hjbb(ii)/t%BR_Hbb_SM(ii) * t%BR_hjgaga(ii)/t%BR_Hgaga_SM(ii)
+!        endif
+!      enddo
+    case(1604833)
+     if(abs(t%BR_hjWW(j)/t%BR_hjZZ(j) / (t%BR_HWW_SM(j)/t%BR_HZZ_SM(j))-1.0D0).lt.0.05) then
+      fact(j) = t%lhc13%XS_gg_hj_ratio(j)*t%lhc13%XS_gg_H_SM(j)  * (t%BR_hjWW(j) + t%BR_hjZZ(j))
+     else
+      fact(j) = 0.0D0
+     endif  
+    case(16034)
+     fact(j) = (t%lhc13%XS_hj_ratio(j) * t%lhc13%XS_H_SM(j) + &
+    &           t%lhc13%XS_vbf_ratio(j) * t%lhc13%XS_vbf_SM(j) ) * t%BR_hjZZ(j)
+    case(2016056)
+     fact(j) = 1000.0D0*t%lhc13%XS_gg_hj_ratio(j) * t%lhc13%XS_gg_H_SM(j)  * t%BR_hjZZ(j)
+    case(15009)
+       fact(j)=  1000.*t%lhc8%XS_bb_hj_ratio(j)*t%lhc8%XS_bb_H_SM(j)*t%BR_hjmumu(j) 
+    case(20160551)
+     fact(j) = 1000.0D0*t%lhc13%XS_hj_ratio(j) * t%lhc13%XS_H_SM(j)  * t%BR_hjZZ(j)
+    case(20160552)
+     fact(j) = 1000.0D0*t%lhc13%XS_hj_ratio(j) * t%lhc13%XS_H_SM(j)  * t%BR_hjWW(j)
     case default
      stop 'wrong input to function calcfact_t1 in module S95tables'
     end select
@@ -964,6 +1271,16 @@ module S95tables
    elseif(S95_t1(c)%particle_x .ne. Hneut)then!B
     cfact_t1=sum(fact)
    else!B
+
+   ! HB-5 new --->
+   if(cfact_t1.gt.vvsmall.and.M_av.gt.S95_t1(c)%xmax) then
+    M_av = S95_t1(c)%xmax
+    write(*,*) "WARNING: Evaluating limit of ",trim(adjustl(S95_t1(c)%label))," at upper mass range."
+   else if(cfact_t1.gt.vvsmall.and.M_av.lt.S95_t1(c)%xmin) then
+    M_av = S95_t1(c)%xmin
+    write(*,*) "WARNING: Evaluating limit of ",trim(adjustl(S95_t1(c)%label))," at lower mass range."
+   endif
+   ! <---   
 
     if(f.eq.1)then !have already calculated these in theo_manip to save time
      BR_Hbb_SM_av     = t%BR_Hbb_SM(jj)
@@ -1045,10 +1362,10 @@ module S95tables
      enddo  
     case(2011048,11004,11015,11013,11028,11006,11017,110271,110272,14161,14162,5064,2012017,2011150,2011131)
     case(2011162,1415,2012092,20130131)
-    case(11025,1997,12041,130021,130022,009361)
+    case(11025,1997,12041,130021,130022,009361,16034)
     case(2011026,11005,11016,11026,3478,3357,2011148,2012016)
     case(110212)
-    case(2011025,2011085,2011161,5895,1414,2012091,2012168,1487,12001,12015,13001,11010,11030,11021)
+    case(17013,2011025,2011085,2011161,5895,1414,2012091,2012168,1487,12001,12015,13001,11010,11030,11021)
     case(13006, 13075515,2013009,3051)
     case(11031,12044,13012)   
     case(13011)   
@@ -1076,15 +1393,24 @@ module S95tables
     case(2011103,2012161,11012) 
     case(13022)
     case(13013)
-    case(13441,13442,13443)
+    case(13441,13442,13443,6682)
     case(13018)
     case(2013011,3244)
     case(2011112)
-    case(6583,14006,14037,14031)
+    case(6583,14006,14037,14031,2018025)
     case(2011135) 
+    case(1508329,2015080)    
+    case(17020321,17020322,17020323,539,7355)
     case(6224,6225,6226)
-    case(04670,046701,046702)
+    case(04670,046701,046702,17030,4873,8567,336)
     case(0038911,0038912,0038913,0038914)
+    case(160312,18014,2016088,2016089,3599,14011,011811,16029,17002,14013,2016071)
+    case(16002,011812,20160851,20160852,20170501,20170502,79151)
+    case(1504233,1506534,5051)
+    case(160371,160372,044781,044782,20160151,180051,180052,20160152,17006)
+    case(20160741,20160742,2016062,20160821,20160822,20160823,20160792,20160793,2016049,063861)
+    case(2016025,2016044,201608391,2016004,1604833,2016056,20160551,20160552,15009)
+    case(16030)
     case default
      stop 'error calculating denom. in calcfact_t1'
     end select
@@ -1104,7 +1430,7 @@ module S95tables
  !**********************************************************
  !calculates fact for table type 2 
  !**********************************************************      
-  use usefulbits, only : dataset,np,vsmall,not_a_particle
+  use usefulbits, only : dataset,np,vsmall,not_a_particle,extrapolatewidth
   implicit none      
   !--------------------------------------input      
   type(dataset) :: t
@@ -1114,8 +1440,10 @@ module S95tables
   integer :: nc
   !-------------------------------------------
   integer :: f,i,j,npart2,npart1
-  double precision :: fact,eps2,crosssection,Mi_av,Mj_av,masstot
+  double precision :: fact,eps2,crosssection,Mi_av,Mj_av,masstot,BR_Zll,acceptance
   double precision,allocatable :: massj(:),massi(:)
+
+   BR_Zll=3.363D-2+3.366D-2      !BR_Zll = sum(l=e,mu), BR(Z ->l+ l-)
 
    eps2=0.02D0
 
@@ -1174,6 +1502,13 @@ module S95tables
     fact=test_appl( t%lep%XS_NjNi(j,i)*t%BR_NjqqNi(j,i)) !fig 9 hep-ex/0401026 absolute XS in fb
    case(910)
     fact=test_appl(t%lep%XS_NjNi(j,i))!fig 10 hep-ex/0401026 absolute XS in fb
+   case(6065)
+    fact=test_appl(t%lep%XS_HpjHmj_ratio(j)*(t%BR_Hpjcs(j)+t%BR_Hpjcb(j)+t%BR_Hpjtaunu(j))) 
+   case(02671)
+    fact=test_appl(t%lep%XS_HpjHmj_ratio(j)*(t%BR_HpjhiW(j,i)*t%BR_hjbb(i))**2.0D0)
+   case(02672)
+    fact=test_appl( 4.0D0 * t%lep%XS_HpjHmj_ratio(j)*t%BR_HpjhiW(j,i) * &
+                & t%BR_Hpjtaunu(j)*t%BR_hjbb(i)**2.0D0) !Multiplied by 4 (see LEP paper)
    case(3381)
     fact=test_appl(t%tev%XS_hj_ratio(j) * t%tev%XS_H_SM(j) * t%BR_hjhihi(j,i) * &
                 & t%BR_hjmumu(i)**2.0D0 )! arXiv:0905.3381 table I, absolute XS in fb
@@ -1184,14 +1519,67 @@ module S95tables
     fact=test_appl(t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j) * t%BR_hjhihi(j,i))
    case(13032)
    ! Limit given in fb, multiply by 1000.
-    fact=test_appl(1000.0D0*t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j)*t%BR_hjhihi(j,i) * &
-            &      t%BR_hjgaga(i) * t%BR_hjbb(i) )
-   case(14013)
+    fact=test_appl(1000.0D0*t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j)*t%BR_hjhihi(j,i) )
+!    case(011811)
+!    ! Limit given in pb
+!     fact=test_appl(t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j)*t%BR_hjhihi(j,i) * &
+!             &      t%BR_hjtautau(i) * t%BR_hjbb(i) )
+!    case(011812)
+!    ! Limit given in fb, multiply by 1000.
+!     fact=test_appl(1000.0D0*t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j)*t%BR_hjhiZ(j,i) * &
+!             &      t%BR_hjtautau(i) * BR_Zll )
+!    case(044781)
+!    ! Limit given in pb (Z->ll unfolded)
+!     fact=test_appl(t%lhc8%XS_gg_hj_ratio(j)*t%lhc8%XS_gg_H_SM(j)*t%BR_hjhiZ(j,i) * &
+!             &      t%BR_hjtautau(i))
+!    case(044782)
+!    ! Limit given in pb (Z->ll unfolded)
+!     fact=test_appl(t%lhc8%XS_gg_hj_ratio(j)*t%lhc8%XS_gg_H_SM(j)*t%BR_hjhiZ(j,i) * &
+!             &      t%BR_hjbb(i) )
+!    case(20160151)
+!    ! Limit given in pb (Z->ll unfolded)
+!     fact=test_appl(t%lhc13%XS_gg_hj_ratio(j)*t%lhc13%XS_gg_H_SM(j)*t%BR_hjhiZ(j,i) * &
+!             &      t%BR_hjbb(i) )
+!    case(20160152)
+!    ! Limit given in pb (Z->ll unfolded)
+!     fact=test_appl(t%lhc13%XS_bb_hj_ratio(j)*t%lhc13%XS_bb_H_SM(j)*t%BR_hjhiZ(j,i) * &
+!             &      t%BR_hjbb(i) )
+   case(06896)
    ! Limit given in fb, multiply by 1000.
     fact=test_appl(1000.0D0*t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j)*t%BR_hjhihi(j,i) * &
+            &      t%BR_hjgaga(i) * t%BR_hjbb(i) )                        
+   case(16032)
+   ! Limit given in fb, multiply by 1000.
+    fact=test_appl(1000.0D0*t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j)*t%BR_hjhihi(j,i) * &
+            &      t%BR_hjgaga(i) * t%BR_hjbb(i) )                        
+!    case(14013)
+!    ! Limit given in fb, multiply by 1000.
+!     fact=test_appl(1000.0D0*t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j)*t%BR_hjhihi(j,i) * &
+!             &      t%BR_hjbb(i) * t%BR_hjbb(i) )
+   case(16002)
+   ! Limit given in fb, multiply by 1000.
+    fact=test_appl(1000.0D0*t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j)*t%BR_hjhihi(j,i) * &
             &      t%BR_hjbb(i) * t%BR_hjbb(i) )
+   case(150011)
+   ! Limit given in fb, multiply by 1000.
+    fact=test_appl(1000.0D0*t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j)*t%BR_hjhiZ(j,i) * &
+            &      t%BR_hjtautau(i) * BR_Zll )
+   case(150012)
+   ! Limit given in fb, multiply by 1000.
+    fact=test_appl(1000.0D0*t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j)*t%BR_hjhiZ(j,i) * &
+            &      t%BR_hjbb(i) * BR_Zll )
+   case(16010)
+   ! Limit given in fb, multiply by 1000.
+    fact=test_appl(1000.0D0*t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j)*t%BR_hjhiZ(j,i) * &
+            &      t%BR_hjbb(i) * BR_Zll )            
    case(14022)
     fact=test_appl( t%BR_hjhihi(j,i) * t%BR_hjtautau(i) * t%BR_hjtautau(i) )
+   case(150600424)
+    fact=test_appl(1000.0D0*t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j) * &
+&                           t%BR_hkhjhi(j,i,i)*t%BR_hjmumu(i)**2.0D0 )
+   case(16035)
+    fact=test_appl(1000.0D0*t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j) * &
+&                           t%BR_hkhjhi(j,i,i)*t%BR_hjmumu(i)**2.0D0 )
    case(6227)
     f=0
     do j=1,npart2
@@ -1218,12 +1606,56 @@ module S95tables
      t%lhc8%XS_vbf_ratio(j)*t%lhc8%XS_vbf_SM(j) + &
      t%lhc8%XS_hjZ_ratio(j)*t%lhc8%XS_HZ_SM(j) + &
      t%lhc8%XS_hjW_ratio(j)*t%lhc8%XS_HW_SM(j) + &
-     t%lhc8%XS_tthj_ratio(j)*t%lhc8%XS_ttH_SM(j) ) * t%BR_hjgaga(j)       
+     t%lhc8%XS_tthj_ratio(j)*t%lhc8%XS_ttH_SM(j) ) * t%BR_hjgaga(j)
+
+! DD, Nov 8
+    case(20160341)
+     fact=test_appl(t%lhc13%XS_bb_hj_ratio(j)*t%lhc13%XS_bb_H_SM(j) &
+      &        * t%BR_hjhiZ(j,i) * t%BR_hjbb(i))
+     
+    case(20160342)
+     fact=test_appl(t%lhc13%XS_gg_hj_ratio(j) * t%lhc13%XS_gg_H_SM(j) &
+      &        * t%BR_hjhiZ(j,i) * t%BR_hjbb(i))
+
+    case(2016059)
+!    Data given in fb - (multiply by 1000)    
+! (  Acceptance factor linearly increasing between 200 and 700 GeV, then constant)
+	  acceptance = 0.61D0
+	 if(Mj_av.le.700.0D0) then
+	  acceptance = ((Mj_av-200.0D0)*0.61D0+(700.0D0-Mj_av)*0.54D0)/500.0D0
+     endif
+     fact =acceptance*1000.0D0*( &
+     t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j) + &
+     t%lhc13%XS_vbf_ratio(j)*t%lhc13%XS_vbf_SM(j) + &
+     t%lhc13%XS_hjZ_ratio(j)*t%lhc13%XS_HZ_SM(j) + &
+     t%lhc13%XS_hjW_ratio(j)*t%lhc13%XS_HW_SM(j) + &
+     t%lhc13%XS_tthj_ratio(j)*t%lhc13%XS_ttH_SM(j) ) * t%BR_hjgaga(j)
+    case(4147)
+!    Data given in fb - (multiply by 1000)    
+! (  Acceptance factor linearly increasing between 200 and 800 GeV, then constant)
+	  acceptance = 0.63D0
+	 if(Mj_av.le.800.0D0) then
+	  acceptance = ((Mj_av-200.0D0)*0.63D0+(800.0D0-Mj_av)*0.54D0)/600.0D0
+     endif
+     fact =acceptance*1000.0D0*( &
+     t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j) + &
+     t%lhc13%XS_vbf_ratio(j)*t%lhc13%XS_vbf_SM(j) + &
+     t%lhc13%XS_hjZ_ratio(j)*t%lhc13%XS_HZ_SM(j) + &
+     t%lhc13%XS_hjW_ratio(j)*t%lhc13%XS_HW_SM(j) + &
+     t%lhc13%XS_tthj_ratio(j)*t%lhc13%XS_ttH_SM(j) ) * t%BR_hjgaga(j)
 
     case(003892)
      fact = ( &
      t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j) + &
      t%lhc8%XS_vbf_ratio(j)*t%lhc8%XS_vbf_SM(j)) * t%BR_hjWW(j)       
+    case(20160791,160331)
+     fact = 1000.0D0 * t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j) * t%BR_hjZZ(j) * BR_Zll**2.0D0
+    case(160332)
+     fact = 1000.0D0 * t%lhc13%XS_vbf_ratio(j)*t%lhc13%XS_VBF_SM(j) * t%BR_hjZZ(j) * BR_Zll**2.0D0
+    case(01123) ! Limit given in pb
+     fact = t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j) * t%BR_hjWW(j)
+    case(170121,06386) ! Limit given in pb
+     fact = t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j) * t%BR_hjZZ(j)
 
 
    case default
@@ -1234,18 +1666,39 @@ module S95tables
      select case(S95_t2(c)%id)
      case(6227)
      axis_i=t%BR_hjtautau(jj)
-     case(02301)
-     axis_i=t%particle( S95_t2(c)%particle_x2 )%GammaTot(i) / &
-     &      t%particle( S95_t2(c)%particle_x2 )%M(i)
+     case(02301,2016059,4147,20160791,06386)
+     axis_i=t%particle( S95_t2(c)%particle_x2 )%GammaTot(j) / &
+     &      t%particle( S95_t2(c)%particle_x2 )%M(j)               
+     case(01123) ! in percent
+     axis_i=t%particle( S95_t2(c)%particle_x2 )%GammaTot(j) / &
+     &      t%particle( S95_t2(c)%particle_x2 )%M(j) * 100.0D0
      case(003892)
-     axis_i=t%particle( S95_t2(c)%particle_x2 )%GammaTot(i) / &
-     &      t%GammaTot_SM(i)
+     axis_i=t%particle( S95_t2(c)%particle_x2 )%GammaTot(j) / &
+     &      t%GammaTot_SM(j)
+     case(160331,160332,170121)
+     axis_i=t%particle( S95_t2(c)%particle_x2 )%GammaTot(j)
+     case(6065)
+     axis_i=t%BR_Hpjtaunu(j)
      case default 
       stop 'Problem in subroutine calcfact_t2 (y1)'
      end select
+
+     select case(S95_t2(c)%id)
+     case(02301,2016059,4147,20160791,06386,01123,003892,160331,160332,170121)
+      if(extrapolatewidth) then
+       if(axis_i.gt.S95_t2(c)%xmax1) then
+        axis_i = S95_t2(c)%xmax1
+       endif
+      endif 
+     case default 
+      continue
+     end select
+
    else
      axis_i=Mi_av
    endif
+
+
 
    if(S95_t2(c)%particle_x2.eq.not_a_particle)then
      select case(S95_t2(c)%id)
@@ -1280,7 +1733,9 @@ module S95tables
    integer :: k
          
     select case(S95_t2(c)%id)
-    case(150,160,180,190,200,210,220,230,240,3381,3382,13032,14013)
+    case(150,160,180,190,200,210,220,230,240,3381,3382,13032,06896,14013,&
+    &    16002,150011,150012,16032,16029,011811,011812,044781,044782,20160151,&
+    &    20160152,16010,17002,150600424,16035,20160341,20160342)
      if(S95_t2(c)%needs_M2_gt_2M1.and.(massj(j).lt.2.0D0*massi(i)))then
       test_appl=0.0D0 
      elseif(massj(j).lt.massi(i))then
@@ -1288,6 +1743,19 @@ module S95tables
      else
       test_appl=x
      endif
+    case(02671,02672)
+     if(massj(j).lt.massi(i)+3.0D0) then
+      test_appl=0.0D0 
+     else
+      test_appl=x
+     endif      
+    case(6065)
+     if( (t%BR_Hpjtaunu(j) + t%BR_Hpjcs(j) + t%BR_Hpjcb(j)).gt.1.0D0 ) then
+      test_appl=0.0D0
+      write(*,*) 'WARNING: Sum of charged Higgs branching ratios (cs,cb,taunu) > 1.'
+     else
+      test_appl=x
+     endif 
     case(14022)
      ! SM likeness test of the heavier Higgs boson
      allocate(XS_ratio(4),ds(4))
@@ -1496,10 +1964,12 @@ module S95tables
    descrip=' (p p-bar)->V h'//j//'-> V tau tau ' //label
   case(1811)
    descrip=' t->(H'//j//'+)b->(2 quarks) b   '          //label 
-  case(1812,2011138,2011151,2760,2013090,2014050,14020,8353,7712,11002,11008)
+  case(1812,2011138,2011151,2760,2013090,2014050,14020,8353,7712,11002,11008,160311,79152)
    descrip=' t->(H'//j//'+)b->tau nu b   '          //label 
   case(1269,1270,2011094,13035)
    descrip=' t->(H'//j//'+)b->(c s) b'          //label 
+  case(16030)
+   descrip=' t->(H'//j//'+)b->(c b) b'          //label 
   case(11006,11017,110271,110272,14161,14162,5064,2012017,2011150) 
    descrip=' (p p)->h'//j//'/VBF->Z Z-> l l q q where h'//j//' is SM-like ' //label
   case(2011048,11004,11015,2011131) 
@@ -1516,10 +1986,14 @@ module S95tables
    descrip=' (p p)->h'//j//'/VBF/V h->Z Z-> l l l l ' //label
   case(04670)
    descrip=' (p p)->h'//j//'->h(SM,125)h(SM,125)-> bb/tautau/WW/gaga (combination) ' //label
-  case(046701)
+  case(046701,8567)
    descrip=' (p p)->h'//j//'->h(SM,125)h(SM,125)-> gaga WW ' //label
-  case(046702)
+  case(4873)
+   descrip=' (p p)->h'//j//'->h(SM,125)h(SM,125)-> gaga bb ' //label
+  case(046702,336)
    descrip=' (p p)->h'//j//'->h(SM,125)h(SM,125)-> bb tautau ' //label
+  case(17030)
+   descrip=' (p p)->h'//j//'->h(SM,125)h(SM,125)-> bb/tautau/WW/ZZ/gaga (combination) ' //label
   case(059301) 
    descrip=' (p p)->h'//j//'->Z Z ' //label
   case(059302) 
@@ -1528,6 +2002,8 @@ module S95tables
    descrip=' (p p)->h'//j//'->Z Z-> l l l l (low mass) where h'//j//' is SM-like ' //label
   case(130022) 
    descrip=' (p p)->h'//j//'->Z Z-> l l l l (high mass) where h'//j//' is SM-like ' //label
+  case(16034) 
+   descrip=' (p p)->h'//j//'/VBF->Z Z-> l l q q, with single-Higgs/VBF ratio profiled ' //label
   case(009361) 
    descrip=' (p p)->h'//j//'->V V where h'//j//' is SM-like ' //label
   case(11005,11016,11026,3478)
@@ -1540,6 +2016,24 @@ module S95tables
    descrip=' (p p)->h'//j//'/VBF->V V where h'//j//' is SM-like ' //label
   case(5429,2011052,2011111,2011134) 
    descrip=' (p p)->h'//j//'->W W ' //label
+  case(063861) 
+   descrip=' (g g)->h'//j//' -> Z Z -> 4l+2l2nu (employs NWA)' //label
+  case(20160821) 
+   descrip=' (g g)->h'//j//' -> Z Z -> llnunu (employs NWA)' //label
+  case(20160822) 
+   descrip=' (g g)->h'//j//' -> Z Z -> llqq (employs NWA)' //label
+  case(20160792) 
+   descrip=' (g g)->h'//j//' -> Z Z -> 4l (low-mass range, employs NWA)' //label
+  case(20160823) 
+   descrip=' (p p)->h'//j//'(VBF) -> Z Z -> llqq (employs NWA)' //label   
+  case(2016062) 
+   descrip=' (p p)->h'//j//' -> W W -> lnuqq (employs NWA)' //label
+  case(20160741) 
+   descrip=' (p p)->h'//j//' -> W W -> lnulnu (employs NWA)' //label
+  case(20160742) 
+   descrip=' (p p)->h'//j//'(VBF) -> W W -> lnulnu (employs NWA)' //label
+  case(20160793) 
+   descrip=' (p p)->h'//j//'(VBF) -> Z Z -> 4l (employs NWA)' //label   
   case(0038911) 
    descrip=' (p p)->h'//j//'->W W (employs NWA)' //label
   case(0038912) 
@@ -1558,9 +2052,9 @@ module S95tables
    descrip=' (p p)->h'//j//'->W W where h'//j//' is SM-like ' //label
   case(110212)
    descrip=' (p p)->V h'//j//'/VBF->gamma gamma    '    //label
-  case(2011025,2011085,2011161,5895,1414,2012091,2012168,1487,12001,12015,13001,11010,11030,11021) 
+  case(17013,2011025,2011085,2011161,5895,1414,2012091,2012168,1487,12001,12015,13001,11010,11030,11021) 
    descrip=' (p p)->h'//j//'+...->gamma gamma+... where h'//j//' is SM-like ' //label
-  case(6583,14006,14037) 
+  case(6583,14006,14037,2018025) 
    descrip=' (p p)->h'//j//'/VBF/Wh'//j//'/Zh'//j//'/tth'//j//'->gamma gamma  ' //label
   case(14031) 
    descrip=' (p p)->h'//j//'->Z gamma -> l l gamma ' //label
@@ -1584,9 +2078,9 @@ module S95tables
    descrip=' (p p)->h'//j//'+... where h'//j//' is SM-like ' //label        
   case(10002,5003,2011132,2012094,110201,110292,12050,13021) 
    descrip=' (p p)->h'//j//'->tau tau ' //label
-  case(2014049)
+  case(2014049,20160852,160372,20170502)
    descrip=' (p p)->bbh'//j//'->tau tau ' //label
-  case(20140492)
+  case(20140492,20160851,160371,20170501)
    descrip=' (p p)->ggh'//j//'->tau tau ' //label   
   case(11009,11020,2011133,2012014) 
    descrip=' (p p)->h'//j//'/VBF->tau tau +... where h'//j//' is SM-like ' //label
@@ -1602,7 +2096,7 @@ module S95tables
    descrip=' (p p)->V(h'//j//')->V (b b-bar)   '  //label        
   case(13022)  
    descrip=' (p p)->h'//j//'(VBF)->WW   '  //label        
-  case(13013,13441)  
+  case(13013,13441,6682)  
    descrip=' (p p)->h'//j//'(VBF)->V (invisible)   '  //label        
   case(13018,13442)  
    descrip=' (p p)->Zh'//j//'->Z (invisible)   '  //label        
@@ -1610,6 +2104,59 @@ module S95tables
    descrip=' (p p)->h'//j//'(VBF)/Zh'//j//', h'//j//'->(invisible)  '  //label        
   case(2013011,3244)  
    descrip=' (p p)->Vh'//j//'->V (invisible)   '  //label        
+  case(160312,2016088,79151,18014)
+   descrip=' (p p) -> (H'//j//'+) t b -> (tau nu) t b   '//label 
+  case(1504233)
+   descrip=' (p p) -> (H'//j//'+) (VBF) -> W Z   '//label 
+  case(2016089,3599)
+   descrip=' (p p) -> (H'//j//'+) t b -> (t b) t b   '//label 
+  case(2016071)
+   descrip=' (p p) -> h'//j//' -> h h -> W W gamma gamma, where h lies around 125 (+- 2.5 GeV)  '//label
+  case(14013,16002,2016049)
+   descrip=' (p p) -> h'//j//' -> h h -> b b b b, where h lies around 125 (+- 10 GeV)  '//label
+  case(011811,16029,17002)
+   descrip=' (p p) -> h'//j//' -> h h -> b b tau tau, where h lies around 125 (+- 10 GeV)  '//label
+  case(14011,044782)  
+   descrip=' (p p) -> h'//j//' -> Z h -> l l b b, where h lies around 125 (+- 10 GeV)    '//label 
+  case(011812,044781)  
+   descrip=' (p p) -> h'//j//' -> Z h -> l l tau tau, where h lies around 125 (+- 10 GeV)    '//label 
+  case(20160151,180051)  
+   descrip=' (g g) -> h'//j//' -> Z h -> l l b b, where h lies around 125 (+- 10 GeV)    '//label 
+  case(20160152,180052)  
+   descrip=' (b b) -> h'//j//' -> Z h -> l l b b, where h lies around 125 (+- 10 GeV)    '//label 
+  case(1508329,2015080)  
+   descrip=' (p p)->bbh'//j//'->b b ' //label
+  case(2016025)  
+   descrip=' (p p)->h'//j//'->b b ' //label
+  case(2016044)  
+   descrip=' (p p)->h'//j//'->Z gamma ' //label
+  case(201608391)  
+   descrip=' (p p) -> W h -> W a a -> W b b b b, where h lies around 125 (+- 10 GeV)    '//label 
+  case(15009)  
+   descrip=' (p p)->b b h'//j//'->b b mu mu ' //label
+  case(2016004)  
+   descrip=' (p p)->h'//j//'->h h -> b b gamma gamma, where h lies around 125 (+- 2.5 GeV) ' //label
+  case(17006)  
+   descrip=' (p p)->h'//j//'->h h -> b b l l nu nu, where h lies around 125 (+- 10 GeV) ' //label
+  case(1604833)  
+   descrip=' (p p)->h'//j//'->V V (V=W,Z) ' //label
+  case(2016056)  
+   descrip=' (p p)->h'//j//'->Z Z-> l l nu nu ' //label
+  case(20160551)  
+   descrip=' (p p)->h'//j//'->Z Z-> q q q q (boosted jets, using RS graviton limit) ' //label
+  case(20160552)  
+   descrip=' (p p)->h'//j//'->W W-> q q q q (boosted jets, using RS graviton limit) ' //label
+  case(7355)
+   descrip=' (p p)-> V H (H near 125 GeV) -> h'//j//'h'//j//' -> b b b b ' //label
+  case(17020321,1506534)
+   descrip=' (p p)-> H_{SM-like} near 125 GeV -> h'//j//'h'//j//' -> tau tau tau tau ' //label
+  case(5051)
+   descrip=' (p p)-> H_{SM-like} near 125 GeV -> h'//j//'h'//j//' -> gamma gamma gamma gamma ' //label
+  case(17020322,539)
+   descrip=' (p p)-> H_{SM-like} near 125 GeV -> h'//j//'h'//j//' -> mu mu b b ' //label
+  case(17020323)
+   descrip=' (p p)-> H_{SM-like} near 125 GeV -> h'//j//'h'//j//' -> mu mu tau tau ' //label
+
   case default
    stop 'wrong input to function outputproc_t1 in module S95tables (1)'  
   end select   
@@ -1643,9 +2190,9 @@ module S95tables
   !-------------------------------------------
                
   if((ii.ne.0).and.(jj.ne.0))then      
-   write(i,'(I1)')ii
+   write(i,'(I2)')ii
    i=adjustl(i) 
-   write(j,'(I1)')jj      
+   write(j,'(I2)')jj      
    j=adjustl(j)
   else
    i='i'
@@ -1689,24 +2236,58 @@ module S95tables
    descrip=' (ee)->(N'//j//') N'//i//'-> (q q N'//i//') N'//i//'   ' //label
   case(910)      
    descrip=' (ee)->N'//j//' N'//i//' with all N'//j//' decaying to Z + N'//i//'  ' //label
+  case(6065)
+   descrip=' (ee)->(H'//j//'+)(H'//j//'-), with H^(+/-) -> 2 quarks or tau nu (combination)'    //label   
+  case(02671)
+   descrip=' (ee)->(H'//j//'+)(H'//j//'-)-> (h'//i//'W)(h'//i//'W), with h'//i//'-> bb'    //label   
+  case(02672)
+   descrip=' (ee)->(H'//j//'+)(H'//j//'-)-> (h'//i//'W)(tau nu), with h'//i//'-> bb'    //label
   case(3381)  
    descrip=' (p p-bar)->h'//j//'->h'//i//' h'//i//'->mu mu mu mu   '          //label  
   case(3382)  
    descrip=' (p p-bar)->h'//j//'->h'//i//' h'//i//'->tau tau mu mu   '          //label
   case(5053)  
    descrip=' (p p)->h'//j//'->h'//i//' h'//i//'->gamma gamma b b, where h'//i//' is SM-like around 125 GeV  '//label
-  case(13032)  
+  case(13032,06896,16032)  
    descrip=' (p p)->h'//j//'->h'//i//' h'//i//'->gamma gamma b b, where h'//i//' lies around 125 GeV  '//label
-  case(14013)  
+  case(011811)  
+   descrip=' (p p)->h'//j//'->h'//i//' h'//i//'->b b tau tau, where h'//i//' lies around 125 GeV  '//label
+  case(14013,16002)  
    descrip=' (p p)->h'//j//'->h'//i//' h'//i//'->b b b b, where h'//i//' lies around 125 GeV  '//label
   case(14022)  
    descrip=' (p p)->h'//j//'->h'//i//' h'//i//'->tau tau tau tau, where h'//j//' lies around 125 GeV and is SM-like '//label
+  case(011812,150011)  
+     descrip=' (p p)->h'//j//' -> h'//i//'Z -> (tau tau)(l l)    '//label
+  case(20160342)  
+   descrip=' (p p)->h'//j//' -> h'//i//'Z -> (b b-bar)(l l), gluon fusion    '//label
+  case(20160341)  
+   descrip=' (p p)->h'//j//' -> h'//i//'Z -> (b b-bar)(l l), b-associated    '//label
+  case(150012,16010)  
+   descrip=' (p p)->h'//j//' -> h'//i//'Z -> (b b-bar)(l l)    '//label
+  case(044781)  
+   descrip=' (g g)->h'//j//' -> h'//i//'Z -> (tau tau)(l l)    '//label
+  case(044782,20160151)  
+   descrip=' (g g)->h'//j//' -> h'//i//'Z -> (b b-bar)(l l)    '//label
+  case(20160152)  
+   descrip=' (b b)->h'//j//' -> h'//i//'Z -> (b b-bar)(l l)    '//label
   case(6227)  
-   descrip=' (p p-bar)->h'//j//'(b/b-bar)->(b b-bar) (b/b-bar) or (tau tau) (b/b-bar) '     //label 
-  case(02301) 
-   descrip=' (p p)->h'//j//'/VBF/Wh'//j//'/Zh'//j//'/tth'//j//'->gamma gamma (including widths effects)' //label   
+   descrip=' (p p-bar)->h'//j//'(b/b-bar)->(b b-bar) (b/b-bar) or (tau tau) (b/b-bar)  '     //label 
+  case(02301,2016059,4147) 
+   descrip=' (p p)->h'//j//'/VBF/Wh'//j//'/Zh'//j//'/tth'//j//'->gamma gamma (including widths effects)  ' //label   
   case(003892) 
-   descrip=' (p p)->h'//j//'/VBF->W W (including widths effects)' //label   
+   descrip=' (p p)->h'//j//'/VBF->W W (including widths effects)  ' //label   
+  case(01123) 
+   descrip=' (p p)->h'//j//'->W W (including widths effects)  ' //label   
+  case(20160791,160331) 
+   descrip=' (g g)->h'//j//'->Z Z -> 4l (including widths effects)  ' //label   
+  case(170121) 
+   descrip=' (p p)->h'//j//'->Z Z -> 4l,2l2q,2l2nu (including widths effects)  ' //label   
+  case(06386) 
+   descrip=' (p p)->h'//j//'->Z Z -> 4l,2l2nu (including widths effects)  ' //label   
+  case(160332) 
+   descrip=' (p p)->h'//j//' (VBF)->Z Z -> 4l (including widths effects)  ' //label
+  case(150600424,16035)
+   descrip=' (p p)->h'//j//'->h'//i//'h'//i//'->mu mu mu mu  ' //label
   case default
    stop 'wrong input to function outputproc_t2 in module S95tables (2)' 
   end select        
@@ -1751,7 +2332,8 @@ module S95tables
 
   n=t1elementnumberfromid(S95_t1,id) 
   select case(id)
-  case(711,713,721,723,731,733,741,743,5739,10574,6224,6225,6226,6276,6301,6309,04670,046701,046702,0038911,0038912,0038913,0038914)
+  case(711,713,721,723,731,733,741,743,5739,10574,6224,6225,6226,6276,6301,6309,&
+  &    04670,046701,046702,336,0038911,0038912,0038913,0038914,17030,4873,8567)
    !these have a very simple model-likeness test, so we can have a non-zero deltax
   case default
    if(S95_t1(n)%deltax.gt.0.0D0)then
@@ -3055,6 +3637,22 @@ module S95tables
    channel_SM(4,:) = (/ t%lhc7%XS_HW_SM(j), t%BR_Hgaga_SM(j) /)
    channel_SM(5,:) = (/ t%lhc7%XS_ttH_SM(j), t%BR_Hgaga_SM(j) /)
 
+  case(17013) 
+   nc = 5; call initialise_channel_rat_SM
+   
+   channel_rat(1,:) = (/ t%lhc13%XS_hj_ratio(j) , div(t%BR_hjgaga(j),t%BR_Hgaga_SM(j),0.0D0,1.0D0) /)
+   channel_rat(2,:) = (/ t%lhc13%XS_vbf_ratio(j), div(t%BR_hjgaga(j),t%BR_Hgaga_SM(j),0.0D0,1.0D0) /)
+   channel_rat(3,:) = (/ t%lhc13%XS_hjZ_ratio(j), div(t%BR_hjgaga(j),t%BR_Hgaga_SM(j),0.0D0,1.0D0) /)
+   channel_rat(4,:) = (/ t%lhc13%XS_hjW_ratio(j), div(t%BR_hjgaga(j),t%BR_Hgaga_SM(j),0.0D0,1.0D0) /)
+   channel_rat(5,:) = (/ t%lhc13%XS_tthj_ratio(j), div(t%BR_hjgaga(j),t%BR_Hgaga_SM(j),0.0D0,1.0D0) /)
+
+   channel_SM(1,:) = (/ t%lhc13%XS_H_SM(j) , t%BR_Hgaga_SM(j) /)
+   channel_SM(2,:) = (/ t%lhc13%XS_vbf_SM(j), t%BR_Hgaga_SM(j) /)
+   channel_SM(3,:) = (/ t%lhc13%XS_HZ_SM(j), t%BR_Hgaga_SM(j) /)
+   channel_SM(4,:) = (/ t%lhc13%XS_HW_SM(j), t%BR_Hgaga_SM(j) /)
+   channel_SM(5,:) = (/ t%lhc13%XS_ttH_SM(j), t%BR_Hgaga_SM(j) /)
+
+
   case(2012091,2012168) 
 !   ns = 5; nb = 1; call initialise_XS_rat_BR_rat  
    nc = 5; call initialise_channel_rat_SM
@@ -3445,6 +4043,33 @@ module S95tables
    channel_SM(9,:) = (/ t%lhc8%XS_HW_SM(j), t%BR_HZZ_SM(j) /)
    channel_SM(10,:) = (/ t%lhc8%XS_ttH_SM(j), t%BR_HZZ_SM(j) /)
 
+  case(17020321,17020322,17020323)
+! This only checks the relative proportions of the four main production modes   
+   nc = 4; call initialise_channel_rat_SM
+   channel_rat(1,:) = (/ t%lhc8%XS_hj_ratio(j) , 1.0D0 /)
+   channel_rat(2,:) = (/ t%lhc8%XS_vbf_ratio(j), 1.0D0 /)
+   channel_rat(3,:) = (/ t%lhc8%XS_hjZ_ratio(j), 1.0D0 /)
+   channel_rat(4,:) = (/ t%lhc8%XS_hjW_ratio(j), 1.0D0 /)
+
+   channel_SM(1,:) = (/ t%lhc8%XS_H_SM(j) , 1.0D0 /)
+   channel_SM(2,:) = (/ t%lhc8%XS_vbf_SM(j), 1.0D0 /)
+   channel_SM(3,:) = (/ t%lhc8%XS_HZ_SM(j), 1.0D0 /)
+   channel_SM(4,:) = (/ t%lhc8%XS_HW_SM(j), 1.0D0 /)
+
+  case(539)
+! This only checks the relative proportions of the four main production modes   
+   nc = 4; call initialise_channel_rat_SM
+   channel_rat(1,:) = (/ t%lhc13%XS_hj_ratio(j) , 1.0D0 /)
+   channel_rat(2,:) = (/ t%lhc13%XS_vbf_ratio(j), 1.0D0 /)
+   channel_rat(3,:) = (/ t%lhc13%XS_hjZ_ratio(j), 1.0D0 /)
+   channel_rat(4,:) = (/ t%lhc13%XS_hjW_ratio(j), 1.0D0 /)
+
+   channel_SM(1,:) = (/ t%lhc13%XS_H_SM(j) , 1.0D0 /)
+   channel_SM(2,:) = (/ t%lhc13%XS_vbf_SM(j), 1.0D0 /)
+   channel_SM(3,:) = (/ t%lhc13%XS_HZ_SM(j), 1.0D0 /)
+   channel_SM(4,:) = (/ t%lhc13%XS_HW_SM(j), 1.0D0 /)
+  
+
   case(7214)
    nc = 25; call initialise_channel_rat_SM
 
@@ -3592,7 +4217,7 @@ module S95tables
     correct_properties=.False.
    endif 
 
-  case(1812,7712,8353,11002,11008) 
+  case(1812,7712,8353,11002,11008,160311) 
    ns = 1; nb = 1; call initialise_XS_rat_BR_rat
    XS_rat(1) = t%BR_tHpjb(j)
    BR_rat(1) = t%BR_Hpjtaunu(j)
@@ -3603,7 +4228,7 @@ module S95tables
     correct_properties=.False.
    endif 
 
-  case(2011138,2011151,2760,2013090,2014050,14020) 
+  case(2011138,2011151,2760,2013090,2014050,14020,79152) 
    ns = 1; nb = 1; call initialise_XS_rat_BR_rat
    XS_rat(1) = t%BR_tHpjb(j)
    BR_rat(1) = t%BR_Hpjtaunu(j)
@@ -3672,6 +4297,27 @@ module S95tables
     endif 
    enddo
 
+  case(17030) ! This is a H->h(SM)h(SM) search!
+  ! n.b.: In principle, should also check for SM strength of h production modes, as this
+  !       is part of the assumed background!
+   ns = 1; nb =1; call initialise_XS_rat_BR_rat
+   XS_rat(1) = 1000.0D0 * t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j) ! convert to fb
+   BR_rat(1) = 0.0D0
+   correct_properties=.False.
+   do jj=1,np(Hneut)
+    if(abs(t%particle(Hneut)%M(jj)-125.0D0).lt.(5.0D0+t%particle(Hneut)%dMh(jj))) then
+     dcbyc_dble=maxval((/ div(abs(t%BR_hjgaga(jj)-t%BR_Hgaga_SM(jj)),t%BR_Hgaga_SM(jj),0.0D0,1.0D0),&
+    &                     div(abs(t%BR_hjWW(jj)-t%BR_HWW_SM(jj)),t%BR_HWW_SM(jj),0.0D0,1.0D0), &
+    &                     div(abs(t%BR_hjZZ(jj)-t%BR_HZZ_SM(jj)),t%BR_HZZ_SM(jj),0.0D0,1.0D0), &
+    &                     div(abs(t%BR_hjbb(jj)-t%BR_Hbb_SM(jj)),t%BR_Hbb_SM(jj),0.0D0,1.0D0), &
+    &                     div(abs(t%BR_hjtautau(jj)-t%BR_Htautau_SM(jj)),t%BR_Htautau_SM(jj),0.0D0,1.0D0) /))
+     if(dcbyc_dble.lt.0.1D0) then
+      correct_properties=.True.
+      BR_rat(1) = BR_rat(1)+t%BR_hjhihi(j,jj)
+     endif
+    endif 
+   enddo
+
   case(046701) ! This is a H->h(SM)h(SM) search!
    ns = 1; nb =1; call initialise_XS_rat_BR_rat
    XS_rat(1) = t%lhc8%XS_hj_ratio(j)*t%lhc8%XS_H_SM(j)
@@ -3681,6 +4327,39 @@ module S95tables
     if(abs(t%particle(Hneut)%M(jj)-125.4).lt.(5.0D0+t%particle(Hneut)%dMh(jj))) then
      dcbyc_dble=maxval((/ div(abs(t%BR_hjgaga(jj)-t%BR_Hgaga_SM(jj)),t%BR_Hgaga_SM(jj),0.0D0,1.0D0),&
     &                     div(abs(t%BR_hjWW(jj)-t%BR_HWW_SM(jj)),t%BR_HWW_SM(jj),0.0D0,1.0D0) /))
+     if(dcbyc_dble.lt.0.1D0) then
+      correct_properties=.True.
+      BR_rat(1) = BR_rat(1)+t%BR_hjhihi(j,jj)
+     endif
+    endif 
+   enddo
+
+  case(8567) ! This is a H->h(SM)h(SM) search!
+   ns = 1; nb =1; call initialise_XS_rat_BR_rat
+   XS_rat(1) = t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j)
+   BR_rat(1) = 0.0D0
+   correct_properties=.False.
+   do jj=1,np(Hneut)
+    if(abs(t%particle(Hneut)%M(jj)-125.0).lt.(5.0D0+t%particle(Hneut)%dMh(jj))) then
+     dcbyc_dble=maxval((/ div(abs(t%BR_hjgaga(jj)-t%BR_Hgaga_SM(jj)),t%BR_Hgaga_SM(jj),0.0D0,1.0D0),&
+    &                     div(abs(t%BR_hjWW(jj)-t%BR_HWW_SM(jj)),t%BR_HWW_SM(jj),0.0D0,1.0D0) /))
+     if(dcbyc_dble.lt.0.1D0) then
+      correct_properties=.True.
+      BR_rat(1) = BR_rat(1)+t%BR_hjhihi(j,jj) * t%BR_hjgaga(jj) * t%BR_hjWW(jj) * 2.0D0 ! symmetry factor of 2
+     endif
+    endif 
+   enddo
+
+
+  case(4873) ! This is a H->h(SM)h(SM) search!
+   ns = 1; nb =1; call initialise_XS_rat_BR_rat
+   XS_rat(1) = t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j)
+   BR_rat(1) = 0.0D0
+   correct_properties=.False.
+   do jj=1,np(Hneut)
+    if(abs(t%particle(Hneut)%M(jj)-125.0).lt.(5.0D0+t%particle(Hneut)%dMh(jj))) then
+     dcbyc_dble=maxval((/ div(abs(t%BR_hjgaga(jj)-t%BR_Hgaga_SM(jj)),t%BR_Hgaga_SM(jj),0.0D0,1.0D0),&
+    &                     div(abs(t%BR_hjbb(jj)-t%BR_Hbb_SM(jj)),t%BR_Hbb_SM(jj),0.0D0,1.0D0) /))
      if(dcbyc_dble.lt.0.1D0) then
       correct_properties=.True.
       BR_rat(1) = BR_rat(1)+t%BR_hjhihi(j,jj)
@@ -3703,6 +4382,23 @@ module S95tables
      endif
     endif 
    enddo
+
+  case(336) ! This is a H->h(SM)h(SM) search!
+   ns = 1; nb =1; call initialise_XS_rat_BR_rat
+   XS_rat(1) = t%lhc13%XS_hj_ratio(j)*t%lhc13%XS_H_SM(j)
+   BR_rat(1) = 0.0D0
+   correct_properties=.False.
+   do jj=1,np(Hneut)
+    if(abs(t%particle(Hneut)%M(jj)-125.0).lt.(10.0D0+t%particle(Hneut)%dMh(jj))) then
+     dcbyc_dble=maxval((/ div(abs(t%BR_hjbb(jj)-t%BR_Hbb_SM(jj)),t%BR_Hbb_SM(jj),0.0D0,1.0D0), &
+    &                     div(abs(t%BR_hjtautau(jj)-t%BR_Htautau_SM(jj)),t%BR_Htautau_SM(jj),0.0D0,1.0D0) /))
+     if(dcbyc_dble.lt.0.1D0) then
+      correct_properties=.True.
+      BR_rat(1) = BR_rat(1)+t%BR_hjhihi(j,jj) * t%BR_hjbb(jj) * t%BR_hjtautau(jj) * 2.0D0
+     endif
+    endif 
+   enddo
+
 
   case(0038911) ! H-WW search with width-assumptions
    ns = 1; nb =1; call initialise_XS_rat_BR_rat

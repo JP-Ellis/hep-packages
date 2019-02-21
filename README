@@ -1,13 +1,14 @@
 Contents of the present directory are part of the program package 
 	
-	HiggsBounds
+	HiggsBounds-5
 
-by Philip Bechtle, Oliver Brein, Sven Heinemyer, Oscar Stål, Tim Stefaniak, 
-   Georg Weiglein and Karina E. Williams.
+by Philip Bechtle, Daniel Dercks, Sven Heinemeyer, 
+   Tim Stefaniak and Georg Weiglein.
+   
+(Former members are Oliver Brein, Oscar Stål and Karina E. Williams.)
 
-This is the FORTRAN 90 version of the code, written by Karina Williams,
-Tim Stefaniak and Oscar Stål. Please contact tim@th.physik.uni-bonn.de
-or oscar.stal@fysik.su.se if you have any questions/problems/etc with this version.
+Please contact tistefan@ucsc.edu or daniel.dercks@desy.de
+if you have any questions/problems/etc with this version.
 
 This README file contains:
 * Journal reference and website address
@@ -115,11 +116,6 @@ in connection with FeynHiggs needs to link to/include:
 
 	libFH.a 
     FHCouplings.h 
-
-The sample program "HBwithCPsuperH" demonstrating the use of HiggsBounds
-in connection with CPsuperH 2.0 needs to link to:
-
-    libcpsuperh2.a
  
 * How to install it:
 
@@ -171,9 +167,6 @@ in connection with CPsuperH 2.0 needs to link to:
 	make HBwithFH       : This will generate the executable "HBwithFH" in the folder
                               "example_programs"
 
-	make HBwithCPsuperH : This will generate the executable "HBwithCPsuperH" in the folder
-                              "example_programs"
-
 * Examples
 
  - Example of command-line version of HiggsBounds
@@ -184,77 +177,23 @@ in connection with CPsuperH 2.0 needs to link to:
       ./configure
       make
 
-      ./HiggsBounds LandH part 3 1 'example_data/HB_randomtest50points_'
+      ./HiggsBounds LandH hadr 3 1 'example_data/mhmodplus/mhmod+_'
 
-   The output files are example_data/HB_randomtest50points_HiggsBounds_results.dat
-                        example_data/HB_randomtest50points_Key.dat
+   The output files are example_data/mhmodplus/mhmod+_HiggsBounds_results.dat
+                        example_data/mhmodplus/mhmod+_Key.dat
 
    For convenience, we have put these commands into the script
       example_programs/demonstrateHiggsBounds_commandline.bat
 
-   The HiggsBounds package also includes the sample output files: 
-                        example_data/HB_randomtest50points_HiggsBounds_results.dat-for-comparison
-                        example_data/HB_randomtest50points_Key.dat-for-comparison 
-   These should be identical to the output files generated from running this example.
-
  - Example of the subroutine version of HiggsBounds
-   The HiggsBounds package includes a example program example_programs/example-SM_vs_4thGen.F
-   (written in fortran 77) which demonstrates the use of the HiggsBounds subroutines 
+   The HiggsBounds package includes the example example_programs/HBeff.F90
+   which demonstrates the use of the HiggsBounds subroutines 
    contained in the HiggsBounds library.
 
    To use, enter the commands:
 
       ./configure
-      make libHB
-
-      cd example_programs
-
-      gfortran example-SM_vs_4thGen.F -o example-SM_vs_4thGen -L.. -lHB
-      ./example-SM_vs_4thGen
-
-   The output files are example-SM-results.dat
-                        example-4thGen-results.dat
-                        Key.dat
-
-   Note that when compiling example-SM_vs_4thGen.F, it is best to use the same compiler
-   as was used to compile the HiggsBounds library.
-
-   For convenience, we have put these commands into the script
-      example_programs/demonstrateHiggsBounds_SM_vs_4thGen.bat
-
-   The HiggsBounds package also includes the sample output files: 
-                        example-SM-results.dat-for-comparison
-                        example-4thGen-results.dat-for-comparison
-                        Key.dat-for-comparison-SM_vs_4thGen
-
-   These should be identical to the output files generated from running this example.
-
- - Example of the use of HiggsBounds in conjunction with the publicly available program
-   CPsuperH 
-   The example program ./example_programs/HBwithCPsuperH.f (fortran 77) uses CPsuperH 
-   (http://www.hep.man.ac.uk/u/jslee/CPsuperH.html) to generate the input required by 
-   HiggsBounds and then calls the HiggsBounds subroutines 
-   (please see the comments in this file for more information). 
-   The file ./example_programs/HBwithCPsuperH.input contains the input for CPsuperH.
-
-   To use, make sure CPsuperH is installed on your system and that the paths are
-   correctly set in the HiggsBounds configure file. Then use:
-
-      ./configure
-      make HBwithCPsuperH
-
-      cd example_programs
-      ./HBwithCPsuperH < HBwithCPsuperH.input
-
-   The HiggsBounds results are outputted to the screen and key to the processes is printed to
-   the file Key.dat
-
-   Note that it is best to use consistent compilers for both the HiggsBounds
-   and the CPsuperH libraries. (although you may be able to work around this e.g. by 
-   using compiler flags such as -lg2c or -lgfortran)
-
-   For convenience, we have put these commands into the script
-      example_programs/demonstrateHiggsBounds_HBwithCPsuperH.bat
+      make HBeffC
    
  - Example of the use of HiggsBounds in conjunction with the publicly available program
    FeynHiggs 
@@ -274,9 +213,6 @@ in connection with CPsuperH 2.0 needs to link to:
    The HiggsBounds results are outputted to the screen and key to the processes is printed to
    the file Key.dat
 
-   For convenience, we have put these commands into the script
-      example_programs/demonstrateHiggsBounds_HBwithFH.bat
-
    Note that it is best to use consistent compilers for both the HiggsBounds
    and the FeynHiggs libraries. (although you may be able to work around this e.g. by 
    using compiler flags as such-lg2c or -lgfortran)
@@ -285,7 +221,7 @@ Please feel free to contact us with feature requests and bug reports.
 
 Enjoy!
 
-Karina
+-- Tim
 
 ---------------------- Additional notes: ------------------------------
 

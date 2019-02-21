@@ -25,90 +25,105 @@ P. Bechtle et~al.,
 \newblock (2015), {{\tt arXiv:1507.06706}}.
 %%CITATION = 1507.06706;%%
 
-\bibitem{arXiv:1207.7214}
-ATLAS,
-\newblock Phys. Lett. B716 (2012) 1, {{\tt arXiv:1207.7214}}.
-%%CITATION = 1207.7214;%%
-
-\bibitem{arXiv:1011.1931}
-D0, V.M. Abazov et~al.,
-\newblock Phys. Lett. B698 (2011) 97, {{\tt arXiv:1011.1931}}.
-%%CITATION = 1011.1931;%%
-
-\bibitem{hep-ex/0206022}
-OPAL, G. Abbiendi et~al.,
-\newblock Eur. Phys. J. C27 (2003) 311, {{\tt hep-ex/0206022}}.
-%%CITATION = HEP-EX/0206022;%%
-
-\bibitem{arxiv:1202.1488}
-CMS, S. Chatrchyan,
-\newblock Phys. Lett. B710 (2012) 26, {{\tt arXiv:1202.1488}}.
-%%CITATION = 1202.1488;%%
-
-\bibitem{arXiv:1008.3564}
-D0, V.M. Abazov et~al.,
-\newblock Phys. Rev. Lett. 105 (2010) 251801, {{\tt arXiv:1008.3564}}.
-%%CITATION = 1008.3564;%%
-
-\bibitem{arXiv:1106.4782}
-CDF, T. Aaltonen et~al.,
-\newblock Phys. Rev. D85 (2012) 032005, {{\tt arXiv:1106.4782}}.
-%%CITATION = 1106.4782;%%
-
-\bibitem{arXiv:1108.3331}
-CDF, D. Benjamin et~al.,
-\newblock (2011), {{\tt arXiv:1108.3331}}.
-%%CITATION = 1108.3331;%%
-
-\bibitem{arxiv:1202.1997}
-CMS, S. Chatrchyan,
-\newblock Phys. Rev. Lett. 108 (2012) 111804, {{\tt arXiv:1202.1997}}.
-%%CITATION = 1202.1997;%%
-
-\bibitem{arXiv:0707.0373}
-OPAL, G. Abbiendi et~al.,
-\newblock Phys. Lett. B682 (2010) 381, {{\tt arXiv:0707.0373}}.
-%%CITATION = 0707.0373;%%
-
-\bibitem{arXiv:1506.02301}
-CMS, . ,
-\newblock Phys. Lett. B750 (2015) 494, {{\tt arXiv:1506.02301}}.
-%%CITATION = 1506.02301;%%
-
-\bibitem{arXiv:0806.0611}
-D0, V.M. Abazov et~al.,
-\newblock Phys. Lett. B671 (2009) 349, {{\tt arXiv:0806.0611}}.
-%%CITATION = 0806.0611;%%
-
-\bibitem{hep-ex/0111010}
-OPAL, G. Abbiendi et~al.,
-\newblock Eur. Phys. J. C23 (2002) 397, {{\tt hep-ex/0111010}}.
-%%CITATION = HEP-EX/0111010;%%
-
-\bibitem{arXiv:1402.3051}
+\bibitem{arXiv:1406.7663}
 ATLAS, . ,
-\newblock Phys. Lett. B732 (2014) 8, {{\tt arXiv:1402.3051}}.
-%%CITATION = 1402.3051;%%
+\newblock Physics Letters B738 (2014) 68, {{\tt arXiv:1406.7663}}.
+%%CITATION = 1406.7663;%%
+
+\bibitem{arXiv:1106.4885}
+D0, V.M. Abazov et~al.,
+\newblock Phys. Rev. Lett. 107 (2011) 121801, {{\tt arXiv:1106.4885}}.
+%%CITATION = 1106.4885;%%
+
+\bibitem{arXiv:1603.02991}
+CMS, . ,
+\newblock Phys. Lett. B759 (2016) 369, {{\tt arXiv:1603.02991}}.
+%%CITATION = 1603.02991;%%
 
 \bibitem{arXiv:1107.1268}
 D0, V.M. Abazov et~al.,
 \newblock Phys. Rev. D84 (2011) 092002, {{\tt arXiv:1107.1268}}.
 %%CITATION = 1107.1268;%%
 
-\bibitem{hep-ex/0501033}
-L3, P. Achard et~al.,
-\newblock Phys. Lett. B609 (2005) 35, {{\tt hep-ex/0501033}}.
-%%CITATION = HEP-EX/0501033;%%
+\bibitem{arXiv:1001.4468}
+CDF, T. Aaltonen et~al.,
+\newblock Phys. Rev. Lett. 104 (2010) 061803, {{\tt arXiv:1001.4468}}.
+%%CITATION = 1001.4468;%%
 
-\bibitem{arXiv:1509.04670}
+\bibitem{arXiv:1503.04233}
 ATLAS, . ,
-\newblock (2015), {{\tt arXiv:1509.04670}}.
-%%CITATION = 1509.04670;%%
+\newblock (2015), {{\tt arXiv:1503.04233}}.
+%%CITATION = 1503.04233;%%
 
-\bibitem{arXiv:1012.0874}
+\bibitem{arXiv:1509.00389}
+ATLAS, . ,
+\newblock  JHEP01 (2016) 032, {{\tt arXiv:1509.00389}}.
+%%CITATION = 1509.00389;%%
+
+\bibitem{arXiv:1504.04710}
+CMS, . ,
+\newblock Phys. Lett. B748 (2015) 221, {{\tt arXiv:1504.04710}}.
+%%CITATION = 1504.04710;%%
+
+\bibitem{hep-ex/0107031}
+LEP Higgs Working Group for Higgs boson searches,
+\newblock (2001), {{\tt hep-ex/0107031}}.
+%%CITATION = HEP-EX/0107031;%%
+
+\bibitem{hep-ex/0410017}
+DELPHI, J. Abdallah et~al.,
+\newblock Eur. Phys. J. C38 (2004) 1, {{\tt hep-ex/0410017}}.
+%%CITATION = HEP-EX/0410017;%%
+
+\bibitem{arXiv:1507.05930}
+ATLAS, . ,
+\newblock Eur. Phys. J. C76 (2016) 45, {{\tt arXiv:1507.05930}}.
+%%CITATION = 1507.05930;%%
+
+\bibitem{arXiv:1407.6583}
+ATLAS, . ,
+\newblock (2014), {{\tt arXiv:1407.6583}}.
+%%CITATION = 1407.6583;%%
+
+\bibitem{arXiv:1504.00936}
+CMS, . ,
+\newblock (2015), {{\tt arXiv:1504.00936}}.
+%%CITATION = 1504.00936;%%
+
+\bibitem{arXiv:1406.5053}
+ATLAS, . ,
+\newblock (2014), {{\tt arXiv:1406.5053}}.
+%%CITATION = 1406.5053;%%
+
+\bibitem{arXiv:1008.3564}
 D0, V.M. Abazov et~al.,
-\newblock Phys. Lett. B698 (2011) 6, {{\tt arXiv:1012.0874}}.
-%%CITATION = 1012.0874;%%
+\newblock Phys. Rev. Lett. 105 (2010) 251801, {{\tt arXiv:1008.3564}}.
+%%CITATION = 1008.3564;%%
+
+\bibitem{hep-ex/0401022}
+DELPHI, J. Abdallah et~al.,
+\newblock Eur. Phys. J. C32 (2004) 475, {{\tt hep-ex/0401022}}.
+%%CITATION = HEP-EX/0401022;%%
+
+\bibitem{arXiv:1506.02301}
+CMS, . ,
+\newblock Phys. Lett. B750 (2015) 494, {{\tt arXiv:1506.02301}}.
+%%CITATION = 1506.02301;%%
+
+\bibitem{arXiv:1202.1415}
+ATLAS, G. Aad et~al.,
+\newblock Phys. Lett. B710 (2012) 383, {{\tt arXiv:1202.1415}}.
+%%CITATION = 1202.1415;%%
+
+\bibitem{arXiv:1001.4481}
+D0, V.M. Abazov et~al.,
+\newblock Phys. Rev. Lett. 104 (2010) 061804, {{\tt arXiv:1001.4481}}.
+%%CITATION = 1001.4481;%%
+
+\bibitem{arXiv:1107.4960}
+TEVNPH Working Group, . and others,
+\newblock (2011), {{\tt arXiv:1107.4960}}.
+%%CITATION = 1107.4960;%%
 
 \bibitem{arXiv:1402.3244}
 ATLAS, . ,
@@ -120,110 +135,110 @@ ATLAS, G. Aad,
 \newblock Phys. Rev. Lett. 108 (2012) 111802, {{\tt arXiv:1112.2577}}.
 %%CITATION = 1112.2577;%%
 
-\bibitem{arXiv:0908.1811}
-D0, V.M. Abazov et~al.,
-\newblock Phys. Lett. B682 (2009) 278, {{\tt arXiv:0908.1811}}.
-%%CITATION = 0908.1811;%%
-
-\bibitem{arXiv:1307.5515}
-CMS, . ,
-\newblock Phys. Lett. B726 (2013) 587, {{\tt arXiv:1307.5515}}.
-%%CITATION = 1307.5515;%%
-
-\bibitem{arXiv:1001.4481}
-D0, V.M. Abazov et~al.,
-\newblock Phys. Rev. Lett. 104 (2010) 061804, {{\tt arXiv:1001.4481}}.
-%%CITATION = 1001.4481;%%
-
-\bibitem{arxiv:1202.3478}
-CMS, S. Chatrchyan,
-\newblock JHEP 03 (2012) 040, {{\tt arXiv:1202.3478}}.
-%%CITATION = 1202.3478;%%
-
-\bibitem{hep-ex/0410017}
-DELPHI, J. Abdallah et~al.,
-\newblock Eur. Phys. J. C38 (2004) 1, {{\tt hep-ex/0410017}}.
-%%CITATION = HEP-EX/0410017;%%
-
-\bibitem{arXiv:1404.1344}
-CMS, . ,
-\newblock Eur. Phys. J. C74 (2014) 2980, {{\tt arXiv:1404.1344}}.
-%%CITATION = 1404.1344;%%
-
-\bibitem{arXiv:1202.1416}
-CMS, S. Chatrchyan,
-\newblock JHEP 04 (2012) 036, {{\tt arXiv:1202.1416}}.
-%%CITATION = 1202.1416;%%
-
-\bibitem{arXiv:1406.7663}
-ATLAS, . ,
-\newblock Physics Letters B738 (2014) 68, {{\tt arXiv:1406.7663}}.
-%%CITATION = 1406.7663;%%
-
-\bibitem{hep-ex/0107034}
-LEP Higgs Working Group for Higgs boson searches,
-\newblock (2001), {{\tt hep-ex/0107034}}.
-%%CITATION = HEP-EX/0107034;%%
-
-\bibitem{arXiv:1204.2760}
-ATLAS, G. Aad,
-\newblock JHEP 06 (2012) 039, {{\tt arXiv:1204.2760}}.
-%%CITATION = 1204.2760;%%
-
-\bibitem{arXiv:1504.00936}
-CMS, . ,
-\newblock (2015), {{\tt arXiv:1504.00936}}.
-%%CITATION = 1504.00936;%%
-
-\bibitem{arXiv:1108.5064}
-ATLAS, G. Aad,
-\newblock Phys. Lett. B707 (2012) 27, {{\tt arXiv:1108.5064}}.
-%%CITATION = 1108.5064;%%
+\bibitem{arXiv:1301.6065}
+ALEPH, G. Abbiendi et~al.,
+\newblock (2013), {{\tt arXiv:1301.6065}}.
+%%CITATION = 1301.6065;%%
 
 \bibitem{arXiv:0906.1014}
 CDF, T. Aaltonen et~al.,
 \newblock Phys. Rev. Lett. 103 (2009) 201801, {{\tt arXiv:0906.1014}}.
 %%CITATION = 0906.1014;%%
 
+\bibitem{arXiv:1503.04114}
+CMS, . ,
+\newblock Phys. Lett. B749 (2015) 560, {{\tt arXiv:1503.04114}}.
+%%CITATION = 1503.04114;%%
+
+\bibitem{arXiv:1509.05051}
+ATLAS, . ,
+\newblock (2015), {{\tt arXiv:1509.05051}}.
+%%CITATION = 1509.05051;%%
+
+\bibitem{arxiv:1202.1997}
+CMS, S. Chatrchyan,
+\newblock Phys. Rev. Lett. 108 (2012) 111804, {{\tt arXiv:1202.1997}}.
+%%CITATION = 1202.1997;%%
+
+\bibitem{hep-ex/0111010}
+OPAL, G. Abbiendi et~al.,
+\newblock Eur. Phys. J. C23 (2002) 397, {{\tt hep-ex/0111010}}.
+%%CITATION = HEP-EX/0111010;%%
+
+\bibitem{hep-ex/0602042}
+ALEPH, S. Schael et~al.,
+\newblock Eur. Phys. J. C47 (2006) 547, {{\tt hep-ex/0602042}}.
+%%CITATION = HEP-EX/0602042;%%
+
+\bibitem{arXiv:1011.1931}
+D0, V.M. Abazov et~al.,
+\newblock Phys. Lett. B698 (2011) 97, {{\tt arXiv:1011.1931}}.
+%%CITATION = 1011.1931;%%
+
+\bibitem{arXiv:1509.04670}
+ATLAS, . ,
+\newblock (2015), {{\tt arXiv:1509.04670}}.
+%%CITATION = 1509.04670;%%
+
+\bibitem{arXiv:1202.1414}
+ATLAS, G. Aad,
+\newblock Phys. Rev. Lett. 108 (2012) 111803, {{\tt arXiv:1202.1414}}.
+%%CITATION = 1202.1414;%%
+
 \bibitem{arXiv:1109.3357}
 ATLAS, . and others,
 \newblock Phys. Rev. Lett. 107 (2011) 221802, {{\tt arXiv:1109.3357}}.
 %%CITATION = 1109.3357;%%
 
-\bibitem{arXiv:1202.1415}
-ATLAS, G. Aad et~al.,
-\newblock Phys. Lett. B710 (2012) 383, {{\tt arXiv:1202.1415}}.
-%%CITATION = 1202.1415;%%
+\bibitem{arXiv:0812.0267}
+OPAL, G. Abbiendi et~al.,
+\newblock Eur. Phys. J. C72 (2012) 2076, {{\tt arXiv:0812.0267}}.
+%%CITATION = 0812.0267;%%
 
-\bibitem{hep-ex/0107032}
-LEP Higgs Working for Higgs boson searches,
-\newblock (2001), {{\tt hep-ex/0107032}}.
-%%CITATION = HEP-EX/0107032;%%
+\bibitem{arXiv:0806.0611}
+D0, V.M. Abazov et~al.,
+\newblock Phys. Lett. B671 (2009) 349, {{\tt arXiv:0806.0611}}.
+%%CITATION = 0806.0611;%%
 
-\bibitem{arXiv:1001.4468}
+\bibitem{arXiv:1510.01181}
+CMS, . ,
+\newblock Phys. Lett. B755 (2016) 217, {{\tt arXiv:1510.01181}}.
+%%CITATION = 1510.01181;%%
+
+\bibitem{arXiv:1307.5515}
+CMS, . ,
+\newblock Phys. Lett. B726 (2013) 587, {{\tt arXiv:1307.5515}}.
+%%CITATION = 1307.5515;%%
+
+\bibitem{hep-ex/0206022}
+OPAL, G. Abbiendi et~al.,
+\newblock Eur. Phys. J. C27 (2003) 311, {{\tt hep-ex/0206022}}.
+%%CITATION = HEP-EX/0206022;%%
+
+\bibitem{arXiv:1108.3331}
+CDF, D. Benjamin et~al.,
+\newblock (2011), {{\tt arXiv:1108.3331}}.
+%%CITATION = 1108.3331;%%
+
+\bibitem{arXiv:0707.0373}
+OPAL, G. Abbiendi et~al.,
+\newblock Phys. Lett. B682 (2010) 381, {{\tt arXiv:0707.0373}}.
+%%CITATION = 0707.0373;%%
+
+\bibitem{arXiv:0906.5613}
 CDF, T. Aaltonen et~al.,
-\newblock Phys. Rev. Lett. 104 (2010) 061803, {{\tt arXiv:1001.4468}}.
-%%CITATION = 1001.4468;%%
+\newblock Phys. Rev. Lett. 103 (2009) 101802, {{\tt arXiv:0906.5613}}.
+%%CITATION = 0906.5613;%%
 
-\bibitem{arXiv:1109.3615}
-ATLAS, . and others,
-\newblock Phys. Rev. Lett. 107 (2011) 231801, {{\tt arXiv:1109.3615}}.
-%%CITATION = 1109.3615;%%
-
-\bibitem{hep-ex/0401022}
-DELPHI, J. Abdallah et~al.,
-\newblock Eur. Phys. J. C32 (2004) 475, {{\tt hep-ex/0401022}}.
-%%CITATION = HEP-EX/0401022;%%
+\bibitem{arXiv:1506.00424}
+CMS, . ,
+\newblock Phys. Lett. B752 (2016) 146, {{\tt arXiv:1506.00424}}.
+%%CITATION = 1506.00424;%%
 
 \bibitem{arXiv:1409.6064}
 ATLAS, . ,
 \newblock (2014), {{\tt arXiv:1409.6064}}.
 %%CITATION = 1409.6064;%%
-
-\bibitem{hep-ex/0107031}
-LEP Higgs Working Group for Higgs boson searches,
-\newblock (2001), {{\tt hep-ex/0107031}}.
-%%CITATION = HEP-EX/0107031;%%
 
 \bibitem{arXiv:1207.0449}
 Tevatron New Physics Higgs Working Group, C. Group, D. Collaborations and . the
@@ -231,105 +246,150 @@ Tevatron New Physics Higgs Working Group, C. Group, D. Collaborations and . the
 \newblock (2012), {{\tt arXiv:1207.0449}}.
 %%CITATION = 1207.0449;%%
 
-\bibitem{arXiv:1507.05930}
-ATLAS, . ,
-\newblock (2015), {{\tt arXiv:1507.05930}}.
-%%CITATION = 1507.05930;%%
+\bibitem{arXiv:1207.7214}
+ATLAS,
+\newblock Phys. Lett. B716 (2012) 1, {{\tt arXiv:1207.7214}}.
+%%CITATION = 1207.7214;%%
 
-\bibitem{arXiv:1106.4885}
-D0, V.M. Abazov et~al.,
-\newblock Phys. Rev. Lett. 107 (2011) 121801, {{\tt arXiv:1106.4885}}.
-%%CITATION = 1106.4885;%%
+\bibitem{hep-ex/0501033}
+L3, P. Achard et~al.,
+\newblock Phys. Lett. B609 (2005) 35, {{\tt hep-ex/0501033}}.
+%%CITATION = HEP-EX/0501033;%%
 
 \bibitem{arXiv:0907.1269}
 CDF, T. Aaltonen et~al.,
 \newblock Phys. Rev. Lett. 103 (2009) 101803, {{\tt arXiv:0907.1269}}.
 %%CITATION = 0907.1269;%%
 
-\bibitem{arXiv:1207.6436}
-CDF, T. Aaltonen et~al.,
-\newblock Phys. Rev. Lett. 109 (2012) 071804, {{\tt arXiv:1207.6436}}.
-%%CITATION = 1207.6436;%%
+\bibitem{arxiv:1202.3478}
+CMS, S. Chatrchyan,
+\newblock JHEP 03 (2012) 040, {{\tt arXiv:1202.3478}}.
+%%CITATION = 1202.3478;%%
+
+\bibitem{arXiv:1506.08329}
+CMS, . ,
+\newblock  JHEP11 (2015) 071, {{\tt arXiv:1506.08329}}.
+%%CITATION = 1506.08329;%%
+
+\bibitem{arXiv:1502.04478}
+ATLAS, . ,
+\newblock Physics Letters B744 (2015) 163, {{\tt arXiv:1502.04478}}.
+%%CITATION = 1502.04478;%%
+
+\bibitem{arXiv:1402.3051}
+ATLAS, . ,
+\newblock Phys. Lett. B732 (2014) 8, {{\tt arXiv:1402.3051}}.
+%%CITATION = 1402.3051;%%
+
+\bibitem{arXiv:1603.06896}
+CMS, . ,
+\newblock (2016), {{\tt arXiv:1603.06896}}.
+%%CITATION = 1603.06896;%%
 
 \bibitem{arXiv:1106.4555}
 D0, V.M. Abazov et~al.,
 \newblock Phys. Lett. B707 (2012) 323, {{\tt arXiv:1106.4555}}.
 %%CITATION = 1106.4555;%%
 
-\bibitem{arXiv:1003.3363}
-Tevatron New Phenomena and Higgs Working Group, D. Benjamin et~al.,
-\newblock (2010), {{\tt arXiv:1003.3363}}.
-%%CITATION = 1003.3363;%%
+\bibitem{arXiv:1204.2760}
+ATLAS, G. Aad,
+\newblock JHEP 06 (2012) 039, {{\tt arXiv:1204.2760}}.
+%%CITATION = 1204.2760;%%
 
-\bibitem{arXiv:0905.3381}
-D0, V.M. Abazov et~al.,
-\newblock Phys. Rev. Lett. 103 (2009) 061801, {{\tt arXiv:0905.3381}}.
-%%CITATION = 0905.3381;%%
+\bibitem{hep-ex/0107034}
+LEP Higgs Working Group for Higgs boson searches,
+\newblock (2001), {{\tt hep-ex/0107034}}.
+%%CITATION = HEP-EX/0107034;%%
 
-\bibitem{arXiv:1406.5053}
-ATLAS, . ,
-\newblock (2014), {{\tt arXiv:1406.5053}}.
-%%CITATION = 1406.5053;%%
-
-\bibitem{arXiv:1107.4960}
-TEVNPH Working Group, . and others,
-\newblock (2011), {{\tt arXiv:1107.4960}}.
-%%CITATION = 1107.4960;%%
+\bibitem{arxiv:1202.1488}
+CMS, S. Chatrchyan,
+\newblock Phys. Lett. B710 (2012) 26, {{\tt arXiv:1202.1488}}.
+%%CITATION = 1202.1488;%%
 
 \bibitem{arXiv:0809.3930}
 CDF, T. Aaltonen et~al.,
 \newblock Phys. Rev. Lett. 102 (2009) 021802, {{\tt arXiv:0809.3930}}.
 %%CITATION = 0809.3930;%%
 
-\bibitem{arXiv:1202.1414}
-ATLAS, G. Aad,
-\newblock Phys. Rev. Lett. 108 (2012) 111803, {{\tt arXiv:1202.1414}}.
-%%CITATION = 1202.1414;%%
-
-\bibitem{hep-ex/0602042}
-ALEPH, S. Schael et~al.,
-\newblock Eur. Phys. J. C47 (2006) 547, {{\tt hep-ex/0602042}}.
-%%CITATION = HEP-EX/0602042;%%
-
-\bibitem{arXiv:0906.5613}
-CDF, T. Aaltonen et~al.,
-\newblock Phys. Rev. Lett. 103 (2009) 101802, {{\tt arXiv:0906.5613}}.
-%%CITATION = 0906.5613;%%
-
-\bibitem{arxiv:1202.1408}
-ATLAS, G. Aad,
-\newblock Phys. Lett. B710 (2012) 49, {{\tt arXiv:1202.1408}}.
-%%CITATION = 1202.1408;%%
-
-\bibitem{arXiv:1407.6583}
-ATLAS, . ,
-\newblock (2014), {{\tt arXiv:1407.6583}}.
-%%CITATION = 1407.6583;%%
-
-\bibitem{arXiv:1509.00389}
-ATLAS, . ,
-\newblock (2015), {{\tt arXiv:1509.00389}}.
-%%CITATION = 1509.00389;%%
+\bibitem{arXiv:0901.1887}
+D0, V.M. Abazov et~al.,
+\newblock Phys. Rev. Lett. 102 (2009) 231801, {{\tt arXiv:0901.1887}}.
+%%CITATION = 0901.1887;%%
 
 \bibitem{hep-ex/0404012}
 DELPHI, J. Abdallah et~al.,
 \newblock Eur. Phys. J. C34 (2004) 399, {{\tt hep-ex/0404012}}.
 %%CITATION = HEP-EX/0404012;%%
 
-\bibitem{arXiv:0901.1887}
+\bibitem{hep-ex/0107032}
+LEP Higgs Working for Higgs boson searches,
+\newblock (2001), {{\tt hep-ex/0107032}}.
+%%CITATION = HEP-EX/0107032;%%
+
+\bibitem{arXiv:0905.3381}
 D0, V.M. Abazov et~al.,
-\newblock Phys. Rev. Lett. 102 (2009) 231801, {{\tt arXiv:0901.1887}}.
-%%CITATION = 0901.1887;%%
+\newblock Phys. Rev. Lett. 103 (2009) 061801, {{\tt arXiv:0905.3381}}.
+%%CITATION = 0905.3381;%%
+
+\bibitem{arXiv:1108.5064}
+ATLAS, G. Aad,
+\newblock Phys. Lett. B707 (2012) 27, {{\tt arXiv:1108.5064}}.
+%%CITATION = 1108.5064;%%
+
+\bibitem{arXiv:1207.6436}
+CDF, T. Aaltonen et~al.,
+\newblock Phys. Rev. Lett. 109 (2012) 071804, {{\tt arXiv:1207.6436}}.
+%%CITATION = 1207.6436;%%
+
+\bibitem{arXiv:1404.1344}
+CMS, . ,
+\newblock Eur. Phys. J. C74 (2014) 2980, {{\tt arXiv:1404.1344}}.
+%%CITATION = 1404.1344;%%
+
+\bibitem{arXiv:1012.0874}
+D0, V.M. Abazov et~al.,
+\newblock Phys. Lett. B698 (2011) 6, {{\tt arXiv:1012.0874}}.
+%%CITATION = 1012.0874;%%
+
+\bibitem{arxiv:1202.1408}
+ATLAS, G. Aad,
+\newblock Phys. Lett. B710 (2012) 49, {{\tt arXiv:1202.1408}}.
+%%CITATION = 1202.1408;%%
+
+\bibitem{arXiv:1003.3363}
+Tevatron New Phenomena and Higgs Working Group, D. Benjamin et~al.,
+\newblock (2010), {{\tt arXiv:1003.3363}}.
+%%CITATION = 1003.3363;%%
+
+\bibitem{arXiv:1106.4782}
+CDF, T. Aaltonen et~al.,
+\newblock Phys. Rev. D85 (2012) 032005, {{\tt arXiv:1106.4782}}.
+%%CITATION = 1106.4782;%%
+
+\bibitem{arXiv:1510.06534}
+CMS, . ,
+\newblock  JHEP01 (2016) 079, {{\tt arXiv:1510.06534}}.
+%%CITATION = 1510.06534;%%
+
+\bibitem{arXiv:0908.1811}
+D0, V.M. Abazov et~al.,
+\newblock Phys. Lett. B682 (2009) 278, {{\tt arXiv:0908.1811}}.
+%%CITATION = 0908.1811;%%
+
+\bibitem{arXiv:1202.1416}
+CMS, S. Chatrchyan,
+\newblock JHEP 04 (2012) 036, {{\tt arXiv:1202.1416}}.
+%%CITATION = 1202.1416;%%
 
 \bibitem{CDFnotes}
 CDF,
-\newblock CDF Notes 10500 7307 10439 10796 9999 10485 10798 8353 10799 10599
-  10573 10010 7712 10574.
+\newblock CDF Notes 9999 10574 7307 7712 10485 10010 10798 10799 10573 10439
+  10500 8353 10599 10796.
 
 \bibitem{D0notes}
 D0,
-\newblock D0 Notes 6083 6305 6227 6299 6301 6302 5739 5845 6286 5757 6296 6183
-  6295 6171 6309 6276 6304 5873.
+\newblock D0 Notes 5845 6304 6276 6286 6305 6083 5873 5739 6227 6296 6299 6183
+  6301 6295 6309 6171 5757 6302.
 
 \bibitem{CMSnotes}
 CMS,
@@ -337,9 +397,11 @@ CMS,
 
 \bibitem{ATLASnotes}
 ATLAS,
-\newblock ATLAS CONF Notes 2012-160 2014-049 2012-135 2012-161 2012-092
-  2012-018 2012-012 2013-010 2013-013 2012-019 2012-168 2012-078 2014-050
-  2012-017 2012-016 2011-094 2013-030 2011-157.
+\newblock ATLAS CONF Notes 2016-079 2012-135 2012-017 2013-030 2016-044
+  2011-094 2016-049 2016-056 2013-010 2016-074 2012-078 2014-049 2014-050
+  2012-012 2013-013 2016-004 2016-055 2016-015 2012-161 2016-071 2016-088
+  2011-157 2012-160 2012-019 2012-016 2018-025 2016-082 2012-092 2012-168
+  2016-062.
 
 \bibitem{LHWGnotes}
 LHWG,

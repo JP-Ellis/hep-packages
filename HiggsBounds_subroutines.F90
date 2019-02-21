@@ -17,12 +17,13 @@ subroutine initialize_HiggsBounds(nHiggsneut,nHiggsplus,whichanalyses_in)
 !     (see subroutine check_whichanalyses in input.f90 for more details)
 !************************************************************
  use usefulbits, only : np,Hneut,Hplus,Chineut,Chiplus,debug,inputmethod,  &
-  &   inputsub,theo,whichanalyses,HiggsBounds_info,just_after_run,&
-  &   file_id_debug1,file_id_debug2,allocate_if_stats_required,run_HB_classic
+  &   theo,whichanalyses,HiggsBounds_info,just_after_run,BRdirectinput,&
+  &   file_id_debug1,file_id_debug2,allocate_if_stats_required,run_HB_classic! ,inputsub
  use input, only : setup_input,check_number_of_particles,check_whichanalyses
  use S95tables, only : setup_S95tables,S95_t2
  use likelihoods, only : setup_likelihoods
  use theory_BRfunctions, only : setup_BRSM
+ use theory_XS_SM_functions, only : setup_XSSM 
  use channels, only : setup_channels
  use output, only : setup_output
 #ifdef enableCHISQ
@@ -88,22 +89,22 @@ subroutine initialize_HiggsBounds(nHiggsneut,nHiggsplus,whichanalyses_in)
   if(messages)write(*,*)'doing other preliminary tasks...'      ; call flush(6)
   call setup_input
 
-  allocate(inputsub( 4 )) !(1)np(Hneut)>0 (2)np(Hplus)>0 (3)np(Chineut)>0 (4)np(Chineut)>0 and np(Chiplus)>0
+!   allocate(inputsub( 4 )) !(1)np(Hneut)>0 (2)np(Hplus)>0 (3)np(Chineut)>0 (4)np(Chineut)>0 and np(Chiplus)>0
    !                                                                           |        np
    !                                                                           |Hneu Hcha Chineut Chiplus
    !                                                                           | ==0  ==0  ==0     ==0 
-  inputsub(1)%desc='HiggsBounds_neutral_input_*'
-  inputsub(1)%req=req(   0,   1,   1,   1)
-  inputsub(2)%desc='HiggsBounds_charged_input'
-  inputsub(2)%req=req(   1,   0,   1,   1)
-  inputsub(3)%desc='SUSYBounds_neutralinoonly_input'
-  inputsub(3)%req=req(   1,   1,   0,   1)
-  inputsub(4)%desc='SUSYBounds_neutralinochargino_input'
-  inputsub(4)%req=req(   1,   1,   0,   0)
-  do i=1,ubound(inputsub,dim=1)
-   inputsub(i)%stat=0
-  enddo
- endif 
+!   inputsub(1)%desc='HiggsBounds_neutral_input_*'
+!   inputsub(1)%req=req(   0,   1,   1,   1)
+!   inputsub(2)%desc='HiggsBounds_charged_input'
+!   inputsub(2)%req=req(   1,   0,   1,   1)
+!   inputsub(3)%desc='SUSYBounds_neutralinoonly_input'
+!   inputsub(3)%req=req(   1,   1,   0,   1)
+!   inputsub(4)%desc='SUSYBounds_neutralinochargino_input'
+!   inputsub(4)%req=req(   1,   1,   0,   0)
+!   do i=1,ubound(inputsub,dim=1)
+!    inputsub(i)%stat=0
+!   enddo
+  endif 
 
 #ifndef WEBVERSION
  if(inputmethod.ne.'datfile') call HiggsBounds_info
@@ -115,14 +116,14 @@ subroutine initialize_HiggsBounds(nHiggsneut,nHiggsplus,whichanalyses_in)
 
  if(messages)write(*,*)'reading in Standard Model tables...'   ; call flush(6) 
  call setup_BRSM 
+
+ call setup_XSSM
              
  if(messages)write(*,*)'reading in S95tables...'               ; call flush(6)
  call setup_S95tables                                    
 
  if(messages)write(*,*)'reading in likelihoods...'   ; call flush(6)
  call setup_likelihoods
-!if(debug)write(*,*)'doing other preliminary tasks...'      ; call flush(6)
-!call setup_input
 
  if(messages)then
   open(file_id_debug2,file='debug_predratio.txt')
@@ -142,22 +143,24 @@ subroutine initialize_HiggsBounds(nHiggsneut,nHiggsplus,whichanalyses_in)
 #endif
 
  just_after_run=.False.
+ BRdirectinput=.False.
   
- contains 
-   !         |        np
-   !         |Hneu Hcha Chineut Chiplus
-   !         | ==0  ==0  ==0     ==0 
- function req(Hneu,Hcha, Chneu,  Chcha)
-  integer, intent(in) ::Hneu,Hcha, Chneu,  Chcha
-  integer :: req
-  
-  req=1
-  if(np(Hneut)==0)  req= Hneu  * req
-  if(np(Hplus)==0)  req= Hcha  * req
-  if(np(Chineut)==0)req= Chneu * req
-  if(np(Chiplus)==0)req= Chcha * req
+!  contains 
+!    !         |        np
+!    !         |Hneu Hcha Chineut Chiplus
+!    !         | ==0  ==0  ==0     ==0 
+!  function req(Hneu,Hcha, Chneu,  Chcha)
+!   integer, intent(in) ::Hneu,Hcha, Chneu,  Chcha
+!   integer :: req
+!   
+!   req=1
+!   if(np(Hneut)==0)  req= Hneu  * req
+!   if(np(Hplus)==0)  req= Hcha  * req
+!   if(np(Chineut)==0)req= Chneu * req
+!   if(np(Chiplus)==0)req= Chcha * req
+! 
+!  end function req 
 
- end function req 
 end subroutine initialize_HiggsBounds
 !************************************************************      
 
@@ -173,10 +176,13 @@ subroutine initialize_HiggsBounds_int(nHn,nHp,flag)
        integer nHn,nHp,flag
 
     interface
-        subroutine initialize_HiggsBounds(nHiggsneut, nHiggsplus, whichanalyses_in)
+     subroutine initialize_HiggsBounds(nHiggsneut, nHiggsplus, whichanalyses_in)
      integer,intent(in) :: nHiggsneut
      integer,intent(in) :: nHiggsplus
      character(LEN=5),intent(in) :: whichanalyses_in
+!      integer,intent(in),optional :: nHiggsplus
+!      character(LEN=5),intent(in),optional :: whichanalyses_in
+
         end subroutine initialize_HiggsBounds
     end interface 
 
@@ -195,8 +201,6 @@ subroutine initialize_HiggsBounds_int(nHn,nHp,flag)
 
 end subroutine
 !************************************************************      
-
-
 
 !************************************************************      
 subroutine attempting_to_use_an_old_HB_version(subroutineid)
@@ -242,8 +246,8 @@ subroutine HiggsBounds_input_SLHA(infile)
 ! has been called.
 ! Arguments (input): SLHA filename
 !************************************************************
- use usefulbits, only : whichinput,inputsub,infile1,theo,g2,just_after_run, &
-   & np,Hneut,Hplus     
+ use usefulbits, only : whichinput,infile1,theo,g2,effC,just_after_run, &
+   & np,Hneut,Hplus!     ,inputsub
  use extra_bits_for_SLHA
 
 #if defined(NAGf90Fortran)
@@ -260,8 +264,8 @@ subroutine HiggsBounds_input_SLHA(infile)
  
  whichinput='SLHA'
 
- if(np(Hneut).gt.0)inputsub(Hneut)%stat=inputsub(Hneut)%stat+1
- if(np(Hplus).gt.0)inputsub(Hplus)%stat=inputsub(Hplus)%stat+1
+!  if(np(Hneut).gt.0)inputsub(Hneut)%stat=inputsub(Hneut)%stat+1
+!  if(np(Hplus).gt.0)inputsub(Hplus)%stat=inputsub(Hplus)%stat+1
  ! note: can't be used for charginos or neutralinos yet 
 
  n=1  
@@ -272,25 +276,66 @@ subroutine HiggsBounds_input_SLHA(infile)
  
  infile1=infile   
 
- call getSLHAdata(theo(n),g2(n),infile1)    
+ call getSLHAdata(theo(n),effC(n),infile1)    
 
  just_after_run=.False.
 
 end subroutine HiggsBounds_input_SLHA
-!************************************************************     
-subroutine HiggsBounds_neutral_input_effC(Mh,GammaTotal_hj,        &  
-     &          g2hjss_s,g2hjss_p,g2hjcc_s,g2hjcc_p,               &
-     &          g2hjbb_s,g2hjbb_p,g2hjtoptop_s,g2hjtoptop_p,       &
-     &          g2hjmumu_s,g2hjmumu_p,                             &
-     &          g2hjtautau_s,g2hjtautau_p,                         &
-     &          g2hjWW,g2hjZZ,g2hjZga,                             &
-     &          g2hjgaga,g2hjgg,g2hjggZ,g2hjhiZ_nHbynH,            &
-     &          BR_hjinvisible,BR_hjhihi_nHbynH                    )
-! This subroutine can be called by the user after subroutine initialize_HiggsBounds
-! has been called.
-! Arguments (input): theoretical predictions (see manual for definitions)
+!************************************************************      
+!
+!   HB5 GENERAL INPUT ROUTINES
+!
+!************************************************************      
+subroutine HiggsBounds_neutral_input_properties(Mh,GammaTotal_hj,CP_value)
+!************************************************************      
+ use usefulbits, only : theo,np,Hneut,just_after_run!,inputsub
+
+#if defined(NAGf90Fortran)
+ use F90_UNIX_IO, only : flush
+#endif
+
+ implicit none
+ !----------------------------------------input
+ double precision,intent(in) :: Mh(np(Hneut)),GammaTotal_hj(np(Hneut)),CP_value(np(Hneut))
+ !--------------------------------------internal
+ integer :: n
+!  integer :: subtype
+ !----------------------------------------------
+!  subtype=1
+  n=1  
+!  inputsub(subtype)%stat=inputsub(subtype)%stat+1
+
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(np(Hneut).eq.0)then
+  write(*,*)'subroutine HiggsBounds_neutral_input_mass_width should'
+  write(*,*)'only be called if np(Hneut)>0'
+  stop 'error in subroutine HiggsBounds_neutral_input_mass_width'
+ endif
+
+ theo(n)%particle(Hneut)%M       = Mh
+ theo(n)%particle(Hneut)%Mc      = Mh    
+ theo(n)%particle(Hneut)%GammaTot= GammaTotal_hj
+ theo(n)%CP_value                = CP_value
+ 
+ just_after_run=.False. 
+
+end subroutine HiggsBounds_neutral_input_properties
+!************************************************************   
+subroutine HiggsBounds_neutral_input_effC(                     &  
+     &          ghjss_s,ghjss_p,ghjcc_s,ghjcc_p,       &
+     &          ghjbb_s,ghjbb_p,ghjtt_s,ghjtt_p,       &
+     &          ghjmumu_s,ghjmumu_p,                   &
+     &          ghjtautau_s,ghjtautau_p,               &
+     &          ghjWW,ghjZZ,ghjZga,                    &
+     &          ghjgaga,ghjgg,ghjhiZ)!,           &
+!      &          BR_hjinvisible,BR_hjhihi_nHbynH)
+! New neutral Higgs effective coupling input routine. 
+! BR's are set separately.
 !************************************************************
- use usefulbits, only : theo,np,Hneut,g2,whichinput,inputsub,just_after_run
+ use usefulbits, only : theo,np,Hneut,effC,whichinput,just_after_run!,inputsub
 
 #if defined(NAGf90Fortran)
  use F90_UNIX_IO, only : flush
@@ -299,23 +344,26 @@ subroutine HiggsBounds_neutral_input_effC(Mh,GammaTotal_hj,        &
  implicit none
 
  !----------------------------------------input
- double precision,intent(in) :: Mh( np(Hneut) ),GammaTotal_hj( np(Hneut) ),                                 &  
-     &          g2hjss_s( np(Hneut) ),g2hjss_p( np(Hneut) ),g2hjcc_s( np(Hneut) ),g2hjcc_p( np(Hneut) ),        &
-     &          g2hjbb_s( np(Hneut) ),g2hjbb_p( np(Hneut) ),g2hjtoptop_s( np(Hneut) ),g2hjtoptop_p( np(Hneut) ),&
-     &          g2hjmumu_s( np(Hneut) ),g2hjmumu_p( np(Hneut) ),                                        &
-     &          g2hjtautau_s( np(Hneut) ),g2hjtautau_p( np(Hneut) ),                                        &
-     &          g2hjWW( np(Hneut) ),g2hjZZ( np(Hneut) ),g2hjZga( np(Hneut) ),                                 &
-     &          g2hjgaga( np(Hneut) ),g2hjgg( np(Hneut) ),g2hjggZ( np(Hneut) ),g2hjhiZ_nHbynH(np(Hneut),np(Hneut)),&
-     &          BR_hjinvisible( np(Hneut) ),BR_hjhihi_nHbynH(np(Hneut),np(Hneut)) 
+ double precision,intent(in) :: &!Mh( np(Hneut) ),GammaTotal_hj( np(Hneut) ),&  
+     &          ghjss_s( np(Hneut) ),ghjss_p( np(Hneut) ), &
+     &          ghjcc_s( np(Hneut) ),ghjcc_p( np(Hneut) ), &
+     &          ghjbb_s( np(Hneut) ),ghjbb_p( np(Hneut) ), &
+     &          ghjtt_s( np(Hneut) ),ghjtt_p( np(Hneut) ), &
+     &          ghjmumu_s( np(Hneut) ),ghjmumu_p( np(Hneut) ), &
+     &          ghjtautau_s( np(Hneut) ),ghjtautau_p( np(Hneut) ), &
+     &          ghjWW( np(Hneut) ),ghjZZ( np(Hneut) ),ghjZga( np(Hneut) ), &
+     &          ghjgaga( np(Hneut) ),ghjgg( np(Hneut) ), &
+     &          ghjhiZ(np(Hneut),np(Hneut))
+!     &          BR_hjinvisible( np(Hneut) ),BR_hjhihi_nHbynH(np(Hneut),np(Hneut)) 
  !--------------------------------------internal
  integer :: n
- integer :: subtype
+!  integer :: subtype
  !----------------------------------------------
  
  whichinput='effC'
- subtype=1
+!  subtype=1
  n=1  
- inputsub(subtype)%stat=inputsub(subtype)%stat+1
+!  inputsub(subtype)%stat=inputsub(subtype)%stat+1
 
  if(.not.allocated(theo))then
   stop 'subroutine HiggsBounds_initialize must be called first'
@@ -327,63 +375,49 @@ subroutine HiggsBounds_neutral_input_effC(Mh,GammaTotal_hj,        &
   stop 'error in subroutine HiggsBounds_neutral_input_effC'
  endif
 
- theo(n)%particle(Hneut)%M       = Mh
- theo(n)%particle(Hneut)%Mc      = Mh    
- theo(n)%particle(Hneut)%GammaTot= GammaTotal_hj
+!  theo(n)%particle(Hneut)%M       = Mh
+!  theo(n)%particle(Hneut)%Mc      = Mh    
+!  theo(n)%particle(Hneut)%GammaTot= GammaTotal_hj
 
- g2(n)%hjss_s              = g2hjss_s
- g2(n)%hjss_p              = g2hjss_p
- g2(n)%hjcc_s              = g2hjcc_s
- g2(n)%hjcc_p              = g2hjcc_p
- g2(n)%hjbb_s              = g2hjbb_s
- g2(n)%hjbb_p              = g2hjbb_p
- g2(n)%hjtoptop_s              = g2hjtoptop_s
- g2(n)%hjtoptop_p              = g2hjtoptop_p
- g2(n)%hjmumu_s                = g2hjmumu_s
- g2(n)%hjmumu_p                = g2hjmumu_p
- g2(n)%hjtautau_s              = g2hjtautau_s
- g2(n)%hjtautau_p              = g2hjtautau_p
+ effC(n)%hjss_s              = ghjss_s
+ effC(n)%hjss_p              = ghjss_p
+ effC(n)%hjcc_s              = ghjcc_s
+ effC(n)%hjcc_p              = ghjcc_p
+ effC(n)%hjbb_s              = ghjbb_s
+ effC(n)%hjbb_p              = ghjbb_p
+ effC(n)%hjtt_s              = ghjtt_s
+ effC(n)%hjtt_p              = ghjtt_p
+ effC(n)%hjmumu_s                = ghjmumu_s
+ effC(n)%hjmumu_p                = ghjmumu_p
+ effC(n)%hjtautau_s              = ghjtautau_s
+ effC(n)%hjtautau_p              = ghjtautau_p
         
- g2(n)%hjWW              = g2hjWW
- g2(n)%hjZZ              = g2hjZZ  
- g2(n)%hjZga             = g2hjZga      
- g2(n)%hjgaga            = g2hjgaga
- g2(n)%hjgg              = g2hjgg
- g2(n)%hjggZ             = g2hjggZ
+ effC(n)%hjWW              = ghjWW
+ effC(n)%hjZZ              = ghjZZ  
+ effC(n)%hjZga             = ghjZga      
+ effC(n)%hjgaga            = ghjgaga
+ effC(n)%hjgg              = ghjgg
+!  g2(n)%hjggZ             = g2hjggZ
 
- g2(n)%hjhiZ = g2hjhiZ_nHbynH
+ effC(n)%hjhiZ = ghjhiZ
 
- theo(n)%BR_hjinvisible  = BR_hjinvisible 
- theo(n)%BR_hjhihi       = BR_hjhihi_nHbynH  
+!  theo(n)%BR_hjinvisible  = BR_hjinvisible 
+!  theo(n)%BR_hjhihi       = BR_hjhihi_nHbynH  
+
+!  write(*,*) "HiggsBounds_neutral_input_effC hWW coupling = ",effC(n)%hjWW
 
  just_after_run=.False. 
 
 end subroutine HiggsBounds_neutral_input_effC
 !************************************************************      
-subroutine HiggsBounds_neutral_input_part(Mh,GammaTotal_hj,CP_value,       &
-     &          CS_lep_hjZ_ratio,                            &
-     &          CS_lep_bbhj_ratio,CS_lep_tautauhj_ratio,     &
-     &          CS_lep_hjhi_ratio_nHbynH,                    &
-     &          CS_gg_hj_ratio,CS_bb_hj_ratio,       &
-     &          CS_bg_hjb_ratio,                         &
-     &          CS_ud_hjWp_ratio,CS_cs_hjWp_ratio,   & 
-     &          CS_ud_hjWm_ratio,CS_cs_hjWm_ratio,   & 
-     &          CS_gg_hjZ_ratio,     &
-     &          CS_dd_hjZ_ratio,CS_uu_hjZ_ratio,     &
-     &          CS_ss_hjZ_ratio,CS_cc_hjZ_ratio,     &
-     &          CS_bb_hjZ_ratio,                         &
-     &          CS_tev_vbf_ratio,CS_tev_tthj_ratio,    &
-     &          CS_lhc7_vbf_ratio,CS_lhc7_tthj_ratio,    &
-     &          CS_lhc8_vbf_ratio,CS_lhc8_tthj_ratio,    &
-     &          BR_hjss,BR_hjcc,                             &
-     &          BR_hjbb,BR_hjmumu,BR_hjtautau,               &
-     &          BR_hjWW,BR_hjZZ,BR_hjZga, BR_hjgaga,BR_hjgg, & 
-     &          BR_hjinvisible,BR_hjhihi_nHbynH              )
-! This subroutine can be called by the user after subroutine initialize_HiggsBounds
-! has been called.
-! (see manual for full description)
+subroutine HiggsBounds_neutral_input_SMBR(BR_hjss,BR_hjcc,BR_hjbb,    &
+      &                           BR_hjtt,BR_hjmumu,          &
+      &                           BR_hjtautau,BR_hjWW,        &
+      &                           BR_hjZZ,BR_hjZga,BR_hjgaga, &
+      &                           BR_hjgg)
+! Input for the SM branching ratios      
 !************************************************************
- use usefulbits, only : theo,np,Hneut,partR,whichinput,inputsub,just_after_run
+ use usefulbits, only : theo,np,Hneut,whichinput,just_after_run,BRdirectinput
 
 #if defined(NAGf90Fortran)
  use F90_UNIX_IO, only : flush
@@ -391,153 +425,159 @@ subroutine HiggsBounds_neutral_input_part(Mh,GammaTotal_hj,CP_value,       &
 
  implicit none
  !----------------------------------------input
- double precision,intent(in) :: Mh( np(Hneut) ),GammaTotal_hj( np(Hneut) )
- integer,intent(in) ::CP_value( np(Hneut) )
- double precision,intent(in) :: CS_lep_hjZ_ratio( np(Hneut) ),                         &
-     &          CS_lep_bbhj_ratio( np(Hneut) ),CS_lep_tautauhj_ratio( np(Hneut) ),     &
-     &          CS_lep_hjhi_ratio_nHbynH(np(Hneut),np(Hneut)),                         &
-     &          CS_gg_hj_ratio( np(Hneut) ),CS_bb_hj_ratio( np(Hneut) ),       &
-     &          CS_bg_hjb_ratio( np(Hneut) ),                                      &
-     &          CS_ud_hjWp_ratio( np(Hneut) ),CS_cs_hjWp_ratio( np(Hneut) ),   & 
-     &          CS_ud_hjWm_ratio( np(Hneut) ),CS_cs_hjWm_ratio( np(Hneut) ),   & 
-     &          CS_gg_hjZ_ratio( np(Hneut) ),    &
-     &          CS_dd_hjZ_ratio( np(Hneut) ),CS_uu_hjZ_ratio( np(Hneut) ),     &
-     &          CS_ss_hjZ_ratio( np(Hneut) ),CS_cc_hjZ_ratio( np(Hneut) ),     &
-     &          CS_bb_hjZ_ratio( np(Hneut) ),                                      &
-     &          CS_tev_vbf_ratio( np(Hneut) ),CS_tev_tthj_ratio( np(Hneut) ),    &
-     &          CS_lhc7_vbf_ratio( np(Hneut) ),CS_lhc7_tthj_ratio( np(Hneut) ),    &
-     &          CS_lhc8_vbf_ratio( np(Hneut) ),CS_lhc8_tthj_ratio( np(Hneut) ),    &
-     &          BR_hjss( np(Hneut) ),BR_hjcc( np(Hneut) ),                             &
-     &          BR_hjbb( np(Hneut) ),BR_hjmumu( np(Hneut) ),BR_hjtautau( np(Hneut) ),  &
-     &          BR_hjWW( np(Hneut) ),BR_hjZZ( np(Hneut) ),BR_hjZga( np(Hneut) ),       &
-     &          BR_hjgaga( np(Hneut) ),BR_hjgg( np(Hneut) ),                           & 
-     &          BR_hjinvisible( np(Hneut) ),BR_hjhihi_nHbynH(np(Hneut),np(Hneut)) 
- !---------------------------------------internal
+ double precision,intent(in) :: BR_hjss( np(Hneut) ),BR_hjcc( np(Hneut) ),       &
+      &                         BR_hjbb( np(Hneut) ),BR_hjtt( np(Hneut) ),       &
+      &                         BR_hjmumu( np(Hneut) ),BR_hjtautau( np(Hneut) ), &
+      &                         BR_hjWW( np(Hneut) ),BR_hjZZ( np(Hneut) ),       &
+      &                         BR_hjZga( np(Hneut) ),BR_hjgaga( np(Hneut) ),    &
+      &                         BR_hjgg( np(Hneut) )
+ !-------------------------------------internal
  integer :: n
- integer :: subtype
- !-----------------------------------------------
+ !---------------------------------------------
 
- whichinput='part'
- subtype=1
- n=1 
- inputsub(subtype)%stat=inputsub(subtype)%stat+1
-      
+  n=1 
+
  if(.not.allocated(theo))then
   stop 'subroutine HiggsBounds_initialize must be called first'
  endif
 
  if(np(Hneut).eq.0)then
-  write(*,*)'subroutine HiggsBounds_neutral_input_part should'
+  write(*,*)'subroutine HiggsBounds_neutral_input_SMBR should'
   write(*,*)'only be called if np(Hneut)>0'
-  stop 'error in subroutine HiggsBounds_neutral_input_part'
+  stop 'error in subroutine HiggsBounds_neutral_input_SMBR'
  endif
+! 
+  theo(n)%BR_hjss           = BR_hjss
+  theo(n)%BR_hjcc           = BR_hjcc 
+  theo(n)%BR_hjbb           = BR_hjbb
+  theo(n)%BR_hjtt           = BR_hjtt  
+  theo(n)%BR_hjmumu         = BR_hjmumu
+  theo(n)%BR_hjtautau       = BR_hjtautau                 
+  theo(n)%BR_hjWW           = BR_hjWW
+  theo(n)%BR_hjZZ           = BR_hjZZ
+  theo(n)%BR_hjZga          = BR_hjZga 
+  theo(n)%BR_hjgaga         = BR_hjgaga
+  theo(n)%BR_hjgg           = BR_hjgg
 
- theo(n)%particle(Hneut)%M = Mh 
- theo(n)%particle(Hneut)%Mc      = Mh        
- theo(n)%particle(Hneut)%GammaTot= GammaTotal_hj
- theo(n)%CP_value          = CP_value  
- theo(n)%lep%XS_hjZ_ratio       = CS_lep_hjZ_ratio
- theo(n)%lep%XS_bbhj_ratio      = CS_lep_bbhj_ratio
- theo(n)%lep%XS_tautauhj_ratio  = CS_lep_tautauhj_ratio
- theo(n)%lep%XS_hjhi_ratio      = CS_lep_hjhi_ratio_nHbynH 
- partR(n)%gg_hj             = CS_gg_hj_ratio 
- partR(n)%qq_hj(5,:)        = CS_bb_hj_ratio
- partR(n)%bg_hjb            = CS_bg_hjb_ratio                    
- partR(n)%qq_hjWp(1,:)      = CS_ud_hjWp_ratio
- partR(n)%qq_hjWp(2,:)      = CS_cs_hjWp_ratio         
- partR(n)%qq_hjWm(1,:)      = CS_ud_hjWm_ratio
- partR(n)%qq_hjWm(2,:)      = CS_cs_hjWm_ratio  
- partR(n)%gg_hjZ(:)         = CS_gg_hjZ_ratio      
- partR(n)%qq_hjZ(1,:)       = CS_dd_hjZ_ratio
- partR(n)%qq_hjZ(2,:)       = CS_uu_hjZ_ratio           
- partR(n)%qq_hjZ(3,:)       = CS_ss_hjZ_ratio
- partR(n)%qq_hjZ(4,:)       = CS_cc_hjZ_ratio             
- partR(n)%qq_hjZ(5,:)       = CS_bb_hjZ_ratio                         
- theo(n)%tev%XS_vbf_ratio  = CS_tev_vbf_ratio   
- theo(n)%tev%XS_tthj_ratio = CS_tev_tthj_ratio  
- theo(n)%lhc7%XS_vbf_ratio = CS_lhc7_vbf_ratio   
- theo(n)%lhc7%XS_tthj_ratio= CS_lhc7_tthj_ratio
- theo(n)%lhc8%XS_vbf_ratio = CS_lhc8_vbf_ratio   
- theo(n)%lhc8%XS_tthj_ratio= CS_lhc8_tthj_ratio
- theo(n)%BR_hjss           = BR_hjss  
- theo(n)%BR_hjcc           = BR_hjcc                
- theo(n)%BR_hjbb           = BR_hjbb
- theo(n)%BR_hjmumu         = BR_hjmumu
- theo(n)%BR_hjtautau       = BR_hjtautau              
- theo(n)%BR_hjWW           = BR_hjWW
- theo(n)%BR_hjZZ           = BR_hjZZ
- theo(n)%BR_hjZga          = BR_hjZga  
- theo(n)%BR_hjgaga         = BR_hjgaga
- theo(n)%BR_hjgg           = BR_hjgg  
- theo(n)%BR_hjinvisible    = BR_hjinvisible             
- theo(n)%BR_hjhihi         = BR_hjhihi_nHbynH  
-
- just_after_run=.False. 
-
-end subroutine HiggsBounds_neutral_input_part
-!************************************************************      
-subroutine HiggsBounds_neutral_input_hadr(Mh,GammaTotal_hj,CP_value,      &
-     &          CS_lep_hjZ_ratio,                           &
-     &          CS_lep_bbhj_ratio,CS_lep_tautauhj_ratio,    &   
-     &          CS_lep_hjhi_ratio_nHbynH,                   &
-     &          CS_tev_hj_ratio ,CS_tev_hjb_ratio,    &
-     &          CS_tev_hjW_ratio,CS_tev_hjZ_ratio,    &
-     &          CS_tev_vbf_ratio,CS_tev_tthj_ratio,   &
-     &          CS_lhc7_hj_ratio ,CS_lhc7_hjb_ratio,    &
-     &          CS_lhc7_hjW_ratio,CS_lhc7_hjZ_ratio,    &
-     &          CS_lhc7_vbf_ratio,CS_lhc7_tthj_ratio,   &
-     &          CS_lhc8_hj_ratio ,CS_lhc8_hjb_ratio,    &
-     &          CS_lhc8_hjW_ratio,CS_lhc8_hjZ_ratio,    &
-     &          CS_lhc8_vbf_ratio,CS_lhc8_tthj_ratio,   &
-     &          BR_hjss,BR_hjcc,                            &
-     &          BR_hjbb,                                    &
-     &          BR_hjmumu,                                  &
-     &          BR_hjtautau,                                &
-     &          BR_hjWW,BR_hjZZ,BR_hjZga,BR_hjgaga,         &
-     &          BR_hjgg, BR_hjinvisible,                    &
-     &          BR_hjhihi_nHbynH                            )
-! This subroutine can be called by the user after subroutine initialize_HiggsBounds
-! has been called.
-! (see manual for full description)
+ just_after_run=.False.
+ BRdirectinput=.True. 
+    
+end subroutine HiggsBounds_neutral_input_SMBR
+!************************************************************   
+subroutine HiggsBounds_neutral_input_nonSMBR(BR_hjinvisible,BR_hkhjhi,BR_hjhiZ,&
+&                                    BR_hjemu,BR_hjetau,BR_hjmutau,BR_hjHpiW)
+! Input for the non-SM branching ratios
 !************************************************************
- use usefulbits, only : theo,np,Hneut,whichinput,inputsub,just_after_run
+ use usefulbits, only : theo,np,Hneut,Hplus,whichinput,just_after_run!,inputsub
 
 #if defined(NAGf90Fortran)
  use F90_UNIX_IO, only : flush
 #endif
 
  implicit none
+
  !----------------------------------------input
- double precision,intent(in) :: Mh( np(Hneut) ),GammaTotal_hj( np(Hneut) )
- integer,intent(in) :: CP_value( np(Hneut) )
- double precision,intent(in) :: CS_lep_hjZ_ratio( np(Hneut) ),                        &
-     &          CS_lep_bbhj_ratio( np(Hneut) ),CS_lep_tautauhj_ratio( np(Hneut) ),    &   
-     &          CS_lep_hjhi_ratio_nHbynH(np(Hneut),np(Hneut)),                        &
-     &          CS_tev_hj_ratio( np(Hneut)  ) ,CS_tev_hjb_ratio( np(Hneut) ),    &
-     &          CS_tev_hjW_ratio( np(Hneut) ) ,CS_tev_hjZ_ratio( np(Hneut) ),    &
-     &          CS_tev_vbf_ratio( np(Hneut) ) ,CS_tev_tthj_ratio( np(Hneut)),    &
-     &          CS_lhc7_hj_ratio( np(Hneut)  ),CS_lhc7_hjb_ratio( np(Hneut) ),    &
-     &          CS_lhc7_hjW_ratio( np(Hneut) ),CS_lhc7_hjZ_ratio( np(Hneut) ),    &
-     &          CS_lhc7_vbf_ratio( np(Hneut) ),CS_lhc7_tthj_ratio( np(Hneut)),    &
-     &          CS_lhc8_hj_ratio( np(Hneut)  ),CS_lhc8_hjb_ratio( np(Hneut) ),    &
-     &          CS_lhc8_hjW_ratio( np(Hneut) ),CS_lhc8_hjZ_ratio( np(Hneut) ),    &
-     &          CS_lhc8_vbf_ratio( np(Hneut) ),CS_lhc8_tthj_ratio( np(Hneut)),    &
-     &          BR_hjss( np(Hneut) ),BR_hjcc( np(Hneut) ),                            &
-     &          BR_hjbb( np(Hneut) ),                                                 &
-     &          BR_hjmumu( np(Hneut) ),BR_hjtautau( np(Hneut) ),                      &
-     &          BR_hjWW( np(Hneut) ),BR_hjZZ( np(Hneut) ),                            &
-     &          BR_hjZga( np(Hneut) ),BR_hjgaga( np(Hneut) ),                         &
-     &          BR_hjgg( np(Hneut) ), BR_hjinvisible( np(Hneut) ),                    &
-     &          BR_hjhihi_nHbynH(np(Hneut),np(Hneut))
+ double precision,intent(in) :: BR_hjinvisible( np(Hneut) ), &
+ &                              BR_hkhjhi(np(Hneut),np(Hneut),np(Hneut)), &
+ &                              BR_hjhiZ(np(Hneut),np(Hneut)), &
+ &                              BR_hjemu(np(Hneut)),&
+ &                              BR_hjetau(np(Hneut)),&
+ &                              BR_hjmutau(np(Hneut))
+ double precision,intent(in) :: BR_hjHpiW(np(Hneut),np(Hplus)) 
+ !--------------------------------------internal
+ integer :: n
+ n=1  
+
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(np(Hneut).eq.0)then
+  write(*,*)'subroutine HiggsBounds_neutral_input_nonSMBR should'
+  write(*,*)'only be called if np(Hneut)>0'
+  stop 'error in subroutine HiggsBounds_neutral_input_nonSMBR'
+ endif
+
+  theo(n)%BR_hjinvisible  = BR_hjinvisible 
+  theo(n)%BR_hkhjhi       = BR_hkhjhi
+  theo(n)%BR_hjhiZ        = BR_hjhiZ
+  theo(n)%BR_hjemu        = BR_hjemu
+  theo(n)%BR_hjetau       = BR_hjetau
+  theo(n)%BR_hjmutau      = BR_hjmutau
+
+!  write(*,*) "HiggsBounds_neutral_input_nonSMBR"
+!  write(*,*) theo(n)%BR_hjHpiW
+
+!  if(present(BR_hjHpiW)) then
+  theo(n)%BR_hjHpiW     = BR_hjHpiW
+!  endif
+
+  
+ just_after_run=.False. 
+
+end subroutine HiggsBounds_neutral_input_nonSMBR
+!************************************************************      
+subroutine HiggsBounds_neutral_input_LEP(XS_ee_hjZ_ratio,XS_ee_bbhj_ratio, &
+                                         XS_ee_tautauhj_ratio,XS_ee_hjhi_ratio)
+!************************************************************      
+ use usefulbits, only : theo,np,Hneut,whichinput,just_after_run
+ implicit none
+ !---------------------------------------------
+ double precision, intent(in) :: XS_ee_hjZ_ratio(np(Hneut)),&
+ XS_ee_bbhj_ratio(np(Hneut)),XS_ee_tautauhj_ratio(np(Hneut)),&
+ XS_ee_hjhi_ratio(np(Hneut),np(Hneut))
  !-------------------------------------internal
  integer :: n
- integer :: subtype
- !---------------------------------------------
-   
- whichinput='hadr'
- subtype=1
+ !--------------------------------------------- 
+ whichinput='hadr' ! What if effC otherwise used?
  n=1 
- inputsub(subtype)%stat=inputsub(subtype)%stat+1
+
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(np(Hneut).eq.0)then
+  write(*,*)'subroutine HiggsBounds_neutral_input_LEP should'
+  write(*,*)'only be called if np(Hneut)>0'
+  stop 'error in subroutine HiggsBounds_neutral_input_LEP'
+ endif
+
+ theo(n)%lep%XS_hjZ_ratio = XS_ee_hjZ_ratio
+ theo(n)%lep%XS_bbhj_ratio = XS_ee_bbhj_ratio
+ theo(n)%lep%XS_tautauhj_ratio = XS_ee_tautauhj_ratio
+ theo(n)%lep%XS_hjhi_ratio = XS_ee_hjhi_ratio
+  
+ just_after_run=.False.
+
+end subroutine HiggsBounds_neutral_input_LEP
+!************************************************************      
+subroutine HiggsBounds_neutral_input_hadr(collider,CS_hj_ratio,      &
+     &          CS_gg_hj_ratio,CS_bb_hj_ratio,               &
+     &          CS_hjW_ratio,CS_hjZ_ratio,                   &
+     &          CS_vbf_ratio,CS_tthj_ratio,                  &
+     &          CS_thj_tchan_ratio,CS_thj_schan_ratio,       &
+     &          CS_hjhi)
+!************************************************************
+ use usefulbits, only : theo,np,Hneut,whichinput,just_after_run,hadroncolliderdataset
+
+#if defined(NAGf90Fortran)
+ use F90_UNIX_IO, only : flush
+#endif
+
+ implicit none
+ double precision,intent(in) :: CS_hj_ratio( np(Hneut) ), &
+     &          CS_gg_hj_ratio( np(Hneut) ),CS_bb_hj_ratio( np(Hneut) ), &
+     &          CS_hjW_ratio( np(Hneut) ) ,CS_hjZ_ratio( np(Hneut) ),    &
+     &          CS_vbf_ratio( np(Hneut) ) ,CS_tthj_ratio( np(Hneut) ),    &
+     &          CS_thj_tchan_ratio( np(Hneut) ),CS_thj_schan_ratio( np(Hneut) ), &
+     &          CS_hjhi( np(Hneut), np(Hneut) )
+ integer, intent(in) :: collider
+ !-------------------------------------internal
+ integer :: n
+!  type(hadroncolliderdataset) :: dataset
+ !---------------------------------------------
+ whichinput='hadr'
+  n=1 
 
  if(.not.allocated(theo))then
   stop 'subroutine HiggsBounds_initialize must be called first'
@@ -549,63 +589,138 @@ subroutine HiggsBounds_neutral_input_hadr(Mh,GammaTotal_hj,CP_value,      &
   stop 'error in subroutine HiggsBounds_neutral_input_hadr'
  endif
 
-! write(*,*) "DEBUG HB: before hadronic input. Mass is ",theo(n)%particle(Hneut)%M 
-
-
- theo(n)%particle(Hneut)%M       = Mh
- theo(n)%particle(Hneut)%Mc      = Mh  
- theo(n)%particle(Hneut)%GammaTot= GammaTotal_hj
- theo(n)%CP_value                = CP_value             
- theo(n)%lep%XS_hjZ_ratio        = CS_lep_hjZ_ratio
- theo(n)%lep%XS_bbhj_ratio       = CS_lep_bbhj_ratio
- theo(n)%lep%XS_tautauhj_ratio   = CS_lep_tautauhj_ratio
- theo(n)%lep%XS_hjhi_ratio       = CS_lep_hjhi_ratio_nHbynH 
- theo(n)%tev%XS_hj_ratio         = CS_tev_hj_ratio
- theo(n)%tev%XS_hjb_ratio        = CS_tev_hjb_ratio   
- theo(n)%tev%XS_hjW_ratio        = CS_tev_hjW_ratio
- theo(n)%tev%XS_hjZ_ratio        = CS_tev_hjZ_ratio    
- theo(n)%tev%XS_vbf_ratio        = CS_tev_vbf_ratio      
- theo(n)%tev%XS_tthj_ratio       = CS_tev_tthj_ratio
- theo(n)%lhc7%XS_hj_ratio        = CS_lhc7_hj_ratio
- theo(n)%lhc7%XS_hjb_ratio       = CS_lhc7_hjb_ratio   
- theo(n)%lhc7%XS_hjW_ratio       = CS_lhc7_hjW_ratio
- theo(n)%lhc7%XS_hjZ_ratio       = CS_lhc7_hjZ_ratio    
- theo(n)%lhc7%XS_vbf_ratio       = CS_lhc7_vbf_ratio      
- theo(n)%lhc7%XS_tthj_ratio      = CS_lhc7_tthj_ratio
- theo(n)%lhc8%XS_hj_ratio        = CS_lhc8_hj_ratio
- theo(n)%lhc8%XS_hjb_ratio       = CS_lhc8_hjb_ratio   
- theo(n)%lhc8%XS_hjW_ratio       = CS_lhc8_hjW_ratio
- theo(n)%lhc8%XS_hjZ_ratio       = CS_lhc8_hjZ_ratio    
- theo(n)%lhc8%XS_vbf_ratio       = CS_lhc8_vbf_ratio      
- theo(n)%lhc8%XS_tthj_ratio      = CS_lhc8_tthj_ratio
- theo(n)%BR_hjss           = BR_hjss
- theo(n)%BR_hjcc           = BR_hjcc 
- theo(n)%BR_hjbb           = BR_hjbb
- theo(n)%BR_hjmumu         = BR_hjmumu
- theo(n)%BR_hjtautau       = BR_hjtautau                 
- theo(n)%BR_hjWW           = BR_hjWW
- theo(n)%BR_hjZZ           = BR_hjZZ
- theo(n)%BR_hjZga          = BR_hjZga 
- theo(n)%BR_hjgaga         = BR_hjgaga
- theo(n)%BR_hjgg           = BR_hjgg
- theo(n)%BR_hjinvisible    = BR_hjinvisible                  
- theo(n)%BR_hjhihi         = BR_hjhihi_nHbynH  
+ select case(collider)
+  case(2)
+  call set_input(theo(n)%tev,CS_hj_ratio,                    &
+     &          CS_gg_hj_ratio,CS_bb_hj_ratio,               &
+     &          CS_hjW_ratio,CS_hjZ_ratio,                   &
+     &          CS_vbf_ratio,CS_tthj_ratio,                  &
+     &          CS_thj_tchan_ratio,CS_thj_schan_ratio,       &
+     &          CS_hjhi)
+  case(7)
+  call set_input(theo(n)%lhc7,CS_hj_ratio,                   &
+     &          CS_gg_hj_ratio,CS_bb_hj_ratio,               &
+     &          CS_hjW_ratio,CS_hjZ_ratio,                   &
+     &          CS_vbf_ratio,CS_tthj_ratio,                  &
+     &          CS_thj_tchan_ratio,CS_thj_schan_ratio,       &
+     &          CS_hjhi)
+  case(8) 
+  call set_input(theo(n)%lhc8,CS_hj_ratio,                   &
+     &          CS_gg_hj_ratio,CS_bb_hj_ratio,               &
+     &          CS_hjW_ratio,CS_hjZ_ratio,                   &
+     &          CS_vbf_ratio,CS_tthj_ratio,                  &
+     &          CS_thj_tchan_ratio,CS_thj_schan_ratio,       &
+     &          CS_hjhi)
+  case(13) 
+  call set_input(theo(n)%lhc13,CS_hj_ratio,                  &
+     &          CS_gg_hj_ratio,CS_bb_hj_ratio,               &
+     &          CS_hjW_ratio,CS_hjZ_ratio,                   &
+     &          CS_vbf_ratio,CS_tthj_ratio,                  &
+     &          CS_thj_tchan_ratio,CS_thj_schan_ratio,       &
+     &          CS_hjhi)
+  case default
+   stop 'wrong input for collider to subroutine HiggsBounds_neutral_input_hadr'
+ end select
 
  just_after_run=.False. 
-  
-! write(*,*) "DEBUG HB: filled hadronic input. Mass is ",theo(n)%particle(Hneut)%M 
-    
+      
+ contains
+       
+  subroutine set_input(dataset,CS_hj_ratio,                  &
+     &          CS_gg_hj_ratio,CS_bb_hj_ratio,               &
+     &          CS_hjW_ratio,CS_hjZ_ratio,                   &
+     &          CS_vbf_ratio,CS_tthj_ratio,                  &
+     &          CS_thj_tchan_ratio,CS_thj_schan_ratio,       &
+     &          CS_hjhi)
+
+ implicit none
+ double precision,intent(in) :: CS_hj_ratio( np(Hneut) ), &
+     &          CS_gg_hj_ratio( np(Hneut) ),CS_bb_hj_ratio( np(Hneut) ), &
+     &          CS_hjW_ratio( np(Hneut) ) ,CS_hjZ_ratio( np(Hneut) ),    &
+     &          CS_vbf_ratio( np(Hneut) ) ,CS_tthj_ratio( np(Hneut) ),    &
+     &          CS_thj_tchan_ratio( np(Hneut) ),CS_thj_schan_ratio( np(Hneut) ), &
+     &          CS_hjhi( np(Hneut), np(Hneut) )
+   type(hadroncolliderdataset) :: dataset
+ 
+   dataset%XS_hj_ratio = CS_hj_ratio
+   dataset%XS_gg_hj_ratio = CS_gg_hj_ratio
+   dataset%XS_bb_hj_ratio = CS_bb_hj_ratio
+   dataset%XS_hjW_ratio = CS_hjW_ratio
+   dataset%XS_hjZ_ratio = CS_hjZ_ratio
+   dataset%XS_gg_hjZ_ratio = CS_hjZ_ratio ! assume here that the SM-normalized ratio is equal!
+   dataset%XS_qq_hjZ_ratio = CS_hjZ_ratio ! assume here that the SM-normalized ratio is equal!  
+   dataset%XS_vbf_ratio = CS_vbf_ratio
+   dataset%XS_tthj_ratio = CS_tthj_ratio
+   dataset%XS_thj_tchan_ratio = CS_thj_tchan_ratio
+   dataset%XS_thj_schan_ratio = CS_thj_schan_ratio 
+   dataset%XS_hjhi = CS_hjhi 
+
+  end subroutine set_input      
+      
 end subroutine HiggsBounds_neutral_input_hadr
 !************************************************************      
-subroutine HiggsBounds_charged_input(Mhplus,GammaTotal_Hpj, &
-     &          CS_lep_HpjHmj_ratio,                        &
-     &          BR_tWpb,BR_tHpjb,                           &
-     &          BR_Hpjcs,BR_Hpjcb,BR_Hpjtaunu)
-! This subroutine can be called by the user after subroutine initialize_HiggsBounds
-! has been called.
-! Arguments (input): theoretical predictions (see manual for definitions)
+! subroutine HiggsBounds_neutral_input_ZHprod(collider,CS_qq_hjZ_ratio,CS_gg_hjZ_ratio)
 !************************************************************
- use usefulbits, only : theo,np,Hplus,inputsub,just_after_run
+
+!************************************************************      
+subroutine HiggsBounds_neutral_input_hadr_channelrates(collider,channelrates)
+! n.b.: Elements of the matrix channelrates with values < 0 will be overwritten
+!       by XS times BR using the narrow width approximation.
+!************************************************************
+ use usefulbits, only : theo,np,Hneut,whichinput,just_after_run,hadroncolliderdataset,&
+ &                      Nprod,Ndecay
+
+#if defined(NAGf90Fortran)
+ use F90_UNIX_IO, only : flush
+#endif
+
+ implicit none
+ double precision,intent(in) :: channelrates(np(Hneut),Nprod,Ndecay)
+ integer, intent(in) :: collider
+ !-------------------------------------internal
+ integer :: n
+ !---------------------------------------------
+ whichinput='hadr'
+  n=1 
+
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(np(Hneut).eq.0)then
+  write(*,*)'subroutine HiggsBounds_neutral_input_hadr_channelrates should'
+  write(*,*)'only be called if np(Hneut)>0'
+  stop 'error in subroutine HiggsBounds_neutral_input_hadr'
+ endif
+
+ select case(collider)
+  case(2)
+   theo(n)%tev%channelrates_tmp=channelrates
+  case(7)
+   theo(n)%lhc7%channelrates_tmp=channelrates  
+  case(8) 
+   theo(n)%lhc8%channelrates_tmp=channelrates    
+  case(13) 
+   theo(n)%lhc13%channelrates_tmp=channelrates  
+  case default
+   stop 'wrong input for collider to subroutine HiggsBounds_neutral_input_hadr_channelrates'
+ end select
+
+ just_after_run=.False.       
+      
+end subroutine HiggsBounds_neutral_input_hadr_channelrates
+!************************************************************      
+subroutine HiggsBounds_charged_input(Mhplus,GammaTotal_Hpj, &
+     &          CS_ee_HpjHmj_ratio,                        &
+     &          BR_tWpb,BR_tHpjb,                           &
+     &          BR_Hpjcs,BR_Hpjcb,BR_Hpjtaunu,BR_Hpjtb,     &
+     &          BR_HpjWZ,BR_HpjhiW)
+! This subroutine can be called by the user after subroutine 
+! initialize_HiggsBounds has been called.
+! Arguments (input): theoretical predictions (see manual for definitions)
+! HB-5: Extended input by charged Higgs decays to tb, WZ, hiW
+!************************************************************
+ use usefulbits, only : theo,np,Hplus,Hneut,just_after_run!,inputsub
 
 #if defined(NAGf90Fortran)
  use F90_UNIX_IO, only : flush
@@ -615,17 +730,20 @@ subroutine HiggsBounds_charged_input(Mhplus,GammaTotal_Hpj, &
 
  !----------------------------------------input
  double precision,intent(in) :: Mhplus( np(Hplus) ),GammaTotal_Hpj( np(Hplus) ), &
-     &          CS_lep_HpjHmj_ratio( np(Hplus) ),                              &
+     &          CS_ee_HpjHmj_ratio( np(Hplus) ),                              &
      &          BR_tWpb,BR_tHpjb( np(Hplus) ),                                 &
-     &          BR_Hpjcs( np(Hplus) ),BR_Hpjcb( np(Hplus) ),BR_Hpjtaunu( np(Hplus) ) 
+     &          BR_Hpjcs( np(Hplus) ),BR_Hpjcb( np(Hplus) ),BR_Hpjtaunu( np(Hplus) ), &
+     &          BR_Hpjtb( np(Hplus) ),BR_HpjWZ( np(Hplus) ) 
+ double precision,intent(in) :: BR_HpjhiW(np(Hplus),np(Hneut))
  !--------------------------------------internal
  integer :: n
- integer :: subtype
+!  integer :: j
+!  integer :: subtype
  !----------------------------------------------
  
  n=1  
- subtype=2
- inputsub(subtype)%stat=inputsub(subtype)%stat+1
+!  subtype=2
+!  inputsub(subtype)%stat=inputsub(subtype)%stat+1
 
  if(.not.allocated(theo))then
   stop 'subroutine HiggsBounds_initialize must be called first'
@@ -641,7 +759,7 @@ subroutine HiggsBounds_charged_input(Mhplus,GammaTotal_Hpj, &
  theo(n)%particle(Hplus)%Mc      = Mhplus 
  theo(n)%particle(Hplus)%GammaTot= GammaTotal_Hpj
 
- theo(n)%lep%XS_HpjHmj_ratio = CS_lep_HpjHmj_ratio
+ theo(n)%lep%XS_HpjHmj_ratio = CS_ee_HpjHmj_ratio
 
  theo(n)%BR_tWpb  = BR_tWpb
  theo(n)%BR_tHpjb = BR_tHpjb 
@@ -649,13 +767,226 @@ subroutine HiggsBounds_charged_input(Mhplus,GammaTotal_Hpj, &
  theo(n)%BR_Hpjcs     = BR_Hpjcs
  theo(n)%BR_Hpjcb     = BR_Hpjcb
  theo(n)%BR_Hpjtaunu  = BR_Hpjtaunu
-  
+ theo(n)%BR_Hpjtb     = BR_Hpjtb
+ theo(n)%BR_HpjWZ     = BR_HpjWZ
+ theo(n)%BR_HpjhiW     = BR_HpjhiW
+!  write(*,*) 'HiggsBounds_charged_input'
+!  write(*,*) theo(n)%BR_HpjhiW 
+!  if(present(BR_HpjhiW_in)) then
+!   write(*,*) "BR_HpjhiW given: ", BR_HpjhiW_in
+!  theo(n)%BR_HpjhiW     = BR_HpjhiW_in
+!  else
+!   if(np(Hneut).gt.0) then
+!    theo(n)%BR_HpjhiW = 0.0D0
+!   endif 
+!  endif
+!  write(*,*) theo(n)%BR_HpjhiW
 
  just_after_run=.False. 
 
 end subroutine HiggsBounds_charged_input
 !************************************************************      
+subroutine HiggsBounds_charged_input_hadr(collider, CS_Hpjtb, CS_Hpjcb, &
+&           CS_Hpjbjet, CS_Hpjcjet, CS_Hpjjetjet, CS_HpjW, &
+&           CS_HpjZ, CS_vbf_Hpj, CS_HpjHmj, CS_Hpjhi)
+! This subroutine can be called by the user after subroutine initialize_HiggsBounds
+! has been called.
+! Arguments (input): theoretical predictions (see manual for definitions)
+!************************************************************
+ use usefulbits, only : theo,np,Hplus,Hneut,just_after_run,hadroncolliderdataset!,inputsub
+
+#if defined(NAGf90Fortran)
+ use F90_UNIX_IO, only : flush
+#endif
+
+ implicit none
+
+ !----------------------------------------input
+ double precision,intent(in) :: CS_Hpjtb( np(Hplus) ), CS_Hpjcb( np(Hplus) ),&
+&                               CS_Hpjbjet( np(Hplus) ), CS_Hpjcjet( np(Hplus) ),& 
+&                               CS_Hpjjetjet( np(Hplus) ), &
+&                               CS_HpjW( np(Hplus) ), CS_HpjZ( np(Hplus) ),&
+&                               CS_vbf_Hpj( np(Hplus) ), CS_HpjHmj( np(Hplus) )
+ integer, intent(in) :: collider
+ double precision,intent(in) :: CS_Hpjhi( np(Hplus),np(Hneut) )
+ !--------------------------------------internal
+ integer :: n
+ !----------------------------------------------
+  n=1  
+  
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(np(Hplus).eq.0)then
+  write(*,*)'subroutine HiggsBounds_charged_input should'
+  write(*,*)'only be called if np(Hplus)>0'
+  stop 'error in subroutine HiggsBounds_charged_input'
+ endif
+
+ select case(collider)
+  case(2)
+!    if(present(CS_Hpjhi)) then   
+   call set_input(theo(n)%tev,CS_Hpjtb, CS_Hpjcb, CS_Hpjbjet, &
+&                      CS_Hpjcjet, CS_Hpjjetjet, CS_HpjW, &
+&                      CS_HpjZ, CS_vbf_Hpj, CS_HpjHmj, CS_Hpjhi)
+!    else
+!     call set_input(theo(n)%tev,CS_Hpjtb, CS_Hpjbjet, CS_HpjW, &
+! &                      CS_HpjZ, CS_vbf_Hpj, CS_HpjHmj)
+!    endif
+  case(7)
+!    if(present(CS_Hpjhi)) then   
+   call set_input(theo(n)%lhc7,CS_Hpjtb, CS_Hpjcb, CS_Hpjbjet, &
+&                      CS_Hpjcjet, CS_Hpjjetjet, CS_HpjW, &
+&                      CS_HpjZ, CS_vbf_Hpj, CS_HpjHmj, CS_Hpjhi)
+!    else
+!     call set_input(theo(n)%lhc7,CS_Hpjtb, CS_Hpjbjet, CS_HpjW, &
+! &                      CS_HpjZ, CS_vbf_Hpj, CS_HpjHmj)
+!    endif
+  case(8) 
+!    if(present(CS_Hpjhi)) then   
+   call set_input(theo(n)%lhc8,CS_Hpjtb, CS_Hpjcb, CS_Hpjbjet, &
+&                      CS_Hpjcjet, CS_Hpjjetjet, CS_HpjW, &
+&                      CS_HpjZ, CS_vbf_Hpj, CS_HpjHmj, CS_Hpjhi)
+!    else
+!     call set_input(theo(n)%lhc8,CS_Hpjtb, CS_Hpjbjet, CS_HpjW, &
+! &                      CS_HpjZ, CS_vbf_Hpj, CS_HpjHmj)
+!    endif
+  case(13) 
+!    if(present(CS_Hpjhi)) then   
+   call set_input(theo(n)%lhc13,CS_Hpjtb, CS_Hpjcb, CS_Hpjbjet, &
+&                      CS_Hpjcjet, CS_Hpjjetjet, CS_HpjW, &
+&                      CS_HpjZ, CS_vbf_Hpj, CS_HpjHmj, CS_Hpjhi)
+!    else
+!     call set_input(theo(n)%lhc13,CS_Hpjtb, CS_Hpjbjet, CS_HpjW, &
+! &                      CS_HpjZ, CS_vbf_Hpj, CS_HpjHmj)
+!    endif
+  case default
+   stop 'wrong input for collider to subroutine HiggsBounds_charged_input_hadr'
+ end select
+
+ just_after_run=.False. 
+
+ contains
+ 
+  subroutine set_input(dataset,CS_Hpjtb, CS_Hpjcb, CS_Hpjbjet, &
+&                      CS_Hpjcjet, CS_Hpjjetjet, CS_HpjW, &
+&                      CS_HpjZ, CS_vbf_Hpj, CS_HpjHmj, CS_Hpjhi)
+
+ double precision,intent(in) :: CS_Hpjtb( np(Hplus) ), CS_Hpjcb( np(Hplus) ),&
+&                               CS_Hpjbjet( np(Hplus) ), CS_Hpjcjet( np(Hplus) ),& 
+&                               CS_Hpjjetjet( np(Hplus) ), &
+&                               CS_HpjW( np(Hplus) ), CS_HpjZ( np(Hplus) ),&
+&                               CS_vbf_Hpj( np(Hplus) ), CS_HpjHmj( np(Hplus) )
+   double precision,intent(in) :: CS_Hpjhi( np(Hplus),np(Hneut) )
+   type(hadroncolliderdataset) :: dataset
+
+   dataset%XS_Hpjtb = CS_Hpjtb
+   dataset%XS_Hpjcb = CS_Hpjcb   
+   dataset%XS_Hpjbjet = CS_Hpjbjet 
+   dataset%XS_Hpjcjet = CS_Hpjcjet 
+   dataset%XS_Hpjjetjet = CS_Hpjjetjet 
+   dataset%XS_vbf_Hpj = CS_vbf_Hpj
+   dataset%XS_HpjW = CS_HpjW
+   dataset%XS_HpjZ = CS_HpjZ 
+   dataset%XS_HpjHmj = CS_HpjHmj
+!    if(present(CS_Hpjhi)) then
+   dataset%XS_Hpjhi = CS_Hpjhi 
+!    endif 
+
+  end subroutine set_input
+  
+end subroutine HiggsBounds_charged_input_hadr
+
+!************************************************************      
+subroutine HiggsBounds_get_neutral_hadr_CS(i,collider,&
+&           singleH, ggH, bbH, VBF, WH, ZH, ttH, tH_tchan, tH_schan)
+
+ use usefulbits, only : theo, np, Hneut, hadroncolliderdataset
+ implicit none
+ 
+ integer, intent(in) :: i, collider
+ double precision, intent(out) :: singleH, ggH, bbH, VBF, WH, ZH, ttH, tH_tchan, tH_schan
+
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(i.gt.np(Hneut)) then
+  write(*,"(A,I2,A)") 'WARNING: Requested neutral Higgs h',i,' not part of the model!'  
+ else
+  select case(collider)
+   case(2)
+    call get_cross_section(theo(1)%tev,i, singleH, ggH, bbH, VBF, WH, ZH, ttH, tH_tchan, tH_schan)
+  case(7)
+    call get_cross_section(theo(1)%lhc7,i, singleH, ggH, bbH, VBF, WH, ZH, ttH, tH_tchan, tH_schan)
+  case(8)
+    call get_cross_section(theo(1)%lhc8,i, singleH, ggH, bbH, VBF, WH, ZH, ttH, tH_tchan, tH_schan)
+  case(13) 
+    call get_cross_section(theo(1)%lhc13,i, singleH, ggH, bbH, VBF, WH, ZH, ttH, tH_tchan, tH_schan)
+  case default
+   stop 'wrong input for collider to subroutine HiggsBounds_get_neutral_SMnormalizedCS'
+ end select
+ endif
+
+ contains
+ 
+  subroutine get_cross_section(dataset,i, singleH, ggH, bbH, VBF, WH, ZH, ttH, tH_tchan, tH_schan)
+
+   integer, intent(in) :: i
+   double precision, intent(inout) :: singleH, ggH, bbH, VBF, WH, ZH, ttH, tH_tchan, tH_schan
+   type(hadroncolliderdataset) :: dataset
+
+   singleH = dataset%XS_hj_ratio(i)
+   ggH = dataset%XS_gg_hj_ratio(i)
+   bbH = dataset%XS_bb_hj_ratio(i)
+   VBF = dataset%XS_vbf_ratio(i)
+   WH = dataset%XS_hjW_ratio(i)
+   ZH = dataset%XS_hjZ_ratio(i)
+   ttH = dataset%XS_tthj_ratio(i)
+   tH_tchan = dataset%XS_thj_tchan_ratio(i)
+   tH_schan = dataset%XS_thj_schan_ratio(i)
+
+  end subroutine get_cross_section
+!************************************************************
+end subroutine HiggsBounds_get_neutral_hadr_CS
+!************************************************************
+subroutine HiggsBounds_get_neutral_BR(i,BR_hjss,BR_hjcc,BR_hjbb,&
+&           BR_hjtt,BR_hjmumu,BR_hjtautau,BR_hjWW,BR_hjZZ,BR_hjZga,&
+&           BR_hjgaga,BR_hjgg)
+
+ use usefulbits, only : theo, np, Hneut
+ implicit none
+ 
+ integer, intent(in) :: i
+ double precision, intent(out) :: BR_hjss,BR_hjcc,BR_hjbb,&
+&           BR_hjtt,BR_hjmumu,BR_hjtautau,BR_hjWW,BR_hjZZ,BR_hjZga,&
+&           BR_hjgaga,BR_hjgg
+
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(i.gt.np(Hneut)) then
+  write(*,"(A,I2,A)") 'WARNING: Requested neutral Higgs h',i,' not part of the model!'  
+ else
+  BR_hjss = theo(1)%BR_hjss(i)
+  BR_hjcc = theo(1)%BR_hjcc(i)
+  BR_hjbb = theo(1)%BR_hjbb(i)
+  BR_hjtt = theo(1)%BR_hjtt(i)
+  BR_hjmumu = theo(1)%BR_hjmumu(i)  
+  BR_hjtautau = theo(1)%BR_hjtautau(i)
+  BR_hjWW = theo(1)%BR_hjWW(i)
+  BR_hjZZ = theo(1)%BR_hjZZ(i)  
+  BR_hjZga = theo(1)%BR_hjZga(i)  
+  BR_hjgaga = theo(1)%BR_hjgaga(i)
+  BR_hjgg = theo(1)%BR_hjgg(i)  
+ endif
+
+end subroutine HiggsBounds_get_neutral_BR
+!************************************************************
 subroutine HiggsBounds_set_mass_uncertainties(dMhneut, dMhch)
+!************************************************************      
 ! Assigns the mass uncertainties in the subroutine version.
 !
    use usefulbits, only : theo,np,Hneut,Hplus
@@ -774,7 +1105,7 @@ subroutine SUSYBounds_neutralinoonly_input(MN,GammaTotal_N, &
 ! has been called.
 ! Arguments (input): theoretical predictions (see manual for definitions)
 !************************************************************
- use usefulbits, only : theo,np,Chineut,inputsub,just_after_run
+ use usefulbits, only : theo,np,Chineut,just_after_run!,inputsub,
 
 #if defined(NAGf90Fortran)
  use F90_UNIX_IO, only : flush
@@ -788,12 +1119,12 @@ subroutine SUSYBounds_neutralinoonly_input(MN,GammaTotal_N, &
      &          BR_NjqqNi( np(Chineut),np(Chineut) ),BR_NjZNi( np(Chineut),np(Chineut) )                        
  !--------------------------------------internal
  integer :: n
- integer :: subtype
+!  integer :: subtype
  !----------------------------------------------
  
  n=1  
- subtype=3
- inputsub(subtype)%stat=inputsub(subtype)%stat+1
+!  subtype=3
+!  inputsub(subtype)%stat=inputsub(subtype)%stat+1
 
  if(.not.allocated(theo))then
   stop 'subroutine HiggsBounds_initialize must be called first'
@@ -827,7 +1158,7 @@ subroutine SUSYBounds_neutralinochargino_input(MC,GammaTotal_C, &
 ! has been called.
 ! Arguments (input): theoretical predictions (see manual for definitions)
 !************************************************************
- use usefulbits, only : theo,np,Chineut,Chiplus,inputsub,just_after_run
+ use usefulbits, only : theo,np,Chineut,Chiplus,just_after_run!,inputsub
 
 #if defined(NAGf90Fortran)
  use F90_UNIX_IO, only : flush
@@ -847,8 +1178,8 @@ subroutine SUSYBounds_neutralinochargino_input(MC,GammaTotal_C, &
  !----------------------------------------------
  
  n=1  
- subtype=4
- inputsub(subtype)%stat=inputsub(subtype)%stat+1
+!  subtype=4
+!  inputsub(subtype)%stat=inputsub(subtype)%stat+1
 
  if(.not.allocated(theo))then
   stop 'subroutine HiggsBounds_initialize must be called first'
@@ -948,8 +1279,8 @@ end subroutine run_HiggsBounds_single
 !************************************************************
 
 
-subroutine run_HiggsBounds_full( HBresult,chan,                      &
-     &                      obsratio, ncombined                 )
+subroutine run_HiggsBounds_full( HBresult,chan, &
+     &                      obsratio, ncombined )
 ! This subroutine can be called by the user after HiggsBounds_initialize has been called.
 ! The input routines, where required, should be called before calling run_HiggsBounds.
 ! It takes theoretical predictions for a particular parameter point 
@@ -966,11 +1297,12 @@ subroutine run_HiggsBounds_full( HBresult,chan,                      &
 !   * obsratio = ratio of the theoretical rate to the observed limit for this channel
 !   * ncombined = number of Higgs combined in order to calculate this obsratio
 !    (see manual for more precise definitions))
- use usefulbits, only : theo,res,inputsub,just_after_run,ndmh,debug, &
-&                       np,Hneut,Hplus,dmhsteps,ndat,fullHBres,small_mh
+ use usefulbits, only : theo,res,just_after_run,ndmh,debug,numres, &
+&                       np,Hneut,Hplus,dmhsteps,ndat,fullHBres,small_mh,&
+                        HBresult_all,ncombined_all,chan_all,obsratio_all,predratio_all
  use channels, only : check_channels
  !use input, only : test_input
- use theo_manip, only : complete_theo, recalculate_theo_for_datapoint
+ use theo_manip, only : HB5_complete_theo, HB5_recalculate_theo_for_datapoint
 
 #if defined(NAGf90Fortran)
  use F90_UNIX_IO, only : flush
@@ -981,13 +1313,12 @@ subroutine run_HiggsBounds_full( HBresult,chan,                      &
  integer,intent(out)::  HBresult(0:np(Hneut)+np(Hplus))
  integer,intent(out)::  chan(0:np(Hneut)+np(Hplus))
  integer,intent(out)::  ncombined(0:np(Hneut)+np(Hplus))
-
  double precision,intent(out) :: obsratio(0:np(Hneut)+np(Hplus))
  
  double precision :: Mhneut(np(Hneut))
  double precision :: Mhch(np(Hplus))
  !-------------------------------------internal
- integer :: n,i,j,ind,part
+ integer :: n,i,j,ind,part,k
  !---------------------------------------------
 
 ! print *, "Running HiggsBounds in Normal Mode (most sensitive limit considered for each Higgs boson)"
@@ -1013,17 +1344,23 @@ subroutine run_HiggsBounds_full( HBresult,chan,                      &
   stop 'subroutine HiggsBounds_initialize must be called first'
  endif
 
- do i=1,ubound(inputsub,dim=1)
-   if(  inputsub(i)%req .ne. inputsub(i)%stat  )then
-       write(*,*)'subroutine '//trim(adjustl(inputsub(i)%desc))
-       write(*,*)'should be called once and only once before each call to'
-       write(*,*)'subroutine run_HiggsBounds.'
-       stop 'error in subroutine run_HiggsBounds'
-   endif
-   inputsub(i)%stat=0!now we have used this input, set back to zero
- enddo
+ if(.not.allocated(HBresult_all)) allocate(HBresult_all(0:np(Hneut)+np(Hplus),numres))
+ if(.not.allocated(chan_all)) allocate(chan_all(0:np(Hneut)+np(Hplus),numres))
+ if(.not.allocated(ncombined_all)) allocate(ncombined_all(0:np(Hneut)+np(Hplus),numres)) 
+ if(.not.allocated(obsratio_all)) allocate(obsratio_all(0:np(Hneut)+np(Hplus),numres))  
+ if(.not.allocated(predratio_all)) allocate(predratio_all(0:np(Hneut)+np(Hplus),numres))   
+!  do i=1,ubound(inputsub,dim=1)
+!    if(  inputsub(i)%req .ne. inputsub(i)%stat  )then
+!        write(*,*)'subroutine '//trim(adjustl(inputsub(i)%desc))
+!        write(*,*)'should be called once and only once before each call to'
+!        write(*,*)'subroutine run_HiggsBounds.'
+!        stop 'error in subroutine run_HiggsBounds'
+!    endif
+!    inputsub(i)%stat=0!now we have used this input, set back to zero
+!  enddo
 
- call complete_theo    
+
+ call HB5_complete_theo    
  
   do n=1,ndat
 
@@ -1039,6 +1376,11 @@ subroutine run_HiggsBounds_full( HBresult,chan,                      &
    call get_mass_variation_param(n)
 
     do i=0,ubound(Hbresult,dim=1)
+     obsratio_all(i,:) = -999d0
+     predratio_all(i,:) = -999d0     
+     HBresult_all(i,:) = 1
+     chan_all(i,:) = -999
+     ncombined_all(i,:) = -999
      obsratio(i) = -999d0
      HBresult(i) = 1
      chan(i) = -999
@@ -1056,7 +1398,7 @@ subroutine run_HiggsBounds_full( HBresult,chan,                      &
 
 !   Loop over all Higgses
      do i=1,np(Hneut)+np(Hplus)
-      obsratio(i) = 1.D23
+      obsratio_all(i,:) = 1.D23
 
       IF (i.LE.np(Hneut)) THEN
        ind = i
@@ -1079,16 +1421,22 @@ subroutine run_HiggsBounds_full( HBresult,chan,                      &
         
 !        print *, theo(n)%particle(Hneut)%M, theo(n)%particle(Hplus)%M
 
-        call recalculate_theo_for_datapoint(n)       
+        call HB5_recalculate_theo_for_datapoint(n)       
 
         call check_channels(theo(n),res(n),i)
      	
-        IF (res(n)%obsratio(1).LT.obsratio(i)) THEN
-         HBresult(i)    = res(n)%allowed95(1)       
-         chan(i)        = res(n)%chan(1)       
-         obsratio(i)    = res(n)%obsratio(1)
-         ncombined(i)   = res(n)%ncombined(1)        
+     	do k=1,size(res(n)%obsratio)
+!       	write(*,*) "i,k,res(n)%obsratio(k),res(n)%chan(k) = ",i,k,res(n)%obsratio(k),res(n)%chan(k)
+     	
+        IF (res(n)%obsratio(k).LT.obsratio_all(i,k)) THEN
+!          write(*,*) "i,k,res(n)%obsratio(k),res(n)%chan(k) = ",i,k,res(n)%obsratio(k),res(n)%chan(k)        
+         HBresult_all(i,k)    = res(n)%allowed95(k)
+         chan_all(i,k)        = res(n)%chan(k)       
+         obsratio_all(i,k)    = res(n)%obsratio(k)
+         predratio_all(i,k)    = res(n)%predratio(k)
+         ncombined_all(i,k)   = res(n)%ncombined(k)        
         ENDIF
+     	enddo
         
 !        print *, i,theo(n)%particle(part)%M(ind),HBresult(i),chan(i),obsratio(i),ncombined(i)
         
@@ -1097,14 +1445,30 @@ subroutine run_HiggsBounds_full( HBresult,chan,                      &
         
       enddo
      else
-      call recalculate_theo_for_datapoint(n)
+      call HB5_recalculate_theo_for_datapoint(n)
       call check_channels(theo(n),res(n),i)
 
-      HBresult(i)    = res(n)%allowed95(1)       
-      chan(i)        = res(n)%chan(1)       
-      obsratio(i)    = res(n)%obsratio(1)
-      ncombined(i)   = res(n)%ncombined(1)            
+      do k=1,size(res(n)%obsratio)
+!        write(*,*) "i,k,res(n)%obsratio(k),res(n)%chan(k) = ",i,k,res(n)%obsratio(k),res(n)%chan(k)     	
+       HBresult_all(i,k)    = res(n)%allowed95(k)
+       chan_all(i,k)        = res(n)%chan(k)       
+       obsratio_all(i,k)    = res(n)%obsratio(k)
+       predratio_all(i,k)    = res(n)%predratio(k)       
+       ncombined_all(i,k)   = res(n)%ncombined(k)
+
+      enddo
+
+!       HBresult(i)    = res(n)%allowed95(1)       
+!       chan(i)        = res(n)%chan(1)       
+!       obsratio(i)    = res(n)%obsratio(1)
+!       ncombined(i)   = res(n)%ncombined(1)            
      endif 
+     
+     
+     HBresult(i) = HBresult_all(i,1)
+     chan(i) = chan_all(i,1)
+     obsratio(i) = obsratio_all(i,1)
+     ncombined(i) = ncombined_all(i,1)
      
 !	 Logical OR between exclusions (one Higgs excluded = combined exclusion)
      HBresult(0) = HBresult(0) * HBresult(i)
@@ -1127,16 +1491,35 @@ subroutine run_HiggsBounds_full( HBresult,chan,                      &
  
 !    print *, "Running HiggsBounds without Higgs mass uncertainties"
 
-    call recalculate_theo_for_datapoint(n)       
+    call HB5_recalculate_theo_for_datapoint(n)       
 !    write(*,*) "Higgses = " , np(Hneut)+np(Hplus)
 
    do i=1,np(Hneut)+np(Hplus)
     call check_channels(theo(n),res(n),i)
-    HBresult(i)    = res(n)%allowed95(1)       
-    chan(i)        = res(n)%chan(1)       
-    obsratio(i)    = res(n)%obsratio(1)
-    ncombined(i)   = res(n)%ncombined(1)        
     
+!    	do k=1,size(res(n)%obsratio)
+!    	write(*,*) "i,k,res(n)%obsratio(k),res(n)%chan(k) = ",i,k,res(n)%obsratio(k),res(n)%chan(k)
+!    	enddo
+    
+     do k=1,size(res(n)%obsratio)
+!        write(*,*) "i,k,res(n)%obsratio(k),res(n)%chan(k) = ",i,k,res(n)%obsratio(k),res(n)%chan(k)     	
+       HBresult_all(i,k)    = res(n)%allowed95(k)
+       chan_all(i,k)        = res(n)%chan(k)       
+       obsratio_all(i,k)    = res(n)%obsratio(k)
+       predratio_all(i,k)   = res(n)%predratio(k)       
+       ncombined_all(i,k)   = res(n)%ncombined(k)
+     enddo
+
+     HBresult(i) = HBresult_all(i,1)
+     chan(i) = chan_all(i,1)
+     obsratio(i) = obsratio_all(i,1)
+     ncombined(i) = ncombined_all(i,1)
+
+!     HBresult(i)    = res(n)%allowed95(1)
+!     chan(i)        = res(n)%chan(1)       
+!     obsratio(i)    = res(n)%obsratio(1)
+!     ncombined(i)   = res(n)%ncombined(1)        
+!     
 !    write(*,*) "hello: i=",i," HBres, chan, obsratio = ", HBresult(i), chan(i), obsratio(i)
     
     HBresult(0) = HBresult(0) * res(n)%allowed95(1)
@@ -1156,6 +1539,9 @@ subroutine run_HiggsBounds_full( HBresult,chan,                      &
    enddo
   ENDIF
 
+!   write(*,*) "run_HB_full, obsratio: ", obsratio
+!   write(*,*) "run_HB_full, chan    : ", chan  
+
   fullHBres(n)%allowed95=HBresult(0)
   fullHBres(n)%chan=chan(0)
   fullHBres(n)%obsratio=obsratio(0)
@@ -1164,15 +1550,118 @@ subroutine run_HiggsBounds_full( HBresult,chan,                      &
  enddo
 
 
- just_after_run=.True.   
+ just_after_run=.True.
+
  
 ! print *, "HB: run done"
 
 end subroutine run_HiggsBounds_full
 !************************************************************
+subroutine HiggsBounds_get_most_sensitive_channels_per_Higgs(nH,pos,HBresult,chan,obsratio,predratio,ncombined)
+!************************************************************
+ use usefulbits, only : HBresult_all,obsratio_all,chan_all,ncombined_all,predratio_all,&
+ &                      just_after_run,np,Hneut,Hplus,numres
 
+ integer, intent(in) :: nH, pos
+ integer, intent(out) :: HBresult, chan, ncombined
+ double precision, intent(out) :: obsratio, predratio
 
+ HBresult = 0
+ chan = 0
+ obsratio = 0
+ predratio = 0
+ ncombined = 0
+ 
+ if(just_after_run.and.allocated(HBresult_all)) then
+  if(nH.le.np(Hneut)+np(Hplus)) then
+   if(pos.le.numres) then
+    HBresult  = HBresult_all(nH,pos)
+    chan      = chan_all(nH,pos)       
+    obsratio  = obsratio_all(nH,pos)
+    predratio  = predratio_all(nH,pos)    
+    ncombined = ncombined_all(nH,pos)
+   else
+    write(*,*) 'WARNING: request exceeds the number of stored most sensitive channels (',numres,')'
+   endif
+  else
+   write(*,*) 'WARNING: requested Higgs boson is invalid (choose between 1 and ',np(Hneut)+np(Hplus),'!)'
+  endif
+ else
+  write(*,*) 'WARNING: Please call run_HiggsBounds or run_HiggsBounds_full before calling',&
+  &          ' HiggsBounds_get_most_sensitive_channels!'
+ endif 
 
+end subroutine HiggsBounds_get_most_sensitive_channels_per_Higgs
+!************************************************************
+subroutine HiggsBounds_get_most_sensitive_channels(pos,HBresult,chan,obsratio,predratio,ncombined)
+!************************************************************
+ use usefulbits, only : HBresult_all,obsratio_all,predratio_all,chan_all,ncombined_all,&
+ &                      just_after_run,np,Hneut,Hplus,numres
+
+ integer, intent(in) :: pos
+ integer, intent(out) :: HBresult, chan, ncombined
+ double precision, intent(out) :: obsratio,predratio
+ integer :: i,j,count
+
+ integer,allocatable :: nH_rank(:),pos_rank(:), posflat(:) 
+ double precision, allocatable :: predratio_tmp(:)
+ 
+ allocate(nH_rank(numres),pos_rank(numres),posflat(numres),predratio_tmp(numres*(np(Hneut)+np(Hplus))))
+
+ HBresult = 0
+ chan = 0
+ obsratio = 0
+ ncombined = 0
+ 
+ predratio_tmp = 0
+ 
+ count=0
+ if(just_after_run.and.allocated(HBresult_all)) then
+   if(pos.le.numres) then
+    do j=1,np(Hneut)+np(Hplus)
+     do i=1,numres
+      count=count+1
+      predratio_tmp(count)=predratio_all(j,i)
+     enddo
+    enddo
+    
+    do i=1,numres
+     posflat(i) = maxloc(predratio_tmp,1)
+     predratio_tmp(posflat(i)) = -1.0D0
+    enddo  
+
+    count=0
+    
+    do j=1,np(Hneut)+np(Hplus)
+     do i=1,numres
+      count=count+1     
+      do k=1,numres
+       if(count.eq.posflat(k)) then
+        nH_rank(k) = j
+        pos_rank(k) = i
+       endif
+      enddo 
+     enddo
+    enddo
+     
+    HBresult  = HBresult_all(nH_rank(pos),pos_rank(pos))
+    chan      = chan_all(nH_rank(pos),pos_rank(pos))       
+    obsratio  = obsratio_all(nH_rank(pos),pos_rank(pos))
+    predratio  = predratio_all(nH_rank(pos),pos_rank(pos))    
+    ncombined = ncombined_all(nH_rank(pos),pos_rank(pos))
+    
+   else
+    write(*,*) 'WARNING: request exceeds the number of stored most sensitive channels (',numres,')'
+   endif
+ else
+  write(*,*) 'WARNING: Please call run_HiggsBounds or run_HiggsBounds_full before calling',&
+  &          ' HiggsBounds_get_most_sensitive_channels!'
+ endif 
+
+ deallocate(nH_rank,pos_rank,posflat,predratio_tmp)
+
+end subroutine HiggsBounds_get_most_sensitive_channels
+!************************************************************
 subroutine run_HiggsBounds_classic( HBresult,chan,obsratio,ncombined)
 ! This subroutine can be called by the user after HiggsBounds_initialize has been called.
 ! The input routines, where required, should be called before calling run_HiggsBounds.
@@ -1185,11 +1674,11 @@ subroutine run_HiggsBounds_classic( HBresult,chan,obsratio,ncombined)
 !   * obsratio = ratio of the theoretical rate to the observed limit for this channel
 !   * ncombined = number of Higgs combined in order to calculate this obsratio
 !    (see manual for more precise definitions))
- use usefulbits, only : theo,res,debug,inputsub,just_after_run,ndmh,diffmhneut,diffmhch, &
- np,Hneut,Hplus,full_dmth_variation,dmhsteps, ndat,fullHBres
+ use usefulbits, only : theo,res,debug,just_after_run,ndmh,diffmhneut,diffmhch, &
+ np,Hneut,Hplus,full_dmth_variation,dmhsteps, ndat,fullHBres!,inputsub
  use channels, only : check_channels
  !use input, only : test_input
- use theo_manip, only : complete_theo, recalculate_theo_for_datapoint
+ use theo_manip, only : HB5_complete_theo, HB5_recalculate_theo_for_datapoint
 
 #if defined(NAGf90Fortran)
  use F90_UNIX_IO, only : flush
@@ -1216,17 +1705,17 @@ subroutine run_HiggsBounds_classic( HBresult,chan,obsratio,ncombined)
   stop 'subroutine HiggsBounds_initialize must be called first'
  endif
 
- do i=1,ubound(inputsub,dim=1)
-   if(  inputsub(i)%req .ne. inputsub(i)%stat  )then
-       write(*,*)'subroutine '//trim(adjustl(inputsub(i)%desc))
-       write(*,*)'should be called once and only once before each call to'
-       write(*,*)'subroutine run_HiggsBounds.'
-       stop 'error in subroutine run_HiggsBounds'
-   endif
-   inputsub(i)%stat=0!now we have used this input, set back to zero
- enddo
+!  do i=1,ubound(inputsub,dim=1)
+!    if(  inputsub(i)%req .ne. inputsub(i)%stat  )then
+!        write(*,*)'subroutine '//trim(adjustl(inputsub(i)%desc))
+!        write(*,*)'should be called once and only once before each call to'
+!        write(*,*)'subroutine run_HiggsBounds.'
+!        stop 'error in subroutine run_HiggsBounds'
+!    endif
+!    inputsub(i)%stat=0!now we have used this input, set back to zero
+!  enddo
 
- call complete_theo    
+ call HB5_complete_theo    
 
  do n=1,ndat
         
@@ -1245,7 +1734,7 @@ subroutine run_HiggsBounds_classic( HBresult,chan,obsratio,ncombined)
      theo(n)%particle(Hplus)%M = diffMhch(i,:)
 		 
      if(debug)write(*,*)'manipulating input...'                 ; call flush(6)
-     call recalculate_theo_for_datapoint(n)
+     call HB5_recalculate_theo_for_datapoint(n)
 	
      if(debug)write(*,*)'compare each data point to the experimental bounds...' ; call flush(6)                  
      call check_channels(theo(n),res(n),0)
@@ -1260,7 +1749,7 @@ subroutine run_HiggsBounds_classic( HBresult,chan,obsratio,ncombined)
       IF (HBresult.EQ.1) THEN
 !		 	 theo(n)%particle(Hneut)%M = Mhneut
 ! 			 theo(n)%particle(Hplus)%M = Mhch
-       just_after_run=.True.   
+       just_after_run=.True.
        exit
       ENDIF
      ELSE
@@ -1280,19 +1769,19 @@ subroutine run_HiggsBounds_classic( HBresult,chan,obsratio,ncombined)
     ncombined = ncombined
 !    theo(n)%particle(Hneut)%M = Mhneut
 !    theo(n)%particle(Hplus)%M = Mhch
-    just_after_run=.True.    
+    just_after_run=.True.
 !	return
    ENDIF
    
    theo(n)%particle(Hneut)%M = Mhneut
    theo(n)%particle(Hplus)%M = Mhch
-   call recalculate_theo_for_datapoint(n)
+   call HB5_recalculate_theo_for_datapoint(n)
    call check_channels(theo(n),res(n),0)
 
  ELSE
  
    if(debug)write(*,*)'manipulating input...'                 ; call flush(6)
-   call recalculate_theo_for_datapoint(n)
+   call HB5_recalculate_theo_for_datapoint(n)
 
    if(debug)write(*,*)'compare each data point to the experimental bounds...' ; call flush(6)                  
    
@@ -1303,7 +1792,7 @@ subroutine run_HiggsBounds_classic( HBresult,chan,obsratio,ncombined)
    obsratio    = res(n)%obsratio(1)
    ncombined   = res(n)%ncombined(1)        
 
-   just_after_run=.True.   
+   just_after_run=.True.
  ENDIF
 
  fullHBres(n)%allowed95=HBresult
@@ -1315,13 +1804,12 @@ subroutine run_HiggsBounds_classic( HBresult,chan,obsratio,ncombined)
 
  just_after_run=.True.    
 
-
 end subroutine run_HiggsBounds_classic
 !************************************************************
 subroutine HiggsBounds_get_likelihood(analysisID, Hindex, nc, cbin, M, llh, obspred)
 !************************************************************
  use usefulbits, only : theo,np,Hneut,Hplus
- use theo_manip, only : complete_theo
+ use theo_manip, only : HB5_complete_theo
  use likelihoods, only : get_likelihood, calcpredratio_llh
  implicit none
  
@@ -1330,7 +1818,7 @@ subroutine HiggsBounds_get_likelihood(analysisID, Hindex, nc, cbin, M, llh, obsp
  double precision, intent(out) :: llh, M
  character(LEN=*), intent(in) :: obspred  
 
- integer :: c,i
+ integer :: i
  double precision, allocatable :: expllh(:) 
 
 ! double precision :: fact
@@ -1345,12 +1833,18 @@ subroutine HiggsBounds_get_likelihood(analysisID, Hindex, nc, cbin, M, llh, obsp
  allocate(expllh(np(Hneut)),mass(np(Hneut)),nclist(np(Hneut)))
  expllh = 0.0D0
  
- select case(analysisID)
-  case(3316,14029)
-   c=1
-  case default
-   stop 'Unknown analysisID in subroutine HiggsBounds_get_likelihood!' 
- end select  
+!  select case(analysisID)
+!   case(14029)
+!    c=1
+!   case(16037)
+!    c=2
+!   case(170907242)
+!    c=3
+!   case default
+!    stop 'Unknown analysisID in subroutine HiggsBounds_get_likelihood!' 
+!  end select  
+  
+ call HB5_complete_theo   
   
 ! Determine most sensitive combination
  do i=1,np(Hneut)
@@ -1412,7 +1906,7 @@ end subroutine HiggsBounds_get_combined_likelihood
 subroutine HiggsBounds_get_likelihood_for_Higgs(analysisID, cbin_in, Hindex, nc, cbin, M, llh, obspred)
 !************************************************************
  use usefulbits, only : theo,np,Hneut,Hplus
- use theo_manip, only : complete_theo
+ use theo_manip, only : HB5_complete_theo
  use likelihoods, only : get_likelihood, calcpredratio_llh
  implicit none
  
@@ -1421,40 +1915,25 @@ subroutine HiggsBounds_get_likelihood_for_Higgs(analysisID, cbin_in, Hindex, nc,
  double precision, intent(out) :: llh, M
  integer, intent(in) :: cbin_in
  character(LEN=*), intent(in) :: obspred   
- integer :: c,i
+ integer :: i
  
- select case(analysisID)
-  case(3316,14029)
-   c=1
-  case default
-   stop 'Unknown analysisID in subroutine HiggsBounds_get_likelihood_for_Higgs!' 
- end select
+!  select case(analysisID)
+!   case(3316,14029)
+!    c=1
+!   case default
+!    stop 'Unknown analysisID in subroutine HiggsBounds_get_likelihood_for_Higgs!' 
+!  end select
+
+ call HB5_complete_theo 
  
  call get_likelihood(analysisID, Hindex, theo(1), llh, M, nc, cbin, obspred, cbin_in)   
  
 end subroutine HiggsBounds_get_likelihood_for_Higgs
 !************************************************************
-!subroutine HiggsBounds_get_maximal_likelihood(analysisID, Hindex, nc, M, llh)
-!! Wrapper subroutine for HiggsBounds_get_maximal_likelihood_for_comb considering
-!! all neutral Higgs bosons
-!!************************************************************
-!
-! use usefulbits, only : theo,np,Hneut,Hplus
-!  
-! integer, intent(in) :: analysisID
-! integer, intent(out) :: Hindex, nc
-! double precision, intent(out) :: llh, M
-! 
-! integer :: cbin
-! 
-! call HiggsBounds_get_maximal_likelihood_for_comb(analysisID, 'obs', 0, Hindex, cbin, nc, M, llh)
-! 
-!end subroutine HiggsBounds_get_maximal_likelihood
-!************************************************************
 subroutine HiggsBounds_get_likelihood_for_comb(analysisID, cbin_in, Hindex, nc, cbin, M, llh, obspred)
 !************************************************************
  use usefulbits, only : theo,np,Hneut,Hplus
- use theo_manip, only : complete_theo
+ use theo_manip, only : HB5_complete_theo
  use likelihoods, only : get_likelihood, calcpredratio_llh
  implicit none
  
@@ -1463,7 +1942,7 @@ subroutine HiggsBounds_get_likelihood_for_comb(analysisID, cbin_in, Hindex, nc, 
  double precision, intent(out) :: llh, M
  character(LEN=*), intent(in) :: obspred  
 
- integer :: c,i
+ integer :: i
  double precision, allocatable :: obsllh(:) 
  double precision, allocatable :: mass(:)
  integer, allocatable :: nclist(:), cbinlist(:)
@@ -1471,12 +1950,14 @@ subroutine HiggsBounds_get_likelihood_for_comb(analysisID, cbin_in, Hindex, nc, 
  allocate(obsllh(np(Hneut)),mass(np(Hneut)),nclist(np(Hneut)),cbinlist(np(Hneut)))
  obsllh = 0.0D0
  
- select case(analysisID)
-  case(3316,14029)
-   c=1
-  case default
-   stop 'Unknown analysisID in subroutine HiggsBounds_get_likelihood_for_comb!' 
- end select
+!  select case(analysisID)
+!   case(3316,14029)
+!    c=1
+!   case default
+!    stop 'Unknown analysisID in subroutine HiggsBounds_get_likelihood_for_comb!' 
+!  end select
+
+ call HB5_complete_theo 
   
 ! Determine most sensitive combination
  do i=1,np(Hneut)
@@ -1638,10 +2119,11 @@ subroutine finish_HiggsBounds
 ! This subroutine needs to be called right at the end, to close files
 ! and deallocate arrays
 !************************************************************
- use usefulbits, only : deallocate_usefulbits,debug,theo,debug,inputsub, &
-   & file_id_debug1,file_id_debug2
+ use usefulbits, only : deallocate_usefulbits,debug,theo,debug, &
+   & file_id_debug1,file_id_debug2!,inputsub
  use S95tables, only : deallocate_S95tables
  use theory_BRfunctions, only : deallocate_BRSM
+ use theory_XS_SM_functions, only: deallocate_XSSM
 
 #if defined(NAGf90Fortran)
  use F90_UNIX_IO, only : flush
@@ -1658,124 +2140,721 @@ subroutine finish_HiggsBounds
 
  if(debug)write(*,*)'finishing off...'                      ; call flush(6)
  call deallocate_BRSM
+ call deallocate_XSSM
  call deallocate_S95tables
  call deallocate_usefulbits
 
  if(debug)write(*,*)'finished'                              ; call flush(6)
  
- if(allocated(inputsub)) deallocate(inputsub)
+!  if(allocated(inputsub)) deallocate(inputsub)
 end subroutine finish_HiggsBounds
 !
-!!************************************************************
-!	
-!subroutine run_HiggsBounds_effC(nHdummy,Mh,GammaTotal,             &   
-!     &          g2hjbb,g2hjtautau,g2hjWW,g2hjZZ,                   &
-!     &          g2hjgaga,g2hjgg,g2hjhiZ_nHbynH,                    &
-!     &          BR_hjhihi_nHbynH,                                  &
-!     &          HBresult,chan,                                     &
-!     &          obsratio, ncombined                                )
-!! Obsolete subroutine
-!!************************************************************
+
+! HB-5 additions
+
+! Do we need control functions to guarantee all theory input is up-to-date and reset?
+
+!subroutine HB5_reset_input
+!end subroutine HB5_reset_input
+
+  
+
+!************************************************************      
 !
-! implicit none
+!   SIMPLIFIED EFFC INPUT ROUTINES
 !
-! !----------------------------------------input
-! integer,intent(in) :: nHdummy
-! double precision,intent(in) :: Mh(nHdummy),GammaTotal(nHdummy),&   
-!     &          g2hjbb(nHdummy),g2hjtautau(nHdummy),            &
-!     &          g2hjWW(nHdummy),g2hjZZ(nHdummy),                &
-!     &          g2hjgaga(nHdummy),g2hjgg(nHdummy),              &
-!     &          g2hjhiZ_nHbynH(nHdummy,nHdummy),                &
-!     &          BR_hjhihi_nHbynH(nHdummy,nHdummy) 
-! !----------------------------------------output
-! integer ::     HBresult,chan,ncombined
-! double precision :: obsratio
-! !----------------------------------------------
-!	  
-! call attempting_to_use_an_old_HB_version('effC')
+!************************************************************      
+subroutine HiggsBounds_neutral_input_effC_single(quantity,val)
+!************************************************************      
+ use usefulbits, only : theo,np,Hneut,effC,whichinput,just_after_run!,inputsub
+ implicit none
+ !---------------------------------------------
+ character(LEN=*), intent(in) :: quantity 
+ double precision, intent(in) :: val(np(Hneut))
+ !-------------------------------------internal
+ integer :: n
+!  integer :: subtype
+ !--------------------------------------------- 
+ whichinput='effC'
+!  subtype=1
+ n=1 
+!  inputsub(subtype)%stat=inputsub(subtype)%stat+1 ! WHAT IS THIS DOING?
+
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(np(Hneut).eq.0)then
+  write(*,*)'subroutine HiggsBounds_neutral_input_effC_single should'
+  write(*,*)'only be called if np(Hneut)>0'
+  stop 'error in subroutine HiggsBounds_neutral_input_effC_single'
+ endif
+
+ select case(trim(adjustl(quantity)))
+  case("ghjcc_s")
+   effC(n)%hjcc_s=val
+  case("ghjcc_p")
+   effC(n)%hjcc_p=val
+  case("ghjss_s")
+   effC(n)%hjss_s=val
+  case("ghjss_p")
+   effC(n)%hjss_p=val
+  case("ghjbb_s")
+   effC(n)%hjbb_s=val
+  case("ghjbb_p")
+   effC(n)%hjbb_p=val
+  case("ghjtt_s")
+   effC(n)%hjtt_s=val
+  case("ghjtt_p")
+   effC(n)%hjtt_p=val
+  case("ghjmumu_s")
+   effC(n)%hjmumu_s=val
+  case("ghjmumu_p")
+   effC(n)%hjmumu_p=val
+  case("ghjtautau_s")
+   effC(n)%hjtautau_s=val
+  case("ghjtautau_p")
+   effC(n)%hjtautau_p=val
+  case("ghjWW")
+   effC(n)%hjWW=val
+  case("ghjZZ")
+   effC(n)%hjZZ=val
+  case("ghjZga")
+   effC(n)%hjZga=val
+  case("ghjgaga")
+   effC(n)%hjgaga=val
+  case("ghjgg")
+   effC(n)%hjgg=val
+
+
+  case default
+   stop 'wrong input for quantity to subroutine HiggsBounds_neutral_input_effC_single' 
+ end select
+  
+ just_after_run=.False.
+
+end subroutine HiggsBounds_neutral_input_effC_single
+!************************************************************      
+subroutine HiggsBounds_neutral_input_effC_double(quantity,val)
+!************************************************************      
+ use usefulbits, only : theo,np,Hneut,effC,whichinput,just_after_run!,inputsub
+ implicit none
+ !---------------------------------------------
+ character(LEN=*), intent(in) :: quantity 
+ double precision, intent(in) :: val(np(Hneut),np(Hneut))
+ !-------------------------------------internal
+ integer :: n
+!  integer :: subtype
+ !--------------------------------------------- 
+ whichinput='effC'
+!  subtype=1
+ n=1 
+!  inputsub(subtype)%stat=inputsub(subtype)%stat+1 ! WHAT IS THIS DOING?
+
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(np(Hneut).eq.0)then
+  write(*,*)'subroutine HiggsBounds_neutral_input_effC_double should'
+  write(*,*)'only be called if np(Hneut)>0'
+  stop 'error in subroutine HiggsBounds_neutral_input_effC_double'
+ endif
+
+ select case(trim(adjustl(quantity)))
+  case("ghjhiZ") 
+   effC(n)%hjhiZ = val 
+  case default
+   stop 'wrong input for quantity to subroutine HiggsBounds_neutral_input_effC_double' 
+ end select
+
+ just_after_run=.False.
+end subroutine HiggsBounds_neutral_input_effC_double
+!************************************************************      
 !
-!end subroutine run_HiggsBounds_effC
-!!************************************************************	
-!subroutine run_HiggsBounds_part(nHdummy,Mh,                  &
-!     &          CS_lep_hjZ_ratio,                            &
-!     &          CS_lep_hjhi_ratio_nHbynH,                    &
-!     &          CS_tev_gg_hj_ratio,CS_tev_bb_hj_ratio,       &
-!     &          CS_tev_bg_hjb_ratio,                         &
-!     &          CS_tev_ud_hjWp_ratio,CS_tev_cs_hjWp_ratio,   & 
-!     &          CS_tev_ud_hjWm_ratio,CS_tev_cs_hjWm_ratio,   & 
-!     &          CS_tev_dd_hjZ_ratio,CS_tev_uu_hjZ_ratio,     &
-!     &          CS_tev_ss_hjZ_ratio,CS_tev_cc_hjZ_ratio,     &
-!     &          CS_tev_bb_hjZ_ratio,                         &
-!     &          CS_tev_pp_vbf_ratio,                         &
-!     &          BR_hjbb,BR_hjtautau,                         &
-!     &          BR_hjWW,BR_hjgaga,                           & 
-!     &          BR_hjhihi_nHbynH,                            &
-!     &          HBresult,chan,                               &
-!     &          obsratio, ncombined                          )
-!! Obsolete subroutine
-!!************************************************************
+!   SIMPLIFIED LEP/HADRONIC XS INPUT ROUTINES
 !
-! implicit none
-!
-! !----------------------------------------input
-! integer , intent(in) :: nHdummy
-! double precision,intent(in) ::Mh(nHdummy),                                 &
-!     &          CS_lep_hjZ_ratio(nHdummy),                                  &
-!     &          CS_lep_hjhi_ratio_nHbynH(nHdummy,nHdummy),                  &
-!     &          CS_tev_gg_hj_ratio(nHdummy),CS_tev_bb_hj_ratio(nHdummy),    &
-!     &          CS_tev_bg_hjb_ratio(nHdummy),                               &
-!     &          CS_tev_ud_hjWp_ratio(nHdummy),CS_tev_cs_hjWp_ratio(nHdummy),& 
-!     &          CS_tev_ud_hjWm_ratio(nHdummy),CS_tev_cs_hjWm_ratio(nHdummy),& 
-!     &          CS_tev_dd_hjZ_ratio(nHdummy),CS_tev_uu_hjZ_ratio(nHdummy),  &
-!     &          CS_tev_ss_hjZ_ratio(nHdummy),CS_tev_cc_hjZ_ratio(nHdummy),  &
-!     &          CS_tev_bb_hjZ_ratio(nHdummy),                               &
-!     &          CS_tev_pp_vbf_ratio(nHdummy),                               &
-!     &          BR_hjbb(nHdummy),BR_hjtautau(nHdummy),                      &
-!     &          BR_hjWW(nHdummy),BR_hjgaga(nHdummy),                        &
-!     &          BR_hjhihi_nHbynH(nHdummy,nHdummy)
-! !---------------------------------------output
-! integer ::     HBresult,chan,ncombined
-! double precision :: obsratio
-! !-----------------------------------------------
-!	  
-! call attempting_to_use_an_old_HB_version('part')
-!
-!end subroutine run_HiggsBounds_part
-!!************************************************************	
-!subroutine run_HiggsBounds_hadr(nHdummy,Mh,                  &
-!     &          CS_lep_hjZ_ratio,CS_lep_hjhi_ratio_nHbynH,   &
-!     &          CS_tev_pp_hj_ratio, CS_tev_pp_hjb_ratio,     &
-!     &          CS_tev_pp_hjW_ratio,CS_tev_pp_hjZ_ratio,     &
-!     &          CS_tev_pp_vbf_ratio,                         &
-!     &          BR_hjbb,BR_hjtautau,                         &
-!     &          BR_hjWW,BR_hjgaga,                           &
-!     &          BR_hjhihi_nHbynH,                            &
-!     &          HBresult,chan,                               &
-!     &          obsratio, ncombined                          )
-!! Obsolete subroutine
-!!************************************************************
-!
-! implicit none
-! !----------------------------------------input
-! integer,intent(in) :: nHdummy
-! double precision,intent(in) :: Mh(nHdummy),              &
-!     &          CS_lep_hjZ_ratio(nHdummy),                &
-!     &          CS_lep_hjhi_ratio_nHbynH(nHdummy,nHdummy),&
-!     &          CS_tev_pp_hj_ratio(nHdummy),              &
-!     &          CS_tev_pp_hjb_ratio(nHdummy),             &
-!     &          CS_tev_pp_hjW_ratio(nHdummy),             &
-!     &          CS_tev_pp_hjZ_ratio(nHdummy),             &
-!     &          CS_tev_pp_vbf_ratio(nHdummy),             &
-!     &          BR_hjbb(nHdummy),BR_hjtautau(nHdummy),    &
-!     &          BR_hjWW(nHdummy),BR_hjgaga(nHdummy),      &
-!     &          BR_hjhihi_nHbynH(nHdummy,nHdummy)
-! !---------------------------------------output
-! integer ::     HBresult,chan,ncombined
-! double precision :: obsratio
-! !---------------------------------------------
-!
-! call attempting_to_use_an_old_HB_version('hadr')
-!
-!
-!end subroutine run_HiggsBounds_hadr
-!!************************************************************	
+!************************************************************      
+subroutine HiggsBounds_neutral_input_LEP_single(quantity,val)
+!************************************************************      
+ use usefulbits, only : theo,np,Hneut,whichinput,just_after_run!,inputsub
+ implicit none
+ !---------------------------------------------
+ character(LEN=*), intent(in) :: quantity 
+ double precision, intent(in) :: val(np(Hneut))
+ !-------------------------------------internal
+ integer :: n
+!  integer :: subtype
+ !--------------------------------------------- 
+ whichinput='hadr'
+!  subtype=1
+ n=1 
+!  inputsub(subtype)%stat=inputsub(subtype)%stat+1 ! WHAT IS THIS DOING?
+
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(np(Hneut).eq.0)then
+  write(*,*)'subroutine HiggsBounds_neutral_input_LEP_single should'
+  write(*,*)'only be called if np(Hneut)>0'
+  stop 'error in subroutine HiggsBounds_neutral_input_LEP_single'
+ endif
+
+ select case(trim(adjustl(quantity)))
+  case("XS_hjZ_ratio")
+   theo(n)%lep%XS_hjZ_ratio = val
+  case("XS_bbhj_ratio")
+   theo(n)%lep%XS_bbhj_ratio = val
+  case("XS_tautauhj_ratio")
+   theo(n)%lep%XS_tautauhj_ratio = val
+  case default
+   stop 'wrong input for quantity to subroutine HiggsBounds_neutral_input_LEP_single' 
+ end select
+  
+ just_after_run=.False.
+end subroutine HiggsBounds_neutral_input_LEP_single
+!************************************************************      
+subroutine HiggsBounds_neutral_input_LEP_double(quantity,val)
+!************************************************************      
+ use usefulbits, only : theo,np,Hneut,whichinput,just_after_run!,inputsub
+ implicit none
+ !---------------------------------------------
+ character(LEN=*), intent(in) :: quantity 
+ double precision, intent(in) :: val(np(Hneut),np(Hneut))
+ !-------------------------------------internal
+ integer :: n
+!  integer :: subtype
+ !--------------------------------------------- 
+ whichinput='hadr'
+!  subtype=1
+ n=1 
+!  inputsub(subtype)%stat=inputsub(subtype)%stat+1 ! WHAT IS THIS DOING?
+
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(np(Hneut).eq.0)then
+  write(*,*)'subroutine HiggsBounds_neutral_input_LEP_double should'
+  write(*,*)'only be called if np(Hneut)>0'
+  stop 'error in subroutine HiggsBounds_neutral_input_LEP_double'
+ endif
+
+ select case(trim(adjustl(quantity)))
+  case("XS_hjhi_ratio") 
+   theo(n)%lep%XS_hjhi_ratio = val 
+  case default
+   stop 'wrong input for quantity to subroutine HiggsBounds_neutral_input_LEP_double' 
+ end select
+
+ just_after_run=.False.
+end subroutine HiggsBounds_neutral_input_LEP_double
+!************************************************************      
+subroutine HiggsBounds_neutral_input_hadr_single(collider,quantity,val)
+!************************************************************      
+ use usefulbits, only : theo,np,Hneut,whichinput,just_after_run, &
+&                       hadroncolliderdataset !,inputsub
+ implicit none
+ !---------------------------------------------
+ integer, intent(in) :: collider
+ character(LEN=*), intent(in) :: quantity 
+ double precision, intent(in) :: val(np(Hneut))
+ !-------------------------------------internal
+ integer :: n
+!  integer :: subtype
+!  type(hadroncolliderdataset) :: dataset
+ !--------------------------------------------- 
+ whichinput='hadr'
+!  subtype=1
+ n=1 
+!  inputsub(subtype)%stat=inputsub(subtype)%stat+1 ! WHAT IS THIS DOING?
+
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(np(Hneut).eq.0)then
+  write(*,*)'subroutine HiggsBounds_neutral_input_hadr_single should'
+  write(*,*)'only be called if np(Hneut)>0'
+  stop 'error in subroutine HiggsBounds_neutral_input_hadr_single'
+ endif
+
+ select case(collider)
+  case(2)
+   call set_input(theo(n)%tev,quantity,val)
+  case(7)
+   call set_input(theo(n)%lhc7,quantity,val)
+  case(8)
+   call set_input(theo(n)%lhc8,quantity,val)
+  case(13) 
+   call set_input(theo(n)%lhc13,quantity,val)
+  case default
+   stop 'wrong input for collider to subroutine HiggsBounds_neutral_input_hadr_single'
+ end select
+
+  
+ just_after_run=.False.
+
+ contains
+ 
+  subroutine set_input(dataset,quantity,val)
+
+   character(LEN=*), intent(in) :: quantity 
+   double precision, intent(in) :: val(np(Hneut))
+   type(hadroncolliderdataset) :: dataset
+
+   select case(trim(adjustl(quantity)))
+    case("XS_hj_ratio")
+     dataset%XS_hj_ratio=val
+    case("XS_gg_hj_ratio")
+	 dataset%XS_gg_hj_ratio=val
+	case("XS_bb_hj_ratio")
+ 	 dataset%XS_bb_hj_ratio=val 
+	 dataset%XS_hjb_ratio=val
+	case("XS_vbf_ratio")
+	 dataset%XS_vbf_ratio=val
+	case("XS_hjZ_ratio")
+	 dataset%XS_hjZ_ratio=val
+	case("XS_gg_hjZ_ratio")
+	 dataset%XS_gg_hjZ_ratio=val	 
+	case("XS_qq_hjZ_ratio")
+	 dataset%XS_qq_hjZ_ratio=val
+	case("XS_hjW_ratio")
+	 dataset%XS_hjW_ratio=val
+	case("XS_tthj_ratio")
+	 dataset%XS_tthj_ratio=val
+	case("XS_thj_tchan_ratio")
+	 dataset%XS_thj_tchan_ratio=val
+	case("XS_thj_schan_ratio")
+	 dataset%XS_thj_schan_ratio=val
+	case default
+	 stop 'wrong input for quantity to subroutine HiggsBounds_neutral_input_hadr_single' 
+   end select
+  end subroutine set_input
+
+end subroutine HiggsBounds_neutral_input_hadr_single
+!************************************************************      
+subroutine HiggsBounds_neutral_input_hadr_double(collider,quantity,val)
+!************************************************************      
+ use usefulbits, only : theo,np,Hneut,whichinput,just_after_run, &
+&                       hadroncolliderdataset! ,inputsub
+ implicit none
+ !---------------------------------------------
+ integer, intent(in) :: collider
+ character(LEN=*), intent(in) :: quantity 
+ double precision, intent(in) :: val(np(Hneut),np(Hneut))
+ !-------------------------------------internal
+ integer :: n
+ !--------------------------------------------- 
+ whichinput='hadr'
+ n=1 
+
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(np(Hneut).eq.0)then
+  write(*,*)'subroutine HiggsBounds_neutral_input_hadr_double should'
+  write(*,*)'only be called if np(Hneut)>0'
+  stop 'error in subroutine HiggsBounds_neutral_input_hadr_double'
+ endif
+
+ select case(trim(adjustl(quantity)))
+  case("XS_hjhi")
+   select case(collider)
+    case(2)
+     theo(n)%tev%XS_hjhi=val
+    case(7)
+     theo(n)%lhc7%XS_hjhi=val
+    case(8) 
+     theo(n)%lhc8%XS_hjhi=val
+    case(13) 
+     theo(n)%lhc13%XS_hjhi=val
+    case default
+     stop 'wrong input for collider to subroutine HiggsBounds_neutral_input_hadr_double'
+   end select
+  case default
+   stop 'wrong input for quantity to subroutine HiggsBounds_neutral_input_hadr_double' 
+ end select
+  
+ just_after_run=.False.
+
+end subroutine HiggsBounds_neutral_input_hadr_double
+!************************************************************
+subroutine HiggsBounds_neutral_input_hadr_channelrates_single(collider,nHiggs,p,d,val)
+! n.b.: Elements of the matrix channelrates with values < 0 will be overwritten
+!       by XS times BR using the narrow width approximation.
+!************************************************************
+ use usefulbits, only : theo,np,Hneut,whichinput,just_after_run,hadroncolliderdataset,&
+ &                      Nprod,Ndecay
+
+#if defined(NAGf90Fortran)
+ use F90_UNIX_IO, only : flush
+#endif
+
+ implicit none
+ double precision,intent(in) :: val
+ integer, intent(in) :: collider,p,d,nHiggs
+ !-------------------------------------internal
+ integer :: n
+ !---------------------------------------------
+ whichinput='hadr'
+  n=1 
+
+ if(.not.allocated(theo))then
+  stop 'subroutine HiggsBounds_initialize must be called first'
+ endif
+
+ if(nHiggs.gt.np(Hneut))then
+  write(*,*)'subroutine HiggsBounds_neutral_input_hadr_channelrates_single should'
+  write(*,*)'only be called with nHiggs <= np(Hneut)'
+  stop 'error in subroutine HiggsBounds_neutral_input_hadr_channelrates_single'
+ endif
+
+ select case(collider)
+  case(2)
+   theo(n)%tev%channelrates_tmp(nHiggs,p,d)=val
+  case(7)
+   theo(n)%lhc7%channelrates_tmp(nHiggs,p,d)=val
+  case(8) 
+   theo(n)%lhc8%channelrates_tmp(nHiggs,p,d)=val 
+  case(13) 
+   theo(n)%lhc13%channelrates_tmp(nHiggs,p,d)=val
+  case default
+   stop 'wrong input for collider to subroutine HiggsBounds_neutral_input_hadr_channelrates_single'
+ end select
+
+ just_after_run=.False.       
+      
+end subroutine HiggsBounds_neutral_input_hadr_channelrates_single
+!************************************************************
+subroutine HiggsBounds_neutral_input_hadr_channelrates_clean
+!************************************************************
+ use theo_manip,only : clean_channelrates
+ implicit none
+  call clean_channelrates
+  
+end subroutine HiggsBounds_neutral_input_hadr_channelrates_clean
+!************************************************************
+! HB-4 legacy routines
+!************************************************************     
+! subroutine HiggsBounds_neutral_input_effC(Mh,GammaTotal_hj,        &  
+!      &          g2hjss_s,g2hjss_p,g2hjcc_s,g2hjcc_p,               &
+!      &          g2hjbb_s,g2hjbb_p,g2hjtoptop_s,g2hjtoptop_p,       &
+!      &          g2hjmumu_s,g2hjmumu_p,                             &
+!      &          g2hjtautau_s,g2hjtautau_p,                         &
+!      &          g2hjWW,g2hjZZ,g2hjZga,                             &
+!      &          g2hjgaga,g2hjgg,g2hjggZ,g2hjhiZ_nHbynH,            &
+!      &          BR_hjinvisible,BR_hjhihi_nHbynH                    )
+! ! This subroutine can be called by the user after subroutine initialize_HiggsBounds
+! ! has been called.
+! ! Arguments (input): theoretical predictions (see manual for definitions)
+! !************************************************************
+!  use usefulbits, only : theo,np,Hneut,g2,whichinput,just_after_run!,inputsub
+! 
+! #if defined(NAGf90Fortran)
+!  use F90_UNIX_IO, only : flush
+! #endif
+! 
+!  implicit none
+! 
+!  !----------------------------------------input
+!  double precision,intent(in) :: Mh( np(Hneut) ),GammaTotal_hj( np(Hneut) ),                                 &  
+!      &          g2hjss_s( np(Hneut) ),g2hjss_p( np(Hneut) ),g2hjcc_s( np(Hneut) ),g2hjcc_p( np(Hneut) ),        &
+!      &          g2hjbb_s( np(Hneut) ),g2hjbb_p( np(Hneut) ),g2hjtoptop_s( np(Hneut) ),g2hjtoptop_p( np(Hneut) ),&
+!      &          g2hjmumu_s( np(Hneut) ),g2hjmumu_p( np(Hneut) ),                                        &
+!      &          g2hjtautau_s( np(Hneut) ),g2hjtautau_p( np(Hneut) ),                                        &
+!      &          g2hjWW( np(Hneut) ),g2hjZZ( np(Hneut) ),g2hjZga( np(Hneut) ),                                 &
+!      &          g2hjgaga( np(Hneut) ),g2hjgg( np(Hneut) ),g2hjggZ( np(Hneut) ),g2hjhiZ_nHbynH(np(Hneut),np(Hneut)),&
+!      &          BR_hjinvisible( np(Hneut) ),BR_hjhihi_nHbynH(np(Hneut),np(Hneut)) 
+!  !--------------------------------------internal
+!  integer :: n
+! !  integer :: subtype
+!  !----------------------------------------------
+!  
+!  whichinput='effC'
+!  ! subtype=1
+!   n=1  
+! !  inputsub(subtype)%stat=inputsub(subtype)%stat+1
+! 
+!  if(.not.allocated(theo))then
+!   stop 'subroutine HiggsBounds_initialize must be called first'
+!  endif
+! 
+!  if(np(Hneut).eq.0)then
+!   write(*,*)'subroutine HiggsBounds_neutral_input_effC should'
+!   write(*,*)'only be called if np(Hneut)>0'
+!   stop 'error in subroutine HiggsBounds_neutral_input_effC'
+!  endif
+! 
+!  theo(n)%particle(Hneut)%M       = Mh
+!  theo(n)%particle(Hneut)%Mc      = Mh    
+!  theo(n)%particle(Hneut)%GammaTot= GammaTotal_hj
+! 
+!  g2(n)%hjss_s              = g2hjss_s
+!  g2(n)%hjss_p              = g2hjss_p
+!  g2(n)%hjcc_s              = g2hjcc_s
+!  g2(n)%hjcc_p              = g2hjcc_p
+!  g2(n)%hjbb_s              = g2hjbb_s
+!  g2(n)%hjbb_p              = g2hjbb_p
+!  g2(n)%hjtoptop_s              = g2hjtoptop_s
+!  g2(n)%hjtoptop_p              = g2hjtoptop_p
+!  g2(n)%hjmumu_s                = g2hjmumu_s
+!  g2(n)%hjmumu_p                = g2hjmumu_p
+!  g2(n)%hjtautau_s              = g2hjtautau_s
+!  g2(n)%hjtautau_p              = g2hjtautau_p
+!         
+!  g2(n)%hjWW              = g2hjWW
+!  g2(n)%hjZZ              = g2hjZZ  
+!  g2(n)%hjZga             = g2hjZga      
+!  g2(n)%hjgaga            = g2hjgaga
+!  g2(n)%hjgg              = g2hjgg
+!  g2(n)%hjggZ             = g2hjggZ
+! 
+!  g2(n)%hjhiZ = g2hjhiZ_nHbynH
+! 
+!  theo(n)%BR_hjinvisible  = BR_hjinvisible 
+!  theo(n)%BR_hjhihi       = BR_hjhihi_nHbynH  
+! 
+!  just_after_run=.False. 
+! 
+! end subroutine HiggsBounds_neutral_input_effC
+! !************************************************************      
+! subroutine HiggsBounds_neutral_input_part(Mh,GammaTotal_hj,CP_value,       &
+!      &          CS_lep_hjZ_ratio,                            &
+!      &          CS_lep_bbhj_ratio,CS_lep_tautauhj_ratio,     &
+!      &          CS_lep_hjhi_ratio_nHbynH,                    &
+!      &          CS_gg_hj_ratio,CS_bb_hj_ratio,       &
+!      &          CS_bg_hjb_ratio,                         &
+!      &          CS_ud_hjWp_ratio,CS_cs_hjWp_ratio,   & 
+!      &          CS_ud_hjWm_ratio,CS_cs_hjWm_ratio,   & 
+!      &          CS_gg_hjZ_ratio,     &
+!      &          CS_dd_hjZ_ratio,CS_uu_hjZ_ratio,     &
+!      &          CS_ss_hjZ_ratio,CS_cc_hjZ_ratio,     &
+!      &          CS_bb_hjZ_ratio,                         &
+!      &          CS_tev_vbf_ratio,CS_tev_tthj_ratio,    &
+!      &          CS_lhc7_vbf_ratio,CS_lhc7_tthj_ratio,    &
+!      &          CS_lhc8_vbf_ratio,CS_lhc8_tthj_ratio,    &
+!      &          BR_hjss,BR_hjcc,                             &
+!      &          BR_hjbb,BR_hjmumu,BR_hjtautau,               &
+!      &          BR_hjWW,BR_hjZZ,BR_hjZga, BR_hjgaga,BR_hjgg, & 
+!      &          BR_hjinvisible,BR_hjhihi_nHbynH              )
+! ! This subroutine can be called by the user after subroutine initialize_HiggsBounds
+! ! has been called.
+! ! (see manual for full description)
+! !************************************************************
+!  use usefulbits, only : theo,np,Hneut,partR,whichinput,just_after_run!,inputsub
+! 
+! #if defined(NAGf90Fortran)
+!  use F90_UNIX_IO, only : flush
+! #endif
+! 
+!  implicit none
+!  !----------------------------------------input
+!  double precision,intent(in) :: Mh( np(Hneut) ),GammaTotal_hj( np(Hneut) )
+!  integer,intent(in) ::CP_value( np(Hneut) )
+!  double precision,intent(in) :: CS_lep_hjZ_ratio( np(Hneut) ),                         &
+!      &          CS_lep_bbhj_ratio( np(Hneut) ),CS_lep_tautauhj_ratio( np(Hneut) ),     &
+!      &          CS_lep_hjhi_ratio_nHbynH(np(Hneut),np(Hneut)),                         &
+!      &          CS_gg_hj_ratio( np(Hneut) ),CS_bb_hj_ratio( np(Hneut) ),       &
+!      &          CS_bg_hjb_ratio( np(Hneut) ),                                      &
+!      &          CS_ud_hjWp_ratio( np(Hneut) ),CS_cs_hjWp_ratio( np(Hneut) ),   & 
+!      &          CS_ud_hjWm_ratio( np(Hneut) ),CS_cs_hjWm_ratio( np(Hneut) ),   & 
+!      &          CS_gg_hjZ_ratio( np(Hneut) ),    &
+!      &          CS_dd_hjZ_ratio( np(Hneut) ),CS_uu_hjZ_ratio( np(Hneut) ),     &
+!      &          CS_ss_hjZ_ratio( np(Hneut) ),CS_cc_hjZ_ratio( np(Hneut) ),     &
+!      &          CS_bb_hjZ_ratio( np(Hneut) ),                                      &
+!      &          CS_tev_vbf_ratio( np(Hneut) ),CS_tev_tthj_ratio( np(Hneut) ),    &
+!      &          CS_lhc7_vbf_ratio( np(Hneut) ),CS_lhc7_tthj_ratio( np(Hneut) ),    &
+!      &          CS_lhc8_vbf_ratio( np(Hneut) ),CS_lhc8_tthj_ratio( np(Hneut) ),    &
+!      &          BR_hjss( np(Hneut) ),BR_hjcc( np(Hneut) ),                             &
+!      &          BR_hjbb( np(Hneut) ),BR_hjmumu( np(Hneut) ),BR_hjtautau( np(Hneut) ),  &
+!      &          BR_hjWW( np(Hneut) ),BR_hjZZ( np(Hneut) ),BR_hjZga( np(Hneut) ),       &
+!      &          BR_hjgaga( np(Hneut) ),BR_hjgg( np(Hneut) ),                           & 
+!      &          BR_hjinvisible( np(Hneut) ),BR_hjhihi_nHbynH(np(Hneut),np(Hneut)) 
+!  !---------------------------------------internal
+!  integer :: n
+! !  integer :: subtype
+!  !-----------------------------------------------
+! 
+!  whichinput='part'
+! !  subtype=1
+!   n=1 
+! !  inputsub(subtype)%stat=inputsub(subtype)%stat+1
+!       
+!  if(.not.allocated(theo))then
+!   stop 'subroutine HiggsBounds_initialize must be called first'
+!  endif
+! 
+!  if(np(Hneut).eq.0)then
+!   write(*,*)'subroutine HiggsBounds_neutral_input_part should'
+!   write(*,*)'only be called if np(Hneut)>0'
+!   stop 'error in subroutine HiggsBounds_neutral_input_part'
+!  endif
+! 
+!  theo(n)%particle(Hneut)%M = Mh 
+!  theo(n)%particle(Hneut)%Mc      = Mh        
+!  theo(n)%particle(Hneut)%GammaTot= GammaTotal_hj
+!  theo(n)%CP_value          = CP_value  
+!  theo(n)%lep%XS_hjZ_ratio       = CS_lep_hjZ_ratio
+!  theo(n)%lep%XS_bbhj_ratio      = CS_lep_bbhj_ratio
+!  theo(n)%lep%XS_tautauhj_ratio  = CS_lep_tautauhj_ratio
+!  theo(n)%lep%XS_hjhi_ratio      = CS_lep_hjhi_ratio_nHbynH 
+!  partR(n)%gg_hj             = CS_gg_hj_ratio 
+!  partR(n)%qq_hj(5,:)        = CS_bb_hj_ratio
+!  partR(n)%bg_hjb            = CS_bg_hjb_ratio                    
+!  partR(n)%qq_hjWp(1,:)      = CS_ud_hjWp_ratio
+!  partR(n)%qq_hjWp(2,:)      = CS_cs_hjWp_ratio         
+!  partR(n)%qq_hjWm(1,:)      = CS_ud_hjWm_ratio
+!  partR(n)%qq_hjWm(2,:)      = CS_cs_hjWm_ratio  
+!  partR(n)%gg_hjZ(:)         = CS_gg_hjZ_ratio      
+!  partR(n)%qq_hjZ(1,:)       = CS_dd_hjZ_ratio
+!  partR(n)%qq_hjZ(2,:)       = CS_uu_hjZ_ratio           
+!  partR(n)%qq_hjZ(3,:)       = CS_ss_hjZ_ratio
+!  partR(n)%qq_hjZ(4,:)       = CS_cc_hjZ_ratio             
+!  partR(n)%qq_hjZ(5,:)       = CS_bb_hjZ_ratio                         
+!  theo(n)%tev%XS_vbf_ratio  = CS_tev_vbf_ratio   
+!  theo(n)%tev%XS_tthj_ratio = CS_tev_tthj_ratio  
+!  theo(n)%lhc7%XS_vbf_ratio = CS_lhc7_vbf_ratio   
+!  theo(n)%lhc7%XS_tthj_ratio= CS_lhc7_tthj_ratio
+!  theo(n)%lhc8%XS_vbf_ratio = CS_lhc8_vbf_ratio   
+!  theo(n)%lhc8%XS_tthj_ratio= CS_lhc8_tthj_ratio
+!  theo(n)%BR_hjss           = BR_hjss  
+!  theo(n)%BR_hjcc           = BR_hjcc                
+!  theo(n)%BR_hjbb           = BR_hjbb
+!  theo(n)%BR_hjmumu         = BR_hjmumu
+!  theo(n)%BR_hjtautau       = BR_hjtautau              
+!  theo(n)%BR_hjWW           = BR_hjWW
+!  theo(n)%BR_hjZZ           = BR_hjZZ
+!  theo(n)%BR_hjZga          = BR_hjZga  
+!  theo(n)%BR_hjgaga         = BR_hjgaga
+!  theo(n)%BR_hjgg           = BR_hjgg  
+!  theo(n)%BR_hjinvisible    = BR_hjinvisible             
+!  theo(n)%BR_hjhihi         = BR_hjhihi_nHbynH  
+! 
+!  just_after_run=.False. 
+! 
+! end subroutine HiggsBounds_neutral_input_part
+! !************************************************************      
+! subroutine HiggsBounds_neutral_input_hadr(Mh,GammaTotal_hj,CP_value,      &
+!      &          CS_lep_hjZ_ratio,                           &
+!      &          CS_lep_bbhj_ratio,CS_lep_tautauhj_ratio,    &   
+!      &          CS_lep_hjhi_ratio_nHbynH,                   &
+!      &          CS_tev_hj_ratio ,CS_tev_hjb_ratio,    &
+!      &          CS_tev_hjW_ratio,CS_tev_hjZ_ratio,    &
+!      &          CS_tev_vbf_ratio,CS_tev_tthj_ratio,   &
+!      &          CS_lhc7_hj_ratio ,CS_lhc7_hjb_ratio,    &
+!      &          CS_lhc7_hjW_ratio,CS_lhc7_hjZ_ratio,    &
+!      &          CS_lhc7_vbf_ratio,CS_lhc7_tthj_ratio,   &
+!      &          CS_lhc8_hj_ratio ,CS_lhc8_hjb_ratio,    &
+!      &          CS_lhc8_hjW_ratio,CS_lhc8_hjZ_ratio,    &
+!      &          CS_lhc8_vbf_ratio,CS_lhc8_tthj_ratio,   &
+!      &          BR_hjss,BR_hjcc,                            &
+!      &          BR_hjbb,                                    &
+!      &          BR_hjmumu,                                  &
+!      &          BR_hjtautau,                                &
+!      &          BR_hjWW,BR_hjZZ,BR_hjZga,BR_hjgaga,         &
+!      &          BR_hjgg, BR_hjinvisible,                    &
+!      &          BR_hjhihi_nHbynH                            )
+! ! This subroutine can be called by the user after subroutine initialize_HiggsBounds
+! ! has been called.
+! ! (see manual for full description)
+! !************************************************************
+!  use usefulbits, only : theo,np,Hneut,whichinput,just_after_run!,inputsub
+! 
+! #if defined(NAGf90Fortran)
+!  use F90_UNIX_IO, only : flush
+! #endif
+! 
+!  implicit none
+!  !----------------------------------------input
+!  double precision,intent(in) :: Mh( np(Hneut) ),GammaTotal_hj( np(Hneut) )
+!  integer,intent(in) :: CP_value( np(Hneut) )
+!  double precision,intent(in) :: CS_lep_hjZ_ratio( np(Hneut) ),                        &
+!      &          CS_lep_bbhj_ratio( np(Hneut) ),CS_lep_tautauhj_ratio( np(Hneut) ),    &   
+!      &          CS_lep_hjhi_ratio_nHbynH(np(Hneut),np(Hneut)),                        &
+!      &          CS_tev_hj_ratio( np(Hneut)  ) ,CS_tev_hjb_ratio( np(Hneut) ),    &
+!      &          CS_tev_hjW_ratio( np(Hneut) ) ,CS_tev_hjZ_ratio( np(Hneut) ),    &
+!      &          CS_tev_vbf_ratio( np(Hneut) ) ,CS_tev_tthj_ratio( np(Hneut)),    &
+!      &          CS_lhc7_hj_ratio( np(Hneut)  ),CS_lhc7_hjb_ratio( np(Hneut) ),    &
+!      &          CS_lhc7_hjW_ratio( np(Hneut) ),CS_lhc7_hjZ_ratio( np(Hneut) ),    &
+!      &          CS_lhc7_vbf_ratio( np(Hneut) ),CS_lhc7_tthj_ratio( np(Hneut)),    &
+!      &          CS_lhc8_hj_ratio( np(Hneut)  ),CS_lhc8_hjb_ratio( np(Hneut) ),    &
+!      &          CS_lhc8_hjW_ratio( np(Hneut) ),CS_lhc8_hjZ_ratio( np(Hneut) ),    &
+!      &          CS_lhc8_vbf_ratio( np(Hneut) ),CS_lhc8_tthj_ratio( np(Hneut)),    &
+!      &          BR_hjss( np(Hneut) ),BR_hjcc( np(Hneut) ),                            &
+!      &          BR_hjbb( np(Hneut) ),                                                 &
+!      &          BR_hjmumu( np(Hneut) ),BR_hjtautau( np(Hneut) ),                      &
+!      &          BR_hjWW( np(Hneut) ),BR_hjZZ( np(Hneut) ),                            &
+!      &          BR_hjZga( np(Hneut) ),BR_hjgaga( np(Hneut) ),                         &
+!      &          BR_hjgg( np(Hneut) ), BR_hjinvisible( np(Hneut) ),                    &
+!      &          BR_hjhihi_nHbynH(np(Hneut),np(Hneut))
+!  !-------------------------------------internal
+!  integer :: n
+! !  integer :: subtype
+!  !---------------------------------------------
+!    
+!  whichinput='hadr'
+! !  subtype=1
+!   n=1 
+! !  inputsub(subtype)%stat=inputsub(subtype)%stat+1
+! 
+!  if(.not.allocated(theo))then
+!   stop 'subroutine HiggsBounds_initialize must be called first'
+!  endif
+! 
+!  if(np(Hneut).eq.0)then
+!   write(*,*)'subroutine HiggsBounds_neutral_input_hadr should'
+!   write(*,*)'only be called if np(Hneut)>0'
+!   stop 'error in subroutine HiggsBounds_neutral_input_hadr'
+!  endif
+! 
+! ! write(*,*) "DEBUG HB: before hadronic input. Mass is ",theo(n)%particle(Hneut)%M 
+! 
+! 
+!  theo(n)%particle(Hneut)%M       = Mh
+!  theo(n)%particle(Hneut)%Mc      = Mh  
+!  theo(n)%particle(Hneut)%GammaTot= GammaTotal_hj
+!  theo(n)%CP_value                = CP_value             
+!  theo(n)%lep%XS_hjZ_ratio        = CS_lep_hjZ_ratio
+!  theo(n)%lep%XS_bbhj_ratio       = CS_lep_bbhj_ratio
+!  theo(n)%lep%XS_tautauhj_ratio   = CS_lep_tautauhj_ratio
+!  theo(n)%lep%XS_hjhi_ratio       = CS_lep_hjhi_ratio_nHbynH 
+!  theo(n)%tev%XS_hj_ratio         = CS_tev_hj_ratio
+!  theo(n)%tev%XS_hjb_ratio        = CS_tev_hjb_ratio   
+!  theo(n)%tev%XS_hjW_ratio        = CS_tev_hjW_ratio
+!  theo(n)%tev%XS_hjZ_ratio        = CS_tev_hjZ_ratio    
+!  theo(n)%tev%XS_vbf_ratio        = CS_tev_vbf_ratio      
+!  theo(n)%tev%XS_tthj_ratio       = CS_tev_tthj_ratio
+!  theo(n)%lhc7%XS_hj_ratio        = CS_lhc7_hj_ratio
+!  theo(n)%lhc7%XS_hjb_ratio       = CS_lhc7_hjb_ratio   
+!  theo(n)%lhc7%XS_hjW_ratio       = CS_lhc7_hjW_ratio
+!  theo(n)%lhc7%XS_hjZ_ratio       = CS_lhc7_hjZ_ratio    
+!  theo(n)%lhc7%XS_vbf_ratio       = CS_lhc7_vbf_ratio      
+!  theo(n)%lhc7%XS_tthj_ratio      = CS_lhc7_tthj_ratio
+!  theo(n)%lhc8%XS_hj_ratio        = CS_lhc8_hj_ratio
+!  theo(n)%lhc8%XS_hjb_ratio       = CS_lhc8_hjb_ratio   
+!  theo(n)%lhc8%XS_hjW_ratio       = CS_lhc8_hjW_ratio
+!  theo(n)%lhc8%XS_hjZ_ratio       = CS_lhc8_hjZ_ratio    
+!  theo(n)%lhc8%XS_vbf_ratio       = CS_lhc8_vbf_ratio      
+!  theo(n)%lhc8%XS_tthj_ratio      = CS_lhc8_tthj_ratio
+!  theo(n)%BR_hjss           = BR_hjss
+!  theo(n)%BR_hjcc           = BR_hjcc 
+!  theo(n)%BR_hjbb           = BR_hjbb
+!  theo(n)%BR_hjmumu         = BR_hjmumu
+!  theo(n)%BR_hjtautau       = BR_hjtautau                 
+!  theo(n)%BR_hjWW           = BR_hjWW
+!  theo(n)%BR_hjZZ           = BR_hjZZ
+!  theo(n)%BR_hjZga          = BR_hjZga 
+!  theo(n)%BR_hjgaga         = BR_hjgaga
+!  theo(n)%BR_hjgg           = BR_hjgg
+!  theo(n)%BR_hjinvisible    = BR_hjinvisible                  
+!  theo(n)%BR_hjhihi         = BR_hjhihi_nHbynH  
+! 
+!  just_after_run=.False. 
+!   
+! ! write(*,*) "DEBUG HB: filled hadronic input. Mass is ",theo(n)%particle(Hneut)%M 
+!     
+! end subroutine HiggsBounds_neutral_input_hadr
+!************************************************************     

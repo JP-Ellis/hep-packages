@@ -5,35 +5,89 @@
 chmod u+x ./create_store_pathname.bat
 ./create_store_pathname.bat > store_pathname.f90
 
-echo 'running configure script...' 1>&2
+echo ' ******************************************************** '
+echo ' * Configuring HiggsBounds...                           * ' 1>&2
+echo ' *                                                      * '
+echo ' * (will create makefile from makefile.in)              *  '
+echo ' ******************************************************** '
+echo ' You can specify the correct paths to FeynHiggs (if needed) '
+echo ' via the option '
+echo '     --fhpath=/PATH/TO/FEYNHIGGS'
+echo ' or manually in the configure script.'
+echo ''
+echo ' In order to use the LEP chi-squared extension, please '
+echo ' configure with'
+echo '     --enable-chisq'
+echo ' and specify the path to the clsbtables (separate download!)'
+echo '     --clsbtablespath=/ABSOLUTE/PATH/TO/CLSBTABLES'
+echo ''
+echo ' The Fortran compiler has to be set manually in the '
+echo ' configure script. The default is gfortran.'
+echo ' ******************************************************** '
 
-echo '   *   *   *   '
-echo 'Reminder: You must enter the correct paths in the ./configure manually if you'
-echo 'wish to use HiggsBounds in conjunction with FeynHiggs or CPsuperH'
-echo 'Also, you may need/wish to change the fortran compiler used. '
-echo 'The default is gfortran.'
-echo '   *   *   *   '
+CONF_FHPATH="../FeynHiggs-2.14.3beta"
+# For FeynHiggs:
+CONF_OS=`uname -s`
+CONF_MACH=`uname -m`
+CONF_DEFPREFIX="$CONF_MACH-$CONF_OS"
+CONF_CHISQ=0
+USECHISQMODS_STR=
+ADDITIONALDEFINE_STR=
+clsbtablesdir=`pwd`"/clsbtables/"
 
+for arg in "$@" ; do
+ case "$arg" in
+ --fhpath=*)
+ 		CONF_FHPATH=`expr "$arg" : ".*--fhpath=\(.*\)"` ;;
+ --enable-chisq)
+ 		CONF_CHISQ=1 ;;
+ --clsbtablespath=*)
+ 		clsbtablesdir=`expr "$arg" : ".*--clsbtablespath=\(.*\)"` ;;
+ -*)
+ 		echo "Warning: $arg is not a valid option." ;;
+ *=*)
+ 		eval `echo $arg\" | sed 's/=/="/'` ;;
+ *)
+ 		echo "Warning: $arg is not a valid argument." ;;
+ esac
+done 		
+
+if [ "${CONF_FHPATH: -1}" = "/" ]; then
+	CONF_FHPATH="${CONF_FHPATH%?}"
+fi	
+
+if [ "${clsbtablesdir: -1}" != "/" ]; then
+	clsbtablesdir="${clsbtablesdir}/"
+fi	
+
+echo ''
+echo ' current settings: '
+echo ''
+echo " fhpath=${CONF_FHPATH}"
+
+if [ ${CONF_CHISQ} = 1 ]; then
+	echo " LEP chi-squared extension enabled, with"
+	echo " clsbtablespath=${clsbtablesdir}"
+	USECHISQMODS_STR='$(CHISQMODS)'
+	ADDITIONALDEFINE_STR='-DenableCHISQ -DSETCLSBTABLEDIR="\"'${clsbtablesdir}'"\"'
+fi
+	
+#----------------------------
 
 cat - makefile.in > makefile << _EOF_
 
 # --- variables defined by configure ---
 # If you want to edit these variables, change ./configure, not ./makefile
 
-
 #----------------------------
 
+#----------------------------
 # Put you favourite compiler and compiler options in here:
-
-# e.g.
-
-#  a) GNU compiler (http://gcc.gnu.org/wiki/GFortran): 
 F90C = gfortran
 F77C = gfortran
 F90FLAGS = -fbounds-check -ffixed-line-length-none
-
-# F90FLAGS = -fbounds-check -ffixed-line-length-none -fPIC
-# use the compiler flag -fopenmp for parallel processing
+#F90FLAGS = -fbounds-check -ffixed-line-length-none -fPIC
+#F90FLAGS = -fbounds-check -Wall -W  
 
 #  b) g95 compiler (www.g95.org):
 #F90C = g95
@@ -58,15 +112,14 @@ F90FLAGS = -fbounds-check -ffixed-line-length-none
 
 #------------------------------
 
-# If you wish to use HiggsBounds in conjunction with FeynHiggs or CPsuperH,
+# If you wish to use HiggsBounds in conjunction with FeynHiggs
 # make sure these paths indicate where you've stored these packages on your system,
 
-# for example:
+FHINCLUDE = -I${CONF_FHPATH}/${CONF_DEFPREFIX}/include
+FHLIBS = -L${CONF_FHPATH}/${CONF_DEFPREFIX}/lib -lFH
 
-FHINCLUDE = -I/blah/blah/FeynHiggs-2.x.x/i586-linux/include
-FHLIBS = -L/blah/blah/FeynHiggs-2.x.x/i586-linux/lib -lFH
-
-CPSUPERHLIBS = -L/blah/blah/CPsuperH2 -lcpsuperh2 
+# not supported any more:
+# CPSUPERHLIBS = -L/blah/blah/CPsuperH2 -lcpsuperh2 
 
 # Note that care must be taken to ensure that consistent compilers are used
 # If you get error messages similar to 
@@ -85,12 +138,14 @@ EXE = HiggsBounds
 
 #-----------------------------
 
-#USECHISQMODS = \$(CHISQMODS)
-#ADDITIONALDEFINE = -DenableCHISQ
+USECHISQMODS = ${USECHISQMODS_STR}
+ADDITIONALDEFINE = ${ADDITIONALDEFINE_STR}
 
 # --- end defs by configure ---
 
 
 _EOF_
 
-echo 'finished configure script' 1>&2
+echo ' ******************************************************** '
+echo ' ...finished configure script.' 1>&2
+echo ' ******************************************************** '

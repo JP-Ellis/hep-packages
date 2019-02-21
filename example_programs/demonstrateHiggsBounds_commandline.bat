@@ -13,11 +13,11 @@ cd example_programs
 
 # specify the prefix for the input files and the number of neutral Higgs
 
-prefix='../example_data/HB_randomtest50points_'
+prefix='../example_data/mhmodplus/mhmod+_'
 nH='3'
 nHplus='1'
 
-whichinput='part'   # whichinput can be 'part', 'hadr' or 'effC'
+whichinput='hadr'   # whichinput can be 'hadr' or 'effC'
 whichanalyses='LandH'   # whichanalyses can be 'LandH', 'onlyL', 'onlyH' or 'onlyP' 
 
 # and run HiggsBounds:

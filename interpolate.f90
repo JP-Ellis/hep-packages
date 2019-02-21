@@ -9,7 +9,7 @@ module interpolate
  contains
 
  !******************************************************************       
- subroutine interpolate_tabletype1(x,t1,datcomp,interpol)
+ subroutine interpolate_tabletype1(x,t1,datcomp,interpol,allownegative)
  !******************************************************************
  ! finds the value of 'interpol' at x by interpolating between points in table t1
  ! t1 is associated with a process involving only one Higgs
@@ -23,6 +23,7 @@ module interpolate
   double precision, intent(in) :: x
   integer, intent(in) :: datcomp
   type(table1), intent(in) :: t1
+  logical, optional :: allownegative
   !-------------------------------------output
   double precision :: interpol
   !-----------------------------------internal
@@ -30,7 +31,7 @@ module interpolate
   logical :: intable
   !-------------------------------------------        
 
-  call findcorners_tabletype1(x,t1,datcomp,intable,c_x,c_f)      
+  call findcorners_tabletype1(x,t1,datcomp,intable,c_x,c_f,allownegative)      
 
   if(intable)then
    interpol=interpol1D(x, &
@@ -43,7 +44,7 @@ module interpolate
  end subroutine interpolate_tabletype1
  
  !******************************************************************       
- subroutine findcorners_tabletype1(x,t1,datcomp,intable,c_x,c_f)
+ subroutine findcorners_tabletype1(x,t1,datcomp,intable,c_x,c_f,allownegative)
  !******************************************************************
  ! finds relevant values in t1 for finding f(x) with interpolation 
  !
@@ -62,6 +63,7 @@ module interpolate
   double precision, intent(in) :: x
   integer, intent(in) :: datcomp
   type(table1), intent(in) :: t1
+  logical, optional :: allownegative  
   !-------------------------------------output
   logical :: intable
   double precision :: c_x(2),c_f(2)
@@ -69,7 +71,14 @@ module interpolate
   integer :: ilow
   double precision :: x_below
   double precision :: xmin,xmax,sep
+  logical :: negative_ok
   !-------------------------------------------        
+
+  if(.not.present(allownegative)) then
+   negative_ok = .False.
+  else
+   negative_ok = allownegative 
+  endif 
 
   intable=.True.                
   c_x=-1.0D0
@@ -99,10 +108,12 @@ module interpolate
     c_f(1)=t1%dat(ilow,datcomp)
     c_f(2)=t1%dat(ilow+1,datcomp)
    endif
-                     
-   if((c_f(1).lt.0.0D0).or.(c_f(2).lt.0.0D0))then
-    intable=.False.                 
-   endif
+   
+   if(.not.negative_ok) then                 
+    if((c_f(1).lt.0.0D0).or.(c_f(2).lt.0.0D0))then
+     intable=.False.                 
+    endif
+   endif 
                                                                    
   endif 
 

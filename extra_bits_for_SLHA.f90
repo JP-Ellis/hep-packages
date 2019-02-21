@@ -18,23 +18,25 @@ module extra_bits_for_SLHA
  contains
       
  !************************************************************      
- subroutine getSLHAdata(d,gsq,infile)
+ subroutine getSLHAdata(d,effC,infile)
  ! looks at theory predictions needed for Higgs searches only
  !************************************************************ 
-  use usefulbits, only : dataset,hadroncolliderextras,Hneut,Hplus,Chineut,Chiplus,np,sqcouplratio,file_id_common
+  use usefulbits, only : dataset,hadroncolliderextras,Hneut,Hplus,Chineut,Chiplus,&
+  &                      np,file_id_common,couplratio,vvsmall!,sqcouplratio
   use SLHA_manip
   
   implicit none
   !--------------------------------------input
   type(dataset) :: d
-  type(sqcouplratio) :: gsq
+!   type(sqcouplratio) :: gsq
+  type(couplratio) :: effC  
   character(len=300),intent(in) :: infile
   !-----------------------------------internal
-  integer :: i,j,x,ios,n
+  integer :: i,j,k,x,ios,n
   integer :: particlecontent,Rparityviolation,CPviolation
   !double precision,allocatable ::g2hjcc(:,:),g2hjss(:,:)
-  double precision,allocatable ::g2hjbb(:,:)
-  double precision,allocatable ::g2hjtoptop(:,:),g2hjtautau(:,:)
+  double precision,allocatable ::ghjbb(:,:)
+  double precision,allocatable ::ghjtoptop(:,:),ghjtautau(:,:)
   double precision :: mass
   integer :: visible_lspcandidate_PDG(21),invisible_lspcandidate_PDG(7)
   logical :: is_valid_point
@@ -70,7 +72,7 @@ module extra_bits_for_SLHA
    !stop 'problem opening SLHA input file'
   else
 
-   call readSLHAfile(file_id_common)
+   call readSLHAfile(file_id_common,.False.)
 
    call check_validity(is_valid_point)
    if(is_valid_point)then
@@ -141,9 +143,9 @@ module extra_bits_for_SLHA
 
      !allocate(g2hjcc(    np(Hneut),2))
      !allocate(g2hjss(    np(Hneut),2))
-     allocate(g2hjbb(    np(Hneut),2))
-     allocate(g2hjtoptop(np(Hneut),2))
-     allocate(g2hjtautau(np(Hneut),2))
+     allocate(ghjbb(    np(Hneut),2))
+     allocate(ghjtoptop(np(Hneut),2))
+     allocate(ghjtautau(np(Hneut),2))
 
      do i=1,np(Hneut)
       d%particle(Hneut)%M(i) = get_mass(h(i))
@@ -156,15 +158,33 @@ module extra_bits_for_SLHA
       d%BR_hjss(i) = get_twobodybranchingratio( h(i),squark,sbar)
       d%BR_hjcc(i) = get_twobodybranchingratio( h(i),cquark,cbar)
       d%BR_hjbb(i) = get_twobodybranchingratio( h(i),bquark,bbar)
+      d%BR_hjtt(i) = get_twobodybranchingratio( h(i),tquark,tbar)      
 
       d%BR_hjmumu(i)   = get_twobodybranchingratio( h(i),mup,mum)
       d%BR_hjtautau(i) = get_twobodybranchingratio( h(i),taup,taum)
-
+      d%BR_hjemu(i)    = get_twobodybranchingratio( h(i),ep,mum)
+      if(d%BR_hjemu(i).lt.vvsmall) then
+       d%BR_hjemu(i)  = get_twobodybranchingratio( h(i),em,mup)
+      endif
+      d%BR_hjetau(i)   = get_twobodybranchingratio( h(i),ep,taum)
+      if(d%BR_hjetau(i).lt.vvsmall) then
+       d%BR_hjetau(i)  = get_twobodybranchingratio( h(i),em,taup)
+      endif
+      d%BR_hjmutau(i)  = get_twobodybranchingratio( h(i),mup,taum)
+      if(d%BR_hjmutau(i).lt.vvsmall) then
+       d%BR_hjmutau(i)  = get_twobodybranchingratio( h(i),mum,taup)
+      endif
       d%BR_hjWW(i)   = get_twobodybranchingratio( h(i),Wp ,Wm)
       d%BR_hjZZ(i)   = get_twobodybranchingratio( h(i),Z0 ,Z0)
       d%BR_hjZga(i)  = get_twobodybranchingratio( h(i),Z0    ,photon)
       d%BR_hjgaga(i) = get_twobodybranchingratio( h(i),photon,photon)
       d%BR_hjgg(i)   = get_twobodybranchingratio( h(i),gluon ,gluon)
+      if(np(Hplus)>0) then
+       d%BR_hjHpiW(i,1)   = get_twobodybranchingratio( h(i),Hp ,Wm)
+       if(d%BR_hjHpiW(i,1).lt.vvsmall) then
+        d%BR_hjHpiW(i,1)   = get_twobodybranchingratio( h(i),Hm ,Wp)
+       endif
+      endif
 
       if(invisible_lsp)then
          if(lsp%pdg.eq.neut1) then
@@ -176,53 +196,56 @@ module extra_bits_for_SLHA
          d%BR_hjinvisible(i) = 0.0D0
       endif
 
-      !g2hjcc(i,:)      = get_HiggsCouplingsFermions( h(i), cquark,  cquark   )
-      !g2hjss(i,:)      = get_HiggsCouplingsFermions( h(i), squark,  squark   )
-      g2hjbb(i,:)      = get_HiggsCouplingsFermions( h(i), bquark,  bquark   )
-      g2hjtoptop(i,:)  = get_HiggsCouplingsFermions( h(i), tquark,  tquark   )
-      g2hjtautau(i,:)  = get_HiggsCouplingsFermions( h(i), taum,    taum     )
-      gsq%hjWW(i)      = get_HiggsCouplingsBosons( h(i), Wp,     Wp        )
-      gsq%hjZZ(i)      = get_HiggsCouplingsBosons( h(i), Z0,     Z0        )
-      gsq%hjgg(i)      = get_HiggsCouplingsBosons( h(i), gluon,  gluon     )   
-      gsq%hjggZ(i)     = get_HiggsCouplingsBosons( h(i), gluon,  gluon, Z0 )
+      !g2hjcc(i,:)      = HB5_get_HiggsCouplingsFermions( h(i), cquark,  cquark   )
+      !g2hjss(i,:)      = HB5_get_HiggsCouplingsFermions( h(i), squark,  squark   )
+      ghjbb(i,:)      = HB5_get_HiggsCouplingsFermions( h(i), bquark,  bquark   )
+      ghjtoptop(i,:)  = HB5_get_HiggsCouplingsFermions( h(i), tquark,  tquark   )
+      ghjtautau(i,:)  = HB5_get_HiggsCouplingsFermions( h(i), taum,    taum     )
+      effC%hjWW(i)      = HB5_get_HiggsCouplingsBosons( h(i), Wp,     Wp        )
+      effC%hjZZ(i)      = HB5_get_HiggsCouplingsBosons( h(i), Z0,     Z0        )
+      effC%hjgg(i)      = HB5_get_HiggsCouplingsBosons( h(i), gluon,  gluon     )   
+!       effC%hjggZ(i)     = HB5_get_HiggsCouplingsBosons( h(i), gluon,  gluon, Z0 )
      enddo
 
      do j=1,np(Hneut)
       do i=1,np(Hneut)
-        gsq%hjhiZ(j,i)   = get_HiggsCouplingsBosons( h(j),   h(i),   Z0    )
-        d%BR_hjhihi(j,i) = get_twobodybranchingratio( h(j), h(i), h(i) )
+        effC%hjhiZ(j,i)   = HB5_get_HiggsCouplingsBosons( h(j),   h(i),   Z0    )
+        do k=1,np(Hneut)
+         d%BR_hkhjhi(j,i,k) = get_twobodybranchingratio( h(j), h(i), h(k) )
+        enddo
+        d%BR_hjhiZ(j,i) = get_twobodybranchingratio( h(j), h(i), Z0 )     
       enddo
      enddo
 
-     gsq%hjZga          = 0.0D0 !these are not needed
-     gsq%hjgaga         = 0.0D0
-     gsq%hjmumu_s       = 0.0D0
-     gsq%hjmumu_p       = 0.0D0
-     gsq%hjcc_s         = 0.0D0
-     gsq%hjcc_p         = 0.0D0
-     gsq%hjss_s         = 0.0D0
-     gsq%hjss_p         = 0.0D0
+     effC%hjZga          = 0.0D0 !these are not needed
+     effC%hjgaga         = 0.0D0
+     effC%hjmumu_s       = 0.0D0
+     effC%hjmumu_p       = 0.0D0
+     effC%hjcc_s         = 0.0D0
+     effC%hjcc_p         = 0.0D0
+     effC%hjss_s         = 0.0D0
+     effC%hjss_p         = 0.0D0
 
-    !gsq%hjcc_s(:)          = g2hjcc(:,1)
-    !gsq%hjcc_p(:)          = g2hjcc(:,2)
+    !effC%hjcc_s(:)          = g2hjcc(:,1)
+    !effC%hjcc_p(:)          = g2hjcc(:,2)
 
-    !gsq%hjss_s(:)          = g2hjss(:,1)
-    !gsq%hjss_p(:)          = g2hjss(:,2)
+    !effC%hjss_s(:)          = g2hjss(:,1)
+    !effC%hjss_p(:)          = g2hjss(:,2)
 
-     gsq%hjbb_s(:)          = g2hjbb(:,1)
-     gsq%hjbb_p(:)          = g2hjbb(:,2)
+     effC%hjbb_s(:)          = ghjbb(:,1)
+     effC%hjbb_p(:)          = ghjbb(:,2)
  
-     gsq%hjtoptop_s(:)      = g2hjtoptop(:,1)
-     gsq%hjtoptop_p(:)      = g2hjtoptop(:,2)
+     effC%hjtt_s(:)      = ghjtoptop(:,1)
+     effC%hjtt_p(:)      = ghjtoptop(:,2)
  
-     gsq%hjtautau_s(:)      = g2hjtautau(:,1)
-     gsq%hjtautau_p(:)      = g2hjtautau(:,2)
+     effC%hjtautau_s(:)      = ghjtautau(:,1)
+     effC%hjtautau_p(:)      = ghjtautau(:,2)
 
      !deallocate(g2hjcc)
      !deallocate(g2hjss)
-     deallocate(g2hjbb)
-     deallocate(g2hjtoptop)
-     deallocate(g2hjtautau)
+     deallocate(ghjbb)
+     deallocate(ghjtoptop)
+     deallocate(ghjtautau)
 
     endif
 
@@ -238,15 +261,65 @@ module extra_bits_for_SLHA
      d%BR_Hpjcs(i)    = get_twobodybranchingratio( Hp,     cquark,  sbar   )
      d%BR_Hpjcb(i)    = get_twobodybranchingratio( Hp,     cquark,  bbar   )
      d%BR_Hpjtaunu(i) = get_twobodybranchingratio( Hp,     taup,    nutau  )
-    endif
+     d%BR_HpjWZ(i)    = get_twobodybranchingratio( Hp,     Wp,    Z0  )
+     d%BR_Hpjtb(i)    = get_twobodybranchingratio( Hp,     tquark,  bbar )
+     if(np(Hneut).gt.0) then
+      do j=1,np(Hneut)
+       d%BR_HpjhiW(i,j) = get_twobodybranchingratio( Hp,  h(j), Wp )     
+      enddo
+     endif      
+     d%lhc8%XS_Hpjtb(i) = get_crosssection_threeparticles("ChargedHiggsLHC8",bquark,tquark,Hp,.False.)
+     d%lhc8%XS_Hpjcb(i) = get_crosssection_threeparticles("ChargedHiggsLHC8",cquark,bquark,Hp,.True.)     
+     d%lhc8%XS_Hpjbjet(i) = get_crosssection_threeparticles("ChargedHiggsLHC8",uquark,bquark,Hp,.True.)
+     d%lhc8%XS_Hpjcjet(i) = get_crosssection_threeparticles("ChargedHiggsLHC8",dquark,cquark,Hp,.True.)
+     d%lhc8%XS_Hpjcjet(i) = d%lhc8%XS_Hpjcjet(i) + &
+     &                      get_crosssection_threeparticles("ChargedHiggsLHC8",squark,cquark,Hp,.True.)
+     d%lhc8%XS_Hpjjetjet(i) = get_crosssection_threeparticles("ChargedHiggsLHC8",dquark,uquark,Hp,.True.)
+     d%lhc8%XS_Hpjjetjet(i) = d%lhc8%XS_Hpjjetjet(i) + &
+     &                      get_crosssection_threeparticles("ChargedHiggsLHC8",uquark,squark,Hp,.True.)
+     d%lhc8%XS_HpjW(i) = get_crosssection_threeparticles("ChargedHiggsLHC8",0,Wm,Hp,.True.)
+     d%lhc8%XS_vbf_Hpj(i) = get_crosssection_threeparticles("ChargedHiggsLHC8",1,1,Hp,.True.)
+     d%lhc8%XS_HpjHmj(i) = get_crosssection_threeparticles("ChargedHiggsLHC8",0,Hm,Hp,.True.)
+     if(np(Hneut).gt.0) then
+      do j=1,np(Hneut)
+       d%lhc8%XS_Hpjhi(i,j) = get_crosssection_threeparticles("ChargedHiggsLHC8",0,h(j),Hp,.True.)     
+      enddo
+     endif 
+     d%lhc13%XS_Hpjtb(i) = get_crosssection_threeparticles("ChargedHiggsLHC13",bquark,tquark,Hp,.False.)
+     d%lhc13%XS_Hpjcb(i) = get_crosssection_threeparticles("ChargedHiggsLHC13",cquark,bquark,Hp,.True.)     
+     d%lhc13%XS_Hpjbjet(i) = get_crosssection_threeparticles("ChargedHiggsLHC13",uquark,bquark,Hp,.True.)
+     d%lhc13%XS_Hpjcjet(i) = get_crosssection_threeparticles("ChargedHiggsLHC13",dquark,cquark,Hp,.True.)
+     d%lhc13%XS_Hpjcjet(i) = d%lhc13%XS_Hpjcjet(i) + &
+     &                      get_crosssection_threeparticles("ChargedHiggsLHC13",squark,cquark,Hp,.True.)
+     d%lhc13%XS_Hpjjetjet(i) = get_crosssection_threeparticles("ChargedHiggsLHC13",dquark,uquark,Hp,.True.)
+     d%lhc13%XS_Hpjjetjet(i) = d%lhc13%XS_Hpjjetjet(i) + &
+     &                      get_crosssection_threeparticles("ChargedHiggsLHC13",uquark,squark,Hp,.True.)
+     d%lhc13%XS_HpjW(i) = get_crosssection_threeparticles("ChargedHiggsLHC13",0,Wm,Hp,.True.)
+     d%lhc13%XS_HpjZ(i) = get_crosssection_threeparticles("ChargedHiggsLHC13",0,Z0,Hp,.True.)     
+     d%lhc13%XS_vbf_Hpj(i) = get_crosssection_threeparticles("ChargedHiggsLHC13",1,1,Hp,.True.)
+     d%lhc13%XS_HpjHmj(i) = get_crosssection_threeparticles("ChargedHiggsLHC13",0,Hm,Hp,.True.)
+     if(np(Hneut).gt.0) then
+      do j=1,np(Hneut)
+       d%lhc13%XS_Hpjhi(i,j) = get_crosssection_threeparticles("ChargedHiggsLHC13",0,h(j),Hp,.True.)     
+      enddo
+     endif 
+!      write(*,*) "# ------- Charged Higgs SLHA input debugging ------ #"
+!      write(*,*) "d%BR_HpjhiW(i,:) = ", d%BR_HpjhiW(i,:)
+!      write(*,*) "d%BR_HpjWZ(i) = ",d%BR_HpjWZ(i)
+!      write(*,*) "d%BR_Hpjtb(i) = ",d%BR_Hpjtb(i)
+!      write(*,*) "d%lhc8%XS_Hpjtb(i) = ",d%lhc8%XS_Hpjtb(i)
+!      write(*,*) "d%lhc13%XS_Hpjtb(i) = ",d%lhc13%XS_Hpjtb(i)     
+!      write(*,*) "# -------         end debugging              ------ #"
 
+    endif
+    
 
     if(lsp%pdg.eq.neut1)then ! all these chargino and neutralino searches rely on the neutralino1
                              ! being the lsp
      if(np(Chineut).gt.0)then  
        cofmenergy=get_SPhenocrosssectionCMenergy(ep,em,0.0D0,0.0D0,1)
        if(abs(cofmenergy-207.0D0).gt.1.0D-3)then
-          write(*,*)'Wrong centre of mass energy for chargino and neutralino LEP production XS.'
+          write(*,*)'Wrong center of mass energy for chargino and neutralino LEP production XS.'
        else 
 
           do i=1,np(Chineut)
@@ -366,7 +439,8 @@ module extra_bits_for_SLHA
  !************************************************************     
  subroutine outputSLHAdata(infile) 
  !************************************************************ 
-  use usefulbits, only : whichanalyses,pr,vers,file_id_common,fullHBres,infile1
+  use usefulbits, only : whichanalyses,pr,vers,file_id_common,fullHBres,infile1,&
+&                        HBresult_all, numres
   use SLHA_manip
   use S95tables      
   
@@ -374,7 +448,8 @@ module extra_bits_for_SLHA
   !--------------------------------------input
   character(len=300),intent(in) :: infile
   !-----------------------------------internal
-  integer :: x,y,ios,jj
+  double precision :: obsratio,predratio
+  integer :: x,y,ios,rank,HBresult,chan,ncombined
   integer :: k_out
   character(LEN=200):: descrip 
   logical :: newfile = .False.
@@ -399,7 +474,7 @@ module extra_bits_for_SLHA
     k_out=file_id_common
 
     if(.not.newfile) then
-     call readSLHAfile(file_id_common)
+     call readSLHAfile(file_id_common,.True.)
      rewind(file_id_common)
      call writeSLHAfile_except(k_out,'HiggsBoundsResults')
     endif 
@@ -415,23 +490,35 @@ module extra_bits_for_SLHA
     write(k_out,*)'   0    '//trim(adjustl(vers))//'     ||'//whichanalyses// &
      &  '||            # version of HB used to produce these results,the HB setting "whichanalyses"'
     write(k_out,'(a)')'#'
-
-    jj=1
+    write(k_out,'(a)')'#CHANNEL info: ranked from highest statistical sensitivity'
+	if(allocated(HBresult_all)) then
+	do rank=1,numres
     y=1
-!    x=res(jj)%chan(y)
+    call HiggsBounds_get_most_sensitive_channels(rank,HBresult,chan,obsratio,predratio,ncombined)
+!     x=fullHBres(y)%chan
+    call outputproc(pr(chan),0,descrip,1)
+!     write(k_out,'(a)')'#CHANNEL info: ranked from highest statistical sensitivity'
+    write(k_out,*)'   ',rank,1   ,    chan,     '                 # channel id number'
+    write(k_out,*)'   ',rank,2   ,    HBresult,'                 # HBresult      '
+    write(k_out,*)'   ',rank,3   ,    obsratio, '   # obsratio  '
+    write(k_out,*)'   ',rank,4   ,    ncombined,'                 # ncombined'      
+    write(k_out,*)'   ',rank,5   ,'||'//trim(adjustl(descrip))//'|| # text description of channel'
+!     write(k_out,'(a)')'#'
+	enddo
+	
+	else
+    y=1
     x=fullHBres(y)%chan
     call outputproc(pr(x),0,descrip,1)
 
-    write(k_out,'(a)')'#CHANNELTYPE 1: channel with the highest statistical sensitivity'
-!    write(k_out,*)'   1',1   ,    res(jj)%chan(y),     '                 # channel id number'
-!    write(k_out,*)'   1',2   ,    res(jj)%allowed95(y),'                 # HBresult      '
-!    write(k_out,*)'   1',3   ,    res(jj)%obsratio(y), '   # obsratio  '
-!    write(k_out,*)'   1',4   ,    res(jj)%ncombined(y),'                 # ncombined'      
+!     write(k_out,'(a)')'#CHANNEL info: channel with the highest statistical sensitivity'
     write(k_out,*)'   1',1   ,    fullHBres(y)%chan,     '                 # channel id number'
     write(k_out,*)'   1',2   ,    fullHBres(y)%allowed95,'                 # HBresult      '
     write(k_out,*)'   1',3   ,    fullHBres(y)%obsratio, '   # obsratio  '
     write(k_out,*)'   1',4   ,    fullHBres(y)%ncombined,'                 # ncombined'      
     write(k_out,*)'   1',5   ,'||'//trim(adjustl(descrip))//'|| # text description of channel'
+!     write(k_out,'(a)')'#'
+	endif
     write(k_out,'(a)')'#'
 
     close(file_id_common)
@@ -443,14 +530,96 @@ module extra_bits_for_SLHA
  end subroutine outputSLHAdata
 
  !************************************************************     
- subroutine addcouplingsblocktoSLHAfile(infile,gsq) 
+!  subroutine addcouplingsblocktoSLHAfile(infile,gsq) 
+!  !************************************************************
+!   use usefulbits, only : file_id_common,sqcouplratio,np,Hneut
+!   use SLHA_manip 
+!   
+!   implicit none
+!   !--------------------------------------input
+!   type(sqcouplratio) :: gsq
+!   character(len=300),intent(in) :: infile
+!   !-----------------------------------internal
+!   integer :: i,ios,j
+!   integer :: k_out
+!   !-------------------------------------------              
+! 
+!   open(file_id_common,file=trim(infile),status='old',iostat=ios) 
+!   if(ios.ne.0)then 
+!     write(*,*)'problem opening the SLHA file: $'//trim(adjustl(infile))//'$'
+!   else
+! 
+!     call readSLHAfile(file_id_common) 
+! 
+!     rewind(file_id_common)
+!     k_out=file_id_common
+! 
+!     call writeSLHAfile_except(k_out, &
+!                    &  'HiggsBoundsInputHiggsCouplingsBosons', &
+!                    &  'HiggsBoundsInputHiggsCouplingsFermions')
+! 
+!     write(k_out,'(a)')'#'
+!     write(k_out,'(a)')'Block HiggsBoundsInputHiggsCouplingsBosons'
+!     write(k_out,'(a)')'# For exact definitions of NormEffCoupSq see HiggsBounds manual'
+!   
+!     do i=1,np(Hneut)
+!        write(k_out,'(G16.6,4I6,a)')gsq%hjWW(i),        3,h(i),Wp,Wp, &
+!            &  ' # higgs-W-W effective coupling^2, normalised to SM'
+!     enddo
+!     do i=1,np(Hneut) 
+!        write(k_out,'(G16.6,4I6,a)')gsq%hjZZ(i),        3,h(i),Z0,Z0, &
+!            &  ' # higgs-Z-Z effective coupling^2, normalised to SM'
+!     enddo
+!     do i=1,np(Hneut) 
+!        write(k_out,'(G16.6,4I6,a)')gsq%hjgg(i),        3,h(i),gluon,gluon, &
+!            &  ' # higgs-gluon-gluon effective coupling^2, normalised to SM'
+!     enddo
+!     do j=1,np(Hneut)
+!       do i=1,j   
+!         write(k_out,'(G16.6,4I6,a)')gsq%hjhiZ(j,i),3,h(j),h(i),Z0, &
+!            &  ' # higgs-higgs-Z effective coupling^2, normalised'
+!       enddo
+!     enddo
+!     do i=1,np(Hneut) 
+!        write(k_out,'(G16.6,5I6,a)')gsq%hjggZ(i),        4,h(i),gluon,gluon,Z0, &
+!            &  ' # higgs-gluon-gluon-Z effective coupling^2, normalised to SM'
+!     enddo
+! 
+!     write(k_out,'(a)')'#'
+!     write(k_out,'(a)')'Block HiggsBoundsInputHiggsCouplingsFermions'
+!     write(k_out,'(a)')'# For exact definitions of NormEffCoupSq see HiggsBounds manual'
+!     write(k_out,'(a)')'# ScalarNormEffCoupSq PseudoSNormEffCoupSq    NP    IP1      IP2      IP3' // &
+!            &   ' # Scalar, Pseudoscalar Normalised Effective Coupling Squared'
+!     do i=1,np(Hneut) 
+!        write(k_out,*)gsq%hjbb_s(i),gsq%hjbb_p(i),        3,h(i),bquark,bquark, &
+!            &  '# higgs-b-b eff. coupling^2, normalised to SM'
+!     enddo
+!     do i=1,np(Hneut) 
+!        write(k_out,*)gsq%hjtoptop_s(i),gsq%hjtoptop_p(i),3,h(i),tquark,tquark, &
+!            &  '# higgs-top-top eff. coupling^2, normalised to SM'
+!     enddo
+!     do i=1,np(Hneut) 
+!        write(k_out,*)gsq%hjtautau_s(i),gsq%hjtautau_p(i),3,h(i),taum,taum, &
+!            &   '# higgs-tau-tau eff. coupling^2, normalised to SM'
+!     enddo
+! 
+!     close(file_id_common)
+!     if(k_out.ne.file_id_common)close(k_out)
+! 
+!     call finishwithSLHA
+! 
+!   endif
+!  end subroutine addcouplingsblocktoSLHAfile
+ !************************************************************     
+ subroutine addcouplingsblocktoSLHAfile(infile,effC) 
  !************************************************************
-  use usefulbits, only : file_id_common,sqcouplratio,np,Hneut
+  use usefulbits, only : file_id_common,couplratio,np,Hneut!,sqcouplratio
   use SLHA_manip 
   
   implicit none
   !--------------------------------------input
-  type(sqcouplratio) :: gsq
+!   type(sqcouplratio) :: gsq
+  type(couplratio) :: effC
   character(len=300),intent(in) :: infile
   !-----------------------------------internal
   integer :: i,ios,j
@@ -462,58 +631,58 @@ module extra_bits_for_SLHA
     write(*,*)'problem opening the SLHA file: $'//trim(adjustl(infile))//'$'
   else
 
-    call readSLHAfile(file_id_common) 
+    call readSLHAfile(file_id_common,.True.) 
 
     rewind(file_id_common)
     k_out=file_id_common
 
     call writeSLHAfile_except(k_out, &
-                   &  'HiggsBoundsInputHiggsCouplingsBosons', &
-                   &  'HiggsBoundsInputHiggsCouplingsFermions')
+                   &  'HiggsCouplingsBosons', &
+                   &  'HiggsCouplingsFermions')
 
     write(k_out,'(a)')'#'
-    write(k_out,'(a)')'Block HiggsBoundsInputHiggsCouplingsBosons'
-    write(k_out,'(a)')'# For exact definitions of NormEffCoupSq see HiggsBounds manual'
+    write(k_out,'(a)')'Block HiggsCouplingsBosons'
+    write(k_out,'(a)')'# For exact definitions of NormEffCoup see HiggsBounds manual'
   
     do i=1,np(Hneut)
-       write(k_out,'(G16.6,4I6,a)')gsq%hjWW(i),        3,h(i),Wp,Wp, &
-           &  ' # higgs-W-W effective coupling^2, normalised to SM'
+       write(k_out,'(G16.6,4I6,a)')effC%hjWW(i),        3,h(i),Wp,Wp, &
+           &  ' # higgs-W-W effective coupling, normalised to SM'
     enddo
     do i=1,np(Hneut) 
-       write(k_out,'(G16.6,4I6,a)')gsq%hjZZ(i),        3,h(i),Z0,Z0, &
-           &  ' # higgs-Z-Z effective coupling^2, normalised to SM'
+       write(k_out,'(G16.6,4I6,a)')effC%hjZZ(i),        3,h(i),Z0,Z0, &
+           &  ' # higgs-Z-Z effective coupling, normalised to SM'
     enddo
     do i=1,np(Hneut) 
-       write(k_out,'(G16.6,4I6,a)')gsq%hjgg(i),        3,h(i),gluon,gluon, &
-           &  ' # higgs-gluon-gluon effective coupling^2, normalised to SM'
+       write(k_out,'(G16.6,4I6,a)')effC%hjgg(i),        3,h(i),gluon,gluon, &
+           &  ' # higgs-gluon-gluon effective coupling, normalised to SM'
     enddo
     do j=1,np(Hneut)
       do i=1,j   
-        write(k_out,'(G16.6,4I6,a)')gsq%hjhiZ(j,i),3,h(j),h(i),Z0, &
-           &  ' # higgs-higgs-Z effective coupling^2, normalised'
+        write(k_out,'(G16.6,4I6,a)')effC%hjhiZ(j,i),3,h(j),h(i),Z0, &
+           &  ' # higgs-higgs-Z effective coupling, normalised'
       enddo
     enddo
-    do i=1,np(Hneut) 
-       write(k_out,'(G16.6,5I6,a)')gsq%hjggZ(i),        4,h(i),gluon,gluon,Z0, &
-           &  ' # higgs-gluon-gluon-Z effective coupling^2, normalised to SM'
-    enddo
+!     do i=1,np(Hneut) 
+!        write(k_out,'(G16.6,5I6,a)')effC%hjggZ(i),        4,h(i),gluon,gluon,Z0, &
+!            &  ' # higgs-gluon-gluon-Z effective coupling, normalised to SM'
+!     enddo
 
     write(k_out,'(a)')'#'
-    write(k_out,'(a)')'Block HiggsBoundsInputHiggsCouplingsFermions'
-    write(k_out,'(a)')'# For exact definitions of NormEffCoupSq see HiggsBounds manual'
-    write(k_out,'(a)')'# ScalarNormEffCoupSq PseudoSNormEffCoupSq    NP    IP1      IP2      IP3' // &
-           &   ' # Scalar, Pseudoscalar Normalised Effective Coupling Squared'
+    write(k_out,'(a)')'Block HiggsCouplingsFermions'
+    write(k_out,'(a)')'# For exact definitions of NormEffCoup see HiggsBounds manual'
+    write(k_out,'(a)')'# ScalarNormEffCoup PseudoSNormEffCoup    NP    IP1      IP2      IP3' // &
+           &   ' # Scalar, Pseudoscalar Normalised Effective Coupling'
     do i=1,np(Hneut) 
-       write(k_out,*)gsq%hjbb_s(i),gsq%hjbb_p(i),        3,h(i),bquark,bquark, &
-           &  '# higgs-b-b eff. coupling^2, normalised to SM'
+       write(k_out,*)effC%hjbb_s(i),effC%hjbb_p(i),        3,h(i),bquark,bquark, &
+           &  '# higgs-b-b eff. coupling, normalised to SM'
     enddo
     do i=1,np(Hneut) 
-       write(k_out,*)gsq%hjtoptop_s(i),gsq%hjtoptop_p(i),3,h(i),tquark,tquark, &
-           &  '# higgs-top-top eff. coupling^2, normalised to SM'
+       write(k_out,*)effC%hjtt_s(i),effC%hjtt_p(i),3,h(i),tquark,tquark, &
+           &  '# higgs-top-top eff. coupling, normalised to SM'
     enddo
     do i=1,np(Hneut) 
-       write(k_out,*)gsq%hjtautau_s(i),gsq%hjtautau_p(i),3,h(i),taum,taum, &
-           &   '# higgs-tau-tau eff. coupling^2, normalised to SM'
+       write(k_out,*)effC%hjtautau_s(i),effC%hjtautau_p(i),3,h(i),taum,taum, &
+           &   '# higgs-tau-tau eff. coupling, normalised to SM'
     enddo
 
     close(file_id_common)
@@ -524,5 +693,86 @@ module extra_bits_for_SLHA
   endif
  end subroutine addcouplingsblocktoSLHAfile
  !************************************************************ 
+ subroutine addchargedHiggsXStoSLHAfile(infile, collider, CS_Hpjtb,   &
+&            CS_Hpjcb, CS_Hpjub, CS_Hpjcs, CS_Hpjcd, CS_Hpjud, CS_Hpjus,&
+&            CS_HpjW, CS_HpjZ, CS_vbf_Hpj, CS_HpjHmj, CS_Hpjhi)
+!************************************************************
+ use usefulbits, only : file_id_common,theo,np,Hplus,Hneut,just_after_run,hadroncolliderdataset!,inputsub
+ use SLHA_manip
+ use PDGnumbering
+ 
+ implicit none
+
+ !----------------------------------------input
+ double precision,intent(in) :: CS_Hpjtb, CS_Hpjcb,CS_Hpjub,&
+&                               CS_Hpjcs, CS_Hpjcd, CS_Hpjus,& 
+&                               CS_Hpjud, CS_HpjW, CS_HpjZ,&
+&                               CS_vbf_Hpj, CS_HpjHmj
+ integer, intent(in) :: collider
+ double precision,intent(in) :: CS_Hpjhi(np(Hneut)) 
+ character(len=300),intent(in) :: infile
+ !-----------------------------------internal
+ integer :: i,ios,j
+ integer :: k_out
+ character(len=100) :: blockname
+ integer :: pdgHneut(np(Hneut))
+ !-------------------------------------------              
+
+  select case(collider)
+   case(8)
+    blockname = "ChargedHiggsLHC8"
+   case(13)
+    blockname = "ChargedHiggsLHC13"   
+   case default
+    write(*,*) "Warning: cannot write charged Higgs XS SLHA block. Collider energy unknown."
+    return
+  end select
+
+  if(np(Hneut).eq.3) then
+   pdgHneut = (/h0, HH, A0/)
+  else if(np(Hneut).eq.5) then
+   pdgHneut = (/h0, HH, A0, h03, A02/)   
+  else
+   write(*,*) "Warning: cannot write Hpmh0 XS to charged Higgs SLHA blocks. PDGs of neutral Higgs bosons unknown."
+  endif
+
+  open(file_id_common,file=trim(infile),status='old',iostat=ios) 
+  if(ios.ne.0)then 
+    write(*,*)'problem opening the SLHA file: $'//trim(adjustl(infile))//'$'
+  else
+
+  call readSLHAfile(file_id_common,.True.) 
+
+  rewind(file_id_common)
+  k_out=file_id_common
+
+  call writeSLHAfile_except(k_out, trim(adjustl(blockname)))
+ 
+  write(k_out,'(a)')'#'
+  write(k_out,'(a)')'Block '//trim(adjustl(blockname))
+  
+  write(k_out,'(3I5,G16.6,a)') 5, 6, 37, CS_Hpjtb ,' # t-b-Hp production (in pb)'
+  write(k_out,'(3I5,G16.6,a)') 4, 5, 37, CS_Hpjcb ,' # c-b-Hp production (in pb)'  
+  write(k_out,'(3I5,G16.6,a)') 2, 5, 37, CS_Hpjub ,' # u-b-Hp production (in pb)'
+  write(k_out,'(3I5,G16.6,a)') 3, 4, 37, CS_Hpjcs ,' # c-s-Hp production (in pb)'
+  write(k_out,'(3I5,G16.6,a)') 1, 4, 37, CS_Hpjcd ,' # c-d-Hp production (in pb)'  
+  write(k_out,'(3I5,G16.6,a)') 1, 2, 37, CS_Hpjud ,' # u-d-Hp production (in pb)'
+  write(k_out,'(3I5,G16.6,a)') 2, 3, 37, CS_Hpjus ,' # u-s-Hp production (in pb)'
+  write(k_out,'(3I5,G16.6,a)') 0, 24, 37, CS_HpjW ,' # W-Hp production (in pb)'
+  write(k_out,'(3I5,G16.6,a)') 0, 23, 37, CS_HpjZ ,' # Z-Hp production (in pb)'  
+  write(k_out,'(3I5,G16.6,a)') 1, 1, 37, CS_vbf_Hpj  ,' # Hp VBF production (in pb)'
+  write(k_out,'(3I5,G16.6,a)') 0, -37, 37, CS_HpjHmj ,' # Hp-Hm production (in pb)'
+  if(np(Hneut).eq.3.or.np(Hneut).eq.5) then
+   do i=1,np(Hneut)
+      write(k_out,'(3I5,G16.6,a)') 0, pdgHneut(i), 37, CS_Hpjhi(i) ,' # h0-Hp production (in pb)'
+   enddo
+  endif 
+  close(file_id_common)
+  if(k_out.ne.file_id_common)close(k_out)
+
+  call finishwithSLHA
+  endif
+end subroutine addchargedHiggsXStoSLHAfile 
+
 end module extra_bits_for_SLHA
 !******************************************************************

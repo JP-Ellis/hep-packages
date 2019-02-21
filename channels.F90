@@ -23,7 +23,7 @@ module channels
   use usefulbits, only : np,debug,whichanalyses, & !input
                    & ntot,pr, analysislist, using_likelihood
   use S95tables, only  : S95_t1,S95_t2,WhichColliderString  
-  use likelihoods, only : CMS_llhdata,nllhs
+  use likelihoods, only : llhdata,nllhs !CMS_llhdata
   implicit none
   !-----------------------------------internal      
   integer :: n_analyses 
@@ -69,16 +69,14 @@ module channels
       j=i-size(S95_t1)-size(S95_t2)
       l_analyses(i)%tlist=j
       l_analyses(i)%ttype=9  ! for likelihoods
-      expt=CMS_llhdata(1)%expt
-      energy=CMS_llhdata(1)%energy
-!      id=3316
-!      pub=.True.
-      id=14029
-      pub=.False.
+      expt=llhdata(j)%D2llhdata(1)%expt
+      energy=llhdata(j)%D2llhdata(1)%energy
+      id=llhdata(j)%D2llhdata(1)%analysisID
+      pub=llhdata(j)%D2llhdata(1)%pub
       llh=1
-      l_analyses(i)%particle_x1=CMS_llhdata(1)%particle_x
-      l_analyses(i)%particle_x2=CMS_llhdata(1)%particle_x !shouldn't actually be used
-      n_perm=np( l_analyses(i)%particle_x1 )    
+      l_analyses(i)%particle_x1=llhdata(j)%D2llhdata(1)%particle_x
+      l_analyses(i)%particle_x2=llhdata(j)%D2llhdata(1)%particle_x !shouldn't actually be used
+      n_perm=np( l_analyses(i)%particle_x1 )
    endif
 
    select case(whichanalyses)
@@ -86,14 +84,14 @@ module channels
      select case(WhichColliderString(expt,energy))
      case('LEP')
       req= 1 * req
-     case('TEV','LHC7','LHC8')
+     case('TEV','LHC7','LHC8','LHC13')
       req= 0 * req
      case default
       stop 'error in error in setup_channels (1)'
      end select
    case('onlyH')
      select case(WhichColliderString(expt,energy))
-     case('TEV','LHC7','LHC8')
+     case('TEV','LHC7','LHC8','LHC13')
       req= 1 * req
      case('LEP')
       req= 0 * req
@@ -102,7 +100,7 @@ module channels
      end select
    case('LandH')
      select case(WhichColliderString(expt,energy))
-     case('LEP','TEV','LHC7','LHC8')
+     case('LEP','TEV','LHC7','LHC8','LHC13')
       req= 1 * req
      case default
       stop 'error in error in setup_channels (3)'
@@ -114,12 +112,14 @@ module channels
       req= 0 * req
      endif
    case('list')
-     do k=1,n_analyses
+     do k=1,size(analysislist)!n_analyses
       if (analysislist(k).eq.id) then
+!        write(*,*) "case(list): k, n_analyses, analysislist(k), id = ",k, n_analyses, analysislist(k), id       
        req = 1 * req
        exit
       endif
-      if (analysislist(k).le.0) then
+      if(k==size(analysislist).and.analysislist(k).ne.id) then
+!       if (analysislist(k).le.0) then
        req = 0 * req
        exit
       endif
@@ -143,7 +143,7 @@ module channels
    select case(WhichColliderString(expt,energy))
    case('LEP')
      l_analyses(i)%in_first_set=.True.
-   case('TEV','LHC7','LHC8')
+   case('TEV','LHC7','LHC8','LHC13')
      l_analyses(i)%in_first_set=.False.
    case default
       stop 'error in error in setup_channels (a)'
@@ -204,7 +204,7 @@ module channels
   use usefulbits, only : ntot,debug, prsep, & !input
                       & dataset,results,Hneut,Hplus,np            
   use S95tables
-  use likelihoods, only : nllhs, calcpredratio_llh, check_against_bound_llh, CMS_llhdata
+  use likelihoods, only : nllhs, calcpredratio_llh, check_against_bound_llh, llhdata
   implicit none
   !--------------------------------------input      
   type(dataset) :: t      
@@ -247,15 +247,19 @@ module channels
      call check_against_bound(prsep(h,n),fact(n),axis_i(n),axis_j(n),predratio(n),2) !checks each process against
                                                          !predicted experimental bounds   
 ! For debugging:
-!      if(prsep(h,n)%ttype==2) then
-!         print *, h, n, S95_t2(prsep(h,n)%tlist)%id, predratio(n)
-!      endif   
+	if(debug) then
+     if(prsep(h,n)%ttype==2) then
+        print *, h, n, S95_t2(prsep(h,n)%tlist)%id, predratio(n)
+     endif   
+    endif
+     
     case(9) ! likelihoods                                                         
      call calcpredratio_llh(prsep(h,n)%tlist,prsep(h,n)%findj,t,axis_i(n),fact(n),ncomb(n),predratio(n))
 !     write(*,*) 'after calcpredratio_llh:', prsep(h,n)%tlist,prsep(h,n)%findj,axis_i(n),fact(n),ncomb(n),predratio(n)
      ! n.b.: In case of likelihoods, we have two fact numbers (for ggH and bbH). Here, fact is the sum of these two.
      axis_j(n)=axis_i(n)
    end select
+
 !    print *, h, n, predratio(n)
 
 !--Test for deactivated analysis (TS 20/11/2014)  
@@ -265,7 +269,7 @@ module channels
     case(2)
      if(is_analysis_deactivated(S95_t2(prsep(h,n)%tlist)%id)) predratio(n) = -1.0D0
     case(9)
-     if(is_analysis_deactivated(CMS_llhdata(prsep(h,n)%tlist)%analysisID)) predratio(n) = -1.0D0
+     if(is_analysis_deactivated(llhdata(prsep(h,n)%tlist)%D2llhdata(1)%analysisID)) predratio(n) = -1.0D0
    end select
 
    enddo                     
@@ -301,9 +305,8 @@ module channels
               
       ! setting the channel with the highest stat. sens. to -1 so that
       ! the next highest is selected next time round         
-!      write(*,*) "Most sensitive analysis: ", mlratio, prsep(h,mlratio)%ttype, predratio(mlratio)
-      predratio(mlratio)= -1.0D0      
-
+!       write(*,*) "Most sensitive analysis: ", h, mlratio, prsep(h,mlratio)%ttype, predratio(mlratio)
+!       predratio(mlratio)= -1.0D0      
 
       select case(prsep(h,mlratio)%ttype)
        case(1,2)
@@ -321,10 +324,16 @@ module channels
       r%axis_i(ii)    =axis_i(mlratio)
       r%axis_j(ii)    =axis_j(mlratio) 
       r%chan(ii)     =mlratio
-      r%ncombined(ii)=ncomb(mlratio)      
+      r%ncombined(ii)=ncomb(mlratio)
+      r%predratio(ii) = predratio(mlratio)
+      
+      
+      predratio(mlratio)= -1.0D0      
+      
     else ! none of the processes apply: label with zero
       r%chan(ii)     =  0         
       r%obsratio(ii) =  0.0D0
+      r%predratio(ii) = 0.0D0      
       r%axis_i(ii)    =  0.0D0
       r%axis_j(ii)    =  0.0D0
       r%sfactor(ii)  =  0.0D0
@@ -336,6 +345,7 @@ module channels
     elseif(r%obsratio(ii).lt.0.0D0)then
 !     There is something wrong with this channel, no observed value
       r%obsratio(ii) =  0.0D0
+      r%predratio(ii) =  0.0D0      
       r%axis_i(ii)    =  0.0D0
       r%axis_j(ii)    =  0.0D0
       r%sfactor(ii)  =  0.0D0
@@ -352,6 +362,7 @@ module channels
    enddo  
   else ! gooddataset=False
    r%obsratio =  0.0D0
+   r%predratio =  0.0D0   
    r%axis_i    =  0.0D0
    r%axis_j    =  0.0D0
    r%sfactor  =  0.0D0
@@ -433,9 +444,9 @@ module channels
      ! write(n,*)'BR_Hpjcs(x):',t%BR_Hpjcs(x)
      ! write(n,*)'BR_Hpjcb(x):',t%BR_Hpjcb(x)
      write(fileid,*)'********************'     
-     write(fileid,*)'*    n     predratio(n)  '     
+     write(fileid,*)'*    h     n     predratio(n)  '     
      do n=1,ntot
-        write(fileid,'(1I6,1E16.7)')n,predratio(n)    
+        write(fileid,'(1I6,1I6,1E16.7)')h,n,predratio(n)    
      enddo      
 
      !write(n,*)'********************'    
@@ -469,7 +480,7 @@ module channels
   use S95tables_type3, only :clsb_t3elementnumber_from_S95table
   implicit none
   !-----------------------------------internal
-  integer :: n,x,i,j,np1,np2,set,id
+  integer :: n,x,i,j,np1,np2,set,id,jj
   logical :: add_this_analysis_now
   !-------------------------------------------
     
@@ -554,6 +565,7 @@ module channels
           
         enddo          
 
+! TS: Needs to be adjusted to "not-a-particle" and charged Higgs particles (?!)
        case(2)
         do j=1,np2
          do i=1,np1
@@ -568,11 +580,24 @@ module channels
           prsep(0,n)%findi=i
           prsep(0,n)%findj=j 
  
-          prsep(i,n)%tlist=l_analyses(x)%tlist   !tlist is the table number i.e. which component of
+!           prsep(i,n)%tlist=l_analyses(x)%tlist   !tlist is the table number i.e. which component of
+!                     !S95_t1 or S95_t1 to use
+!           prsep(i,n)%ttype=l_analyses(x)%ttype   !ttype is the table type 
+!           prsep(i,n)%findi=i   !findi gives the i in h_i for this process
+!           prsep(i,n)%findj=j   !findj gives the j in h_j for this process
+
+! HB5 (TS 20/03/2017):
+          if(l_analyses(x)%particle_x2.eq.Hplus) then
+           jj = j+np(Hneut)
+          else
+           jj = j 
+          endif 
+          prsep(jj,n)%tlist=l_analyses(x)%tlist   !tlist is the table number i.e. which component of
                     !S95_t1 or S95_t1 to use
-          prsep(i,n)%ttype=l_analyses(x)%ttype   !ttype is the table type 
-          prsep(i,n)%findi=i   !findi gives the i in h_i for this process
-          prsep(i,n)%findj=j   !findj gives the j in h_j for this process
+          prsep(jj,n)%ttype=l_analyses(x)%ttype   !ttype is the table type 
+          prsep(jj,n)%findi=i   !findi gives the i in h_i for this process
+          prsep(jj,n)%findj=j   !findj gives the j in h_j for this process
+
 
          enddo 
         enddo 
@@ -617,40 +642,40 @@ module channels
   endif
 
 ! ### OS ###
-
+! 
 !   do n=1,ntot
 !    write(100,*) n,prsep(0,n)%tlist, prsep(0,n)%ttype,prsep(0,n)%findi,prsep(0,n)%findj
 !   enddo
-
+! 
 !   do n=1,ntot
 !    write(101,*) n,prsep(1,n)%tlist, prsep(1,n)%ttype,prsep(1,n)%findi,  prsep(1,n)%findj
 !   enddo
-
+! 
 !   do n=1,ntot
 !    write(102,*) n,prsep(2,n)%tlist, prsep(2,n)%ttype,prsep(2,n)%findi,  prsep(2,n)%findj
 !   enddo
-
+! 
 !   do n=1,ntot
 !    write(103,*) n,prsep(3,n)%tlist, prsep(3,n)%ttype,prsep(3,n)%findi,  prsep(3,n)%findj
 !   enddo
- 
+!  
 !   do n=1,ntot
 !    write(104,*) n,prsep(4,n)%tlist, prsep(4,n)%ttype,prsep(4,n)%findi,  prsep(4,n)%findj
 !   enddo
-
-
+! 
+! 
 !   close(100)
 !   close(101)
 !   close(102)
 !   close(103)
 !   close(104)
-
+! 
  end subroutine fill_pr
 !************************************************************
 subroutine HiggsBounds_deactivate_analyses(analysesID)
  use usefulbits, only : analysis_exclude_list, pr
  use S95tables
- use likelihoods, only : CMS_llhdata
+ use likelihoods, only : llhdata
  implicit none
  
  integer, dimension(:),intent(in) :: analysesID
@@ -679,8 +704,8 @@ subroutine HiggsBounds_deactivate_analyses(analysesID)
      exit
      endif
     case(9)
-     if(CMS_llhdata(1)%analysisID.eq.analysesID(i)) then
-      label=adjustl(CMS_llhdata(1)%label)     
+     if(llhdata(pr(j)%tlist)%D2llhdata(1)%analysisID.eq.analysesID(i)) then
+      label=adjustl(llhdata(pr(j)%tlist)%D2llhdata(1)%label)     
       found=.True.
       exit
      endif 

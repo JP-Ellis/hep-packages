@@ -385,6 +385,78 @@ function SMCS_lhc8_ttH(Mh)
 end function SMCS_lhc8_ttH
 !*********************************
 
+function SMCS_lhc13_HW(Mh) 
+!note: in pb
+ use theory_XS_SM_functions
+  implicit none
+  double precision,intent(in) :: Mh
+  double precision :: SMCS_lhc13_HW
+  
+  call testBRSM(Mh)
+  
+  SMCS_lhc13_HW=XS_lhc13_HW_SM(Mh,.True.)
+end function SMCS_lhc13_HW
+!*********************************
+function SMCS_lhc13_HZ(Mh) 
+!note: in pb
+ use theory_XS_SM_functions
+  implicit none
+  double precision,intent(in) :: Mh
+  double precision :: SMCS_lhc13_HZ
+  
+  call testBRSM(Mh)
+  
+  SMCS_lhc13_HZ=XS_lhc13_HZ_SM(Mh,.True.)
+end function SMCS_lhc13_HZ
+!*********************************
+function SMCS_lhc13_gg_H(Mh) 
+!note: in pb
+ use theory_XS_SM_functions
+  implicit none
+  double precision,intent(in) :: Mh
+  double precision :: SMCS_lhc13_gg_H
+  
+  call testBRSM(Mh)
+  
+  SMCS_lhc13_gg_H=XS_lhc13_gg_H_SM(Mh,.True.)
+end function SMCS_lhc13_gg_H
+!*********************************
+function SMCS_lhc13_bb_H(Mh) 
+!note: in pb
+ use theory_XS_SM_functions
+  implicit none
+  double precision,intent(in) :: Mh
+  double precision :: SMCS_lhc13_bb_H
+  
+  call testBRSM(Mh)
+  
+  SMCS_lhc13_bb_H=XS_lhc13_bb_H_SM(Mh,.True.)
+end function SMCS_lhc13_bb_H
+!*********************************
+function SMCS_lhc13_vbf_H(Mh) 
+!note: in pb
+ use theory_XS_SM_functions
+  implicit none
+  double precision,intent(in) :: Mh
+  double precision :: SMCS_lhc13_vbf_H
+  
+  call testBRSM(Mh)
+  
+  SMCS_lhc13_vbf_H=XS_lhc13_vbf_SM(Mh,.True.)
+end function SMCS_lhc13_vbf_H
+!*********************************
+function SMCS_lhc13_ttH(Mh) 
+!note: in pb
+ use theory_XS_SM_functions
+  implicit none
+  double precision,intent(in) :: Mh
+  double precision :: SMCS_lhc13_ttH
+  
+  call testBRSM(Mh)
+  
+  SMCS_lhc13_ttH=XS_lhc13_ttH_SM(Mh,.True.)
+end function SMCS_lhc13_ttH
+!*********************************
 subroutine testBRSM(M)
   use theory_BRfunctions
   implicit none

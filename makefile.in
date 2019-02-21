@@ -58,7 +58,7 @@ HiggsBounds: HBwithSLHA libHB.a $(MODS) $(OBJScommandline) $(OBJSsubroutines)
 	rm -f Theory_tables/BRSM.binary 
 	touch Expt_tables/S95_t1.binary 
 	touch Expt_tables/S95_t2.binary 
-	touch Expt_tables/CMS_tautau_llh.binary	
+	touch Expt_tables/tautau_llh.binary
 	touch Theory_tables/BRSM.binary 
 
 libHB:  $(MODS) $(OBJSsubroutines)
@@ -69,19 +69,19 @@ libHB:  $(MODS) $(OBJSsubroutines)
 	rm -f Theory_tables/BRSM.binary 	
 	touch Expt_tables/S95_t1.binary 
 	touch Expt_tables/S95_t2.binary 
-	touch Expt_tables/CMS_tautau_llh_1408.3316.binary
+	touch Expt_tables/tautau_llh.binary
 	touch Theory_tables/BRSM.binary 
 
 libHB.a: libHB
 
 HBwithFH:  libHB.a
 	$(F90C) $(F90FLAGS) $(FHINCLUDE) example_programs/HBwithFH.F -o example_programs/HBwithFH $(FHLIBS) $(HBLIBS)
-	$(F90C) $(F90FLAGS) $(FHINCLUDE) example_programs/HBwithFH_dm.F -o example_programs/HBwithFH_dm $(FHLIBS) $(HBLIBS)	
 	$(F90C) $(F90FLAGS) $(FHINCLUDE) example_programs/HBSLHAinputblocksfromFH_extras.F example_programs/HBSLHAinputblocksfromFH.F90 -o example_programs/HBSLHAinputblocksfromFH $(FHLIBS) $(HBLIBS)
+# 	$(F90C) $(F90FLAGS) $(FHINCLUDE) example_programs/HBwithFH_dm.F -o example_programs/HBwithFH_dm $(FHLIBS) $(HBLIBS)	
 
-HBwithCPsuperH:  libHB.a
-	$(F77C) example_programs/HBwithCPsuperH.f -o example_programs/HBwithCPsuperH $(CPSUPERHLIBS) $(HBLIBS)
-	@echo 'now run ./HBwithCPsuperH < HBwithCPsuperH.input in the folder example_programs'
+# HBwithCPsuperH:  libHB.a
+# 	$(F77C) example_programs/HBwithCPsuperH.f -o example_programs/HBwithCPsuperH $(CPSUPERHLIBS) $(HBLIBS)
+# 	@echo 'now run ./HBwithCPsuperH < HBwithCPsuperH.input in the folder example_programs'
 
 HBweb: libHB.a HiggsBounds
 	@echo 'check that WEBVERSION is defined'
@@ -93,13 +93,24 @@ HBwithSLHA: libHB.a
 HBwithLHClikelihood: libHB.a
 	$(F90C) $(F90FLAGS) example_programs/HBwithLHClikelihood.F90 -o example_programs/HBwithLHClikelihood $(HBLIBS)
 
-HBchisq: libHB.a
-	$(F90C) $(F90FLAGS) example_programs/HBchisq.F90 -o example_programs/HBchisq $(HBLIBS)
-	$(F90C) $(F90FLAGS) example_programs/HBchisqwithSLHA.F90 -o example_programs/HBchisqwithSLHA $(HBLIBS)
+HBwithchannelrates: libHB.a
+	$(F90C) $(F90FLAGS) example_programs/HBwithchannelrates.F90 -o example_programs/HBwithchannelrates $(HBLIBS)
+
+
+HBwithLEPlikelihood: libHB.a
+	$(F90C) $(F90FLAGS) example_programs/HBwithLEPlikelihood.F90 -o example_programs/HBwithLEPlikelihood $(HBLIBS)
+	$(F90C) $(F90FLAGS) example_programs/HBwithLEPlikelihood_SLHA.F90 -o example_programs/HBwithLEPlikelihood_SLHA $(HBLIBS)
+
+# NEW HB5 examples:
+
+HBeffC: libHB.a
+	$(F90C) $(F90FLAGS) example_programs/HBeffC.F90 -o example_programs/HBeffC $(HBLIBS)
+
+# HB5withFH: libHB.a
+# 	$(F90C) $(F90FLAGS) $(FHINCLUDE) example_programs/HB5withFH.F -o example_programs/HB5withFH $(FHLIBS) $(HBLIBS)
 
 clean:
 	rm -f *.o *.mod *.MOD *.a
-	rm -f store_pathname.f90
 
 hyperclean:
 	rm -f *.o *.mod *.MOD *.a *~ 
@@ -113,13 +124,19 @@ hyperclean:
 #	rm -f example_data/*results.dat
 #	rm -f example_data/*Key.dat
 	rm -f cs-ratios_sigma-bg-Hb/Tevatron*~
-	rm -f example_programs/example-4thGen-results.dat
-	rm -f example_programs/example-SM-results.dat
+# 	rm -f example_programs/example-4thGen-results.dat
+# 	rm -f example_programs/example-SM-results.dat
 	rm -f example_programs/Key.dat
-	rm -f example_programs/HBwithCPsuperH_effC.f
-	rm -f example_programs/HBwithFH_effC.F
-	rm -f example_programs/debug_channels.txt
-	rm -f example_programs/debug_predratio.txt
+	rm -f example_programs/HBeffC
+	rm -f example_programs/HBwithSLHA
+	rm -f example_programs/HBwithFH
+	rm -f example_programs/HBSLHAinputblocksfromFH
+	rm -f example_programs/HBwithLEPlikelihood
+	rm -f example_programs/HBwithLEPlikelihood_SLHA
+	rm -f example_programs/HBwithLHClikelihood	
+	rm -f example_programs/*.eps
+	rm -f example_programs/*.txt
+	rm -f example_programs/*.dat	
 	rm -f README_old
 	rm -f Expt_tables/*.binary
-
+	rm -f Theory_tables/*.binary
