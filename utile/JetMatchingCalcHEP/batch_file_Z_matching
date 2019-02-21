@@ -1,0 +1,81 @@
+Model:         SM
+Model changed: False
+Gauge:         Feynman
+
+Process:   p,p->Z
+Process:   p,p->Z,j
+Process:   p,p->Z,j,j
+
+Composite: p=u,U,d,D,G
+Composite: W=W+,W-
+Composite: le=e,E,m,M
+Composite: n=ne,Ne,nm,Nm
+Composite: j=u,U,d,D,G
+
+pdf1:      PDT:cteq6l1(proton)
+pdf2:      PDT:cteq6l1(proton)
+
+p1:        6500
+p2:        6500
+
+
+alpha Q : MZ
+
+Cut parameter:    M(j,j)
+Cut invert:       False
+Cut min:          20
+Cut max:     
+
+Cut parameter:    J(j,j)
+Cut invert:       False
+Cut min:          0.5
+Cut max:            
+
+Cut parameter:    T(j)
+Cut invert:       False
+Cut min:          20
+
+
+Number of events (per run step): 10000
+Filename:                        Z-matching
+NTuple:                          False
+Cleanup:                         False
+
+Parallelization method:      local
+#Que:                         brody_main
+#Walltime:                    0.15
+#Memory:                      1
+#email:                       name@address
+#Max number of cpus:          2
+Max number of nodes:   8
+Max number of processes per node: 1
+
+sleep time:                  3
+nice level :                 19
+
+###############################################
+#  Vegas                                      #
+#  The variables are the same as in the gui.  #
+#  If commented out, the default values       #
+#      are used.                              #
+#                                             #
+#  nSess_1 : number of the 1st sessions       #
+#     default: 5                              #
+#  nCalls_1 : number of calls per 1st sessions#
+#     default: 10000                          #
+#  nSess_2 : number of the 2nd sessions       #
+#     default: 0                              #
+#  nCalls_2 : number of calls per 2nd sessions#
+#     default: 10000                          #
+###############################################
+nSess_1:   5
+nCalls_1:  100000
+nSess_2:   5
+nCalls_2:  100000
+
+
+
+
+
+
+

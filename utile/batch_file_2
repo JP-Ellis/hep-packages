@@ -1,0 +1,45 @@
+Model:         SM(+hgg)
+Model changed: False
+Gauge:         Feynman
+Process:       e,E->ne,Ne,b,B
+
+pdf1:      ISR & Beamstrahlung
+pdf2:      ISR & Beamstrahlung
+Bunch x+y sizes (nm)	  : 560
+Bunch length (mm)	  : 0.4
+Number of particles	  : 2E+10
+
+Run parameter: sqrts
+Run begin:     250
+Run step size: 250
+Run n steps:   4
+
+p1:        sqrts/2
+p2:        sqrts/2
+
+Parameter: Mh=125
+
+Cut parameter:    M(b,B)
+Cut invert:       False
+Cut min:          100
+Cut max:    	  150	
+ 
+Regularization momentum: 56
+Regularization mass:     Mh
+Regularization width:    wh
+Regularization power:    2
+
+Dist parameter:    M(b,B)
+Dist min:	   100
+Dist max:	   150
+Dist n bins:	   100
+Dist title:	   e,E->ne,Ne,b,B
+Dist x-title:	   M(b,B) (GeV)
+
+Number of events (per run step): 10000
+Filename:                     eE_neNebB   
+
+nSess_1:   5
+nCalls_1:  100000
+nSess_2:   5
+nCalls_2:  100000

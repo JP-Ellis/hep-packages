@@ -1,0 +1,45 @@
+Model:         IDM(+hgg)
+Model changed: False
+Gauge:         Feynman
+Process:       p,p->~X,~H3,j
+
+Composite: j=u,U,d,D,s,S,c,C,b,B,G
+Composite: p=u,U,d,D,s,S,c,C,b,B,G
+pdf1:      PDT:cteq6l1(proton)
+pdf2:      PDT:cteq6l1(proton)
+p1:        6500
+p2:        6500
+
+
+Run parameter: MHX
+Run begin:     50
+Run step size: 50
+Run n steps:   3
+
+Run parameter: ptcut
+Run begin:     100
+Run step size: 50
+Run n steps:   3
+
+#### running MH3 with the mass close to  MHX ###
+Parameter: MH3=MHX+1
+
+Cut parameter:    T(j)
+Cut invert:       False
+Cut min:          ptcut
+Cut max:    	  	
+
+Dist parameter:    T(~X,~H3)
+Dist min:	   100
+Dist max:	   150
+Dist n bins:	   100
+Dist title:	   p,p->~X,~H3,j
+Dist x-title:	   T(~X,~H3)(GeV)
+
+Number of events (per run step): 10000
+Filename:                     pp_HXH3j 
+
+nSess_1:   5
+nCalls_1:  100000
+nSess_2:   5
+nCalls_2:  100000

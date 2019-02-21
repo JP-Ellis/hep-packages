@@ -1,0 +1,47 @@
+! main89ckkwl.cmnd
+! paper:L. Lönnblad and S. Prestel, JHEP 03 (2012) 019 [arXiv:1109.4829 [hep-ph]]
+
+! Specify statistics parameters.
+Merging:doCutBasedMerging=on
+
+Main:numberOfEvents         = 10000  ! number of events generated
+! Tell Pythia that LHEF input is used
+Beams:frameType             = 4
+
+! Specify merging parameters for CKKW-L, UMEPS, UNLOPS.
+
+Merging:Process             = pp>z ! process definition (read description of this syntax on the web page)
+!Merging:Process             = pp>zj ! process definition (read description of this syntax on the web page)
+
+Merging:mayRemoveDecayProducts=on
+Merging:nJetMax             = 2         ! maximal number of additional LO jets
+
+TimeShower:pTmaxMatch       = 1
+SpaceShower:pTmaxMatch      = 1
+
+Merging:QijMS=20.0
+Merging:pTiMS=20.0
+Merging:dRijMS=0.5
+
+
+! Set renormalisation / factorisation scales of the 2->2 process
+Merging:muFac               = 91.188
+Merging:muRen               = 91.188
+Merging:muFacInME           = 91.188
+Merging:muRenInME           = 91.188
+
+! Use same PDFs / alpha_s value as in ME calculation (not necessary!)
+!PDF:pSet                  = LHAPDF5:CT10.LHgrid
+!SpaceShower:alphaSvalue   = 0.118
+!TimeShower:alphaSvalue    = 0.118
+
+! Do not include rapidity ordering (not necessary!)
+SpaceShower:rapidityOrder = off
+
+! Be more forgiving with momentum mismatches.
+Check:epTolErr               = 2e-2
+
+! Subruns for CKKW-L merging.
+LHEFInputs:nSubruns       = 1
+Main:subrun               = 0
+Beams:LHEF                = Z-matching-single.lhe.gz

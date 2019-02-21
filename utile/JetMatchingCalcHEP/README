@@ -1,0 +1,36 @@
+This is a simple example of evaluating LO Z + 0,1,2 jets process
+in CalcHEP with  Jet matching via Pythia. 
+Thanks for to Stefan Prestel for numerous discussions and explanations.
+
+To do this you need.
+
+1. Run CalcHEP batch:
+./calchep_batch batch_file_Z_matching
+
+as a result, you will get LHE file with mixed Z + 0,1,2 jets events.
+The processes with 1 or 2 jets are regularized via PTjet and M(jet,jet) 
+(see batch file)
+
+As a result "Z-matching-single.lhe.gz" file with LHE events will be created in 
+"batch_results" folder
+
+2. Copy this file into your pythia "examples" folder together with 
+
+main103ckkwl.cmnd
+Makefile
+main103.cc
+
+an go there
+
+3. compile main103.cc "make main103" and run it 
+   
+"main103 main103ckkwl.cmnd main103.hepmc"
+
+with two arguments, the first one is the main103ckkwl.cmnd (provided here)
+and the second one -- the name of output hepmc file -- any name you like (main103.hepmc in this example)
+
+
+
+
+
+

@@ -1,0 +1,19 @@
+Version 3.7.4
+1) Form output. Bugs fixed : symb/out/form_out.c
+2) Detection of duplicate names in var#.mdl and func#.mdl. Bug is fixed : symb/read_mdl.c 
+3) Decay branching is sorted now.
+4) aPrintF works correctly even if "long double" or "_Quad" is chosen for real numbers.
+   aPrintF routine is intended  to write input file for spectrum  calculator from within 
+   func#.mld. It is similar to fprintf function and its first arguments defines format of reading of other arguments.
+   For real argument one of  flags E,e,G,g,f,F has to  be used, which corresponds to double numerical type.
+   Now when CalCHEP performs numerical calculations with other types, earch real argument of aPrintF is automatically
+   converted to type double: X => (double)(X). : symb/out/reader_c.c
+
+5) Polarization of incoming  photon  in case when second incoming particle is massive. Bug is fixed:
+    symb/symbolic.c 
+
+
+6) External matrix element. 
+   We have realized  a possibility to use  CalcHEP numerical integrator with  external matrix element.
+   We assume that the uses has compiled  some processes in CalCHEP but  would like to replace CalcHEP squared matrix
+   element on his own one.  See instructions in c_source/num/usrSQME_dummy.c 
