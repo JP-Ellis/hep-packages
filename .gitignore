@@ -6,5 +6,6 @@
 /AllAnalyses
 /libHB.a
 /example_programs/HBwithSLHA
+/makefile
 
 /store_pathname.f90
