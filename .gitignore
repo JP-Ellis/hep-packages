@@ -1,0 +1,10 @@
+*.o
+*.mod
+*.binary
+
+/HiggsBounds
+/AllAnalyses
+/libHB.a
+/example_programs/HBwithSLHA
+
+/store_pathname.f90
