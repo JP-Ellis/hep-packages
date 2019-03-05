@@ -1,0 +1,89 @@
+[submodule "CalcHEP"]
+	path = CalcHEP
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = CalcHEP
+    shallow = true
+[submodule "Collier"]
+	path = Collier
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = Collier
+    shallow = true
+[submodule "CollierLink"]
+	path = CollierLink
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = CollierLink
+    shallow = true
+[submodule "FeynArts"]
+	path = FeynArts
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = FeynArts
+    shallow = true
+[submodule "FeynCalc"]
+	path = FeynCalc
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = FeynCalc
+    shallow = true
+[submodule "FeynHelpers"]
+	path = FeynHelpers
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = FeynHelpers
+    shallow = true
+[submodule "FeynRules"]
+	path = FeynRules
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = FeynRules
+    shallow = true
+[submodule "FlexibleSUSY"]
+	path = FlexibleSUSY
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = FlexibleSUSY
+    shallow = true
+[submodule "HiggsBounds"]
+	path = HiggsBounds
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = HiggsBounds
+    shallow = true
+[submodule "MicrOmegas"]
+	path = MicrOmegas
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = MicrOmegas
+    shallow = true
+[submodule "Package-X"]
+	path = Package-X
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = Package-X
+    shallow = true
+[submodule "SARAH"]
+	path = SARAH
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = SARAH
+    shallow = true
+[submodule "SPheno"]
+	path = SPheno
+	url = https://github.com/JP-Ellis/SPheno.git
+	branch = SPheno
+    shallow = true
+[submodule "Susyno"]
+	path = Susyno
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = Susyno
+    shallow = true
+[submodule "FormCalc"]
+	path = FormCalc
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = FormCalc
+	shallow = true
+[submodule "hep-rs"]
+	path = hep-rs
+	url = https://github.com/hep-rs/hep-rs.git
+	shallow = true
+[submodule "LoopTools"]
+	path = LoopTools
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = LoopTools
+	shallow = true
+[submodule "mg5amcnlo"]
+	path = mg5amcnlo
+	url = https://github.com/JP-Ellis/hep-packages.git
+	branch = mg5amcnlo
+	shallow = true
