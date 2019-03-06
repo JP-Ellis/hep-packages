@@ -15,6 +15,8 @@
 #    in the environment variable MCC, e.g.
 #    setenv MCC /opt/Wolfram/Mathematica/10.0/Executables/mcc
 
+export MAKEFLAGS="$MAKEFLAGS -j1"
+
 CC="${CC:-gcc}"
 
 CXX="${CXX:-g++}"
@@ -22,6 +24,8 @@ CXX="${CXX:-g++}"
 MCC="${MCC:-mcc}"
 
 MATH="${MATH:-math}"
+
+MCFLAGS="-dy"
 
 CFLAGS="${CFLAGS:--O3 -fomit-frame-pointer -ffast-math -Wall -Wextra} $@"
 
@@ -93,9 +97,7 @@ echo "Compiling for system type $DEST"
 
 t="$SRC/drivers/tools"
 
-mcc="REALCC=\"$CC\" CC=\"$t/fcc\" \
-REALCXX=\"$CXX\" CXX=\"$t/f++\" \
-PATH=\""'$$PATH'":$t\" $MCC -st $MCFLAGS $CFLAGS"
+mcc="$MCC $MCFLAGS $CFLAGS"
 
 # Mma 5.1's mcc needs -lpthread for static linking
 mclibs="-lpthread"
@@ -109,7 +111,7 @@ all: $DEST/tform$exe \
   $DEST/ReadData$exe $DEST/reorder$exe
 
 $DEST/tform$exe: $SRC/bin/$BIN/tform$exe
-	cp -p $SRC/bin/$BIN/* $DEST/
+	cp -p $SRC/bin/$BIN/tform$exe $DEST/
 
 $DEST/ReadForm$exe: $SRC/FormCalc/ReadForm.tm
 	$mcc -o $DEST/ReadForm$exe $SRC/FormCalc/ReadForm.tm $mclibs
