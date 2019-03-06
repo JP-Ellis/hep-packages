@@ -2143,8 +2143,7 @@ $FormCalcVersionNumber = 9.7
 
 $FormCalcVersion = "FormCalc 9.7 (25 Jan 2019)"
 
-$FormCalcDir = DirectoryName[ File /.
-  FileInformation[System`Private`FindFile[$Input]] ]
+$FormCalcDir = DirectoryName[$InputFileName];
 
 $FormCalcSrc = ToFileName[{$FormCalcDir, "FormCalc"}]
 
