@@ -3736,7 +3736,7 @@ FormConst[vars_, nobrk_] := {
 tempnum = 1000 $KernelID + 1 /. HoldPattern[$KernelID] -> 0
 
 FormFile[stub_, n_] :=
-  ToFileName[Directory[], stub <> ToString[n] <> ".frm"]
+  ToFileName[$TemporaryDirectory, stub <> ToString[n] <> ".frm"]
 
 OpenForm[stub_:"fc"] :=
 Block[ {hh},
