@@ -19,7 +19,7 @@ void  cheplabel(void)
      scrcolor(Blue,LightGray);
      goto_xy(7,Y); print("CalcHEP - a package for Calculation in High Energy Physics");
      scrcolor(FGmain,BGmain);
-     goto_xy(15,Y+1);  print("Version 3.7.4: Last correction  February 19, 2019");
+     goto_xy(15,Y+1);  print("Version 3.7.5: Last correction  February 28, 2019");
    }
    { int Y=6;
      scrcolor(FGmain,BGmain); 
