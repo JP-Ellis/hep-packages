@@ -47,5 +47,4 @@ class IOTest_Histogram(IOTests.IOTestManager):
           histo_list.output(pjoin('%s','HistoOut'), format = 'gnuplot');
         ''' % (sys.path, _file_path, self.IOpath)
 
-        os.system('echo "%s" | python' % line) 
-
+        os.system('echo "%s" | python2' % line)

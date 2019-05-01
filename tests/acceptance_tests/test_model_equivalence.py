@@ -322,7 +322,7 @@ class TestModelCreation(unittest.TestCase, CheckFileCreate):
             pass
         # prepare for a local compilation
         
-        subprocess.call(['python','write_param_card.py'], cwd=os.path.join(MG5DIR,'models','sm'),
+        subprocess.call(['python2','write_param_card.py'], cwd=os.path.join(MG5DIR,'models','sm'),
                         stdout=subprocess.PIPE)
         files.cp(os.path.join(MG5DIR,'models','sm','param_card.dat'),
                  join('param_card.dat'))

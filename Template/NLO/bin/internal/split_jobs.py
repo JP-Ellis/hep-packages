@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 #  MZ, 2012-06-14
 import os
 import sys

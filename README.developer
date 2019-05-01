@@ -45,5 +45,4 @@ Run individual tests by specifying the test name.
 To create a release tar.gz file:
 --------------------------------
 Please run:
-python bin/create_release.py
-
+python2 bin/create_release.py

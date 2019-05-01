@@ -1,5 +1,5 @@
-#!/usr/bin/env python
 import re,sys
+#!/usr/bin/env python2
 import avh_pc_olo
 
 sysargv = sys.argv
@@ -25,7 +25,7 @@ for option in sysargv:
     elif re.match(r'cppintf',option): cppintf = re.sub(r'cppintf=','',option) 
     else:
         avh_pc.prnt('')
-        avh_pc.prnt('usage: python avh_pc_olo.py [dpkind="kind"]')
+        avh_pc.prnt('usage: python2 avh_pc_olo.py [dpkind="kind"]')
         avh_pc.prnt('                            [qpkind="kind"]')
         avh_pc.prnt('                            [kindmod="module"]')
         avh_pc.prnt('                            [ddtype="type"]')

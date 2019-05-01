@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 #Extension
 import string,os,sys,re,popen2,time,stat,filecmp

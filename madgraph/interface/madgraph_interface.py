@@ -6151,7 +6151,7 @@ MG5aMC that supports quadruple precision (typically g++ based on gcc 4.6+).""")
             if new_interface:
                 ff = open(pjoin(MG5DIR, 'bin', '%s.py' % name) , 'w') 
                 if __debug__:
-                    text = '''#! /usr/bin/env python
+                    text = '''#!/usr/bin/env python2
 import os
 import sys
 root_path = os.path.split(os.path.dirname(os.path.realpath( __file__ )))[0]
@@ -6160,7 +6160,7 @@ sys.argv.pop(0)
 os.system('%s  -tt %s %s --mode={0}' %(sys.executable, str(exe_path) , ' '.join(sys.argv) ))
 '''.format(name)                    
                 else:
-                    text = '''#! /usr/bin/env python
+                    text = '''#!/usr/bin/env python2
 import os
 import sys
 root_path = os.path.split(os.path.dirname(os.path.realpath( __file__ )))[0]

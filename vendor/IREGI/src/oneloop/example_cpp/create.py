@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 import re,string,os,sys,subprocess
 locdir,thisFile = os.path.split(os.path.abspath(sys.argv[0]))
 srcdir = os.path.join(locdir,'src')

@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 ################################################################################
 #
 # Copyright (c) 2009 The MadGraph5_aMC@NLO Development team and Contributors

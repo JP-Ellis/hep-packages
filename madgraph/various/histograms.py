@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python2
 ################################################################################
 #
 # Copyright (c) 2010 The MadGraph5_aMC@NLO Development team and Contributors
@@ -3370,7 +3370,7 @@ def plot_from_HWU(path, ax, hwu_variable, hwu_central, *args, **opts):
 if __name__ == "__main__":
     main_doc = \
     """ For testing and standalone use. Usage:
-        python histograms.py <.HwU input_file_path_1> <.HwU input_file_path_2> ... --out=<output_file_path.format> <options>
+        python2 histograms.py <.HwU input_file_path_1> <.HwU input_file_path_2> ... --out=<output_file_path.format> <options>
         Where <options> can be a list of the following: 
            '--help'          See this message.
            '--gnuplot' or '' output the histograms read to gnuplot
@@ -3404,7 +3404,7 @@ if __name__ == "__main__":
         
         When parsing an XML-formatted plot source output by the Pythia8 driver, the file names can be appended 
         options as suffixes separated by '|', as follows:
-           python histograms.py <XML_source_file_name>@<option1>@<option2>@etc..
+           python2 histograms.py <XML_source_file_name>@<option1>@<option2>@etc..
         These options can be
            'run_id=<integer>'      Specifies the run_ID from which the plots should be loaded.
                                    By default, the first run is considered and the ones that follow are ignored.

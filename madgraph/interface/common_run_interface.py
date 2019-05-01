@@ -899,7 +899,7 @@ class CommonRunCmd(HelpToCmd, CheckValidForCmd, cmd.Cmd):
                 fsock.close()
                 return
             else:
-                subprocess.call(['python', 'write_param_card.py'],
+                subprocess.call(['python2', 'write_param_card.py'],
                              cwd=pjoin(self.me_dir,'bin','internal','ufomodel'))
                 default = pjoin(self.me_dir,'bin','internal','ufomodel','param_card.dat')
 

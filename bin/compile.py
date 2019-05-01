@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python2
 ################################################################################
 #
 # Copyright (c) 2009 The MadGraph5_aMC@NLO Development team and Contributors
@@ -285,9 +285,9 @@ class Compile_MG5:
 
     def precompilation(self, debug=False):
         if debug:
-            subprocess.call('python -m compileall .', shell=True, cwd=root_path)            
+            subprocess.call('python2 -m compileall .', shell=True, cwd=root_path)            
         else:
-            subprocess.call('python -O -m compileall .', shell=True, cwd=root_path)
+            subprocess.call('python2 -O -m compileall .', shell=True, cwd=root_path)
 
 if __name__ == '__main__':
     Compile_MG5(sys.argv[1:])

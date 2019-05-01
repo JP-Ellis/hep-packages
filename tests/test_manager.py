@@ -1,4 +1,4 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python2
 ################################################################################
 #
 # Copyright (c) 2009 The MadGraph5_aMC@NLO Development team and Contributors
@@ -1092,6 +1092,4 @@ https://cp3.irmp.ucl.ac.be/projects/madgraph/wiki/DevelopmentPage/CodeTesting
 #    run('TestTestFinder')
 #    run('test_check_valid_on_file')
 #    run('test_collect_dir.*') # '.*' stands for all possible char (re format)
-#    python tests/test_manager.py test_decay.py -l INFO|less
-
-
+#    python2 tests/test_manager.py test_decay.py -l INFO|less

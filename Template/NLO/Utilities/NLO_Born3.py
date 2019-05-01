@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/env python2
 
 inp = open('./MADatNLO.top', 'r')
 out = open('./MADatNLO_combined.top', 'w')

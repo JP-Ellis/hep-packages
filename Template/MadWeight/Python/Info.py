@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 def giveInfo(class_):
         if type(class_)!=str:

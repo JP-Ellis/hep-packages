@@ -24,9 +24,9 @@ $(PROG): $(PROCESS) $(MW_PS)  makefile $(LIBS)
 	$(FC) $(FFLAGS) -o $(PROG) $(PROCESS) $(MW_PS) $(LINKLIBS)
 
 transfer_card.inc:../../Cards/transfer_card.dat ../../Cards/MadWeight_card.dat
-	python ../../bin/internal/madweight/Cards.py
+	python2 ../../bin/internal/madweight/Cards.py
 madweight_card.inc:../../Cards/transfer_card.dat ../../Cards/MadWeight_card.dat
-	python ../../bin/internal/madweight/Cards.py
+	python2 ../../bin/internal/madweight/Cards.py
 
 driver.o: phasespace.inc nexternal.inc data.inc coupl.inc madweight_card.inc nb_tf.inc
 initialization.o: madweight_card.inc TF_param.inc coupl.inc run.inc madweight_param.inc pmass.inc nexternal.inc maxamps.inc leshouche.inc nb_tf.inc

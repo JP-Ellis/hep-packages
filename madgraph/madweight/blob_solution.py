@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 try:
     import madgraph.madweight.particle_class as particle_class

@@ -45,7 +45,7 @@ close(INPUT);
 
         if (-e $tfdir."/TF_".$transfer_fct.".dat") {
       print "TF $transfer_fct found  in $tfdir \n";
-      system("python ./bin/change_tf.py $transfer_fct 0");
+      system("python2 ./bin/change_tf.py $transfer_fct 0");
       }
         else{print "Error Transfer function $transfer_fct not found \n";
           exit;

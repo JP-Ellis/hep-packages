@@ -14,7 +14,7 @@ c  <MG5_aMC_install_dir>/madgraph/various/histograms.py
 c
 c You can learn about how to run it and what options are available with
 c
-c  python <MG5_aMC_install_dir>/madgraph/various/histograms.py --help
+c  python2 <MG5_aMC_install_dir>/madgraph/various/histograms.py --help
 c
 C----------------------------------------------------------------------
       SUBROUTINE RCLOS()
