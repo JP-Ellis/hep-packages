@@ -11,6 +11,8 @@ static ModelPrtclsStr ModelPrtcls_[0]={ };
 ModelPrtclsStr *ModelPrtcls=ModelPrtcls_; 
 int nModelVars=0;
 int nModelFunc=0;
+int*currentVarPrt=NULL;
+
 static char*varNames_[0]={};
 
 char**varNames=varNames_;

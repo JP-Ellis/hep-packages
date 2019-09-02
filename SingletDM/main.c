@@ -339,7 +339,7 @@ printf("\n==== Calculation of CDM-nucleons amplitudes  =====\n");
 
 printf("\n======== Direct Detection ========\n");
 
-  nEvents=nucleusRecoil(Maxwell,73,Z_Ge,J_Ge73,SxxGe73,NULL,dNdE);
+  nEvents=nucleusRecoil(Maxwell,73,Z_Ge,J_Ge73,SxxGe73,dNdE);
 
   printf("73Ge: Total number of events=%.2E /day/kg\n",nEvents);
   printf("Number of events in 10 - 50 KeV region=%.2E /day/kg\n",
@@ -349,7 +349,7 @@ printf("\n======== Direct Detection ========\n");
     displayPlot("Distribution of recoil energy of 73Ge","E[keV]",1,50,0,1,"dNdE",0,dNdERecoil,dNdE);
 #endif
 
-  nEvents=nucleusRecoil(Maxwell,131,Z_Xe,J_Xe131,SxxXe131,NULL,dNdE);
+  nEvents=nucleusRecoil(Maxwell,131,Z_Xe,J_Xe131,SxxXe131,dNdE);
 
   printf("131Xe: Total number of events=%.2E /day/kg\n",nEvents);
   printf("Number of events in 10 - 50 KeV region=%.2E /day/kg\n",
@@ -358,7 +358,7 @@ printf("\n======== Direct Detection ========\n");
     displayPlot("Distribution of recoil energy of 131Xe","E[keV]",1,50,0,1,"dNdE",0,dNdERecoil,dNdE);
 #endif
 
-  nEvents=nucleusRecoil(Maxwell,23,Z_Na,J_Na23,SxxNa23,NULL,dNdE);
+  nEvents=nucleusRecoil(Maxwell,23,Z_Na,J_Na23,SxxNa23,dNdE);
 
   printf("23Na: Total number of events=%.2E /day/kg\n",nEvents);
   printf("Number of events in 10 - 50 KeV region=%.2E /day/kg\n",
@@ -367,7 +367,7 @@ printf("\n======== Direct Detection ========\n");
     displayPlot("Distribution of recoil energy of 23Na","E[keV]",1,50,0,1,"dNdE",0,dNdERecoil,dNdE);
 #endif
 
-  nEvents=nucleusRecoil(Maxwell,127,Z_I,J_I127,SxxI127,NULL,dNdE);
+  nEvents=nucleusRecoil(Maxwell,127,Z_I,J_I127,SxxI127,dNdE);
 
   printf("I127: Total number of events=%.2E /day/kg\n",nEvents);
   printf("Number of events in 10 - 50 KeV region=%.2E /day/kg\n",

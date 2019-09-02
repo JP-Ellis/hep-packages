@@ -29,18 +29,8 @@
 #include"../include/micromegas.h"
 #include"../include/micromegas_aux.h"
 
-static int N=0;
-double ex(double x){ N++; return exp(x);}
-
-
-
 int main(int argc,char** argv)
 {  int err,n,i;
-
-  double in= simpson(ex,-10,0,1E-5,NULL);
-  printf("int=%e [%e], N=%d\n", in,1-exp(-10),N);     
-  exit(0);
-
 
  
 // data corresponding to MSSM/mssmh.dat     

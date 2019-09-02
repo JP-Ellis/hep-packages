@@ -32,7 +32,7 @@ extern int VVdecay;
 
 extern int sortOddParticles(char * name);
 
-typedef  struct { double par[41]; }  MOcommonSTR;
+typedef  struct { double par[43]; }  MOcommonSTR;
 extern   MOcommonSTR  mocommon_;
 
 #define Mcdm        mocommon_.par[1]

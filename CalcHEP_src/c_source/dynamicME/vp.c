@@ -42,7 +42,7 @@ double pMass(char * name)
 {
   char *nm;
   int n=pTabPos(name);
-  if(!n){printf("2 Wrong particle name '%s'\n",name); return 0;}
+  if(!n){printf("Wrong particle name '%s'\n",name); return 0;}
   nm=ModelPrtcls[abs(n)-1].mass;
   if(nm[0]=='0') return 0; else 
   { REAL *ma=varAddress(nm);

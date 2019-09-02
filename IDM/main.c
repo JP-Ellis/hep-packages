@@ -76,7 +76,6 @@ int main(int argc,char** argv)
   }
                                
   err=readVar(argv[1]);
-  
   if(err==-1)     {printf("Can not open the file\n"); exit(1);}
   else if(err>0)  { printf("Wrong file contents at line %d\n",err);exit(1);}
              

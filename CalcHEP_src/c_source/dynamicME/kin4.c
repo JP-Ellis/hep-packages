@@ -1064,11 +1064,21 @@ int procInfo2(numout*cc,int nsub,char**name,REAL*mass)
 int passParameters(numout*cc)
 {
    int i;
-   for(i=1;i<=cc->interface->nvar;i++) if(cc->link[i]) cc->interface->va[i]=*(cc->link[i]);
+   for(i=1;i<=cc->interface->nvar;i++) if(cc->link[i] &&  ((REAL*)(cc->link[i])-varValues) < *currentVarPtr)  cc->interface->va[i]=*(cc->link[i]); else 
+   { 
+     printf("Value of variable  '%s' needed for calculation of '%s' is not known yet\n",
+     cc->interface->varName[i], varNames[*currentVarPtr]);  
+     cc->interface->va[i]=0; FError=1;
+   }
+   
    int err=cc->interface->calcFunc();
    if(err>0) { printf("cannot calculate constraint %s\n",cc->interface->varName[err]); return 1;}
    return 0;
 }
+
+
+
+
 
 #define P_NAME_SIZE 11
 int slhaDecayPrint(char * name, int dVirt, FILE*f)

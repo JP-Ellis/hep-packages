@@ -4,7 +4,7 @@
    to the corresponding package in lib/Makefile
 =====================================*/ 
 
-#define RGE  tree
+#define RGE  suspect
 
      /* choose 'suspect','softSusy','spheno', 'tree' */
 
@@ -16,7 +16,7 @@
 //#define SUGRANUH
 //#define AMSB 
 
-//#define EWSB 
+#define EWSB 
 
 /*====== Modules ===============
    Keys to switch on 
@@ -76,7 +76,7 @@
 //#define NEUTRINO 
  /*  Neutrino signal of DM annihilation in Sun and Earth */
  
-//#define DECAYS 
+#define DECAYS 
       /* Calculate decay widths and branchings  */      
 //#define CROSS_SECTIONS 
       /* Calculate cross sections of reactions specified by the user */
@@ -303,6 +303,7 @@ int main(int argc,char** argv)
   printf("Mb_pole=%E Mb_pole_1=%E alpha/pi=%E \n", Mbp(), 4.23*(1+4/3*alphaQCD(4.23)/M_PI), alphaQCD(4.23));
   exit(0);  
 */  
+
   err=sortOddParticles(cdmName);
 
   if(err) { printf("Can't calculate %s\n",cdmName); return 1;}

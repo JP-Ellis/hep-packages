@@ -336,6 +336,9 @@ static int testSubprocesses(void)
   int err,k1,k2,i,j;
   CDM1=CDM2=NULL;
   Mcdm=Mcdm1=Mcdm2=0;
+  
+  err=calcMainFunc();
+  if(err>0) return err;
    
   if(first)
   {
@@ -439,9 +442,7 @@ static int testSubprocesses(void)
 
   cleanDecayTable(); 
   if(Qaddress) *Qaddress=100;
- 
-  err=calcMainFunc();
-  if(err>0) return err;
+  
    
   if(Nodd==0) { printf("No odd particles in the model\n"); return -1; }
 
