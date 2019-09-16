@@ -1,0 +1,563 @@
+(* Content-type: application/mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[{
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"Tutorials \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno Tutorial\"\>":>
+       Documentation`HelpLookup["paclet:Susyno/tutorial/SusynoTutorial"]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"URL \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno/ref/ListContract\"\>":>
+       None, "\<\"Copy Mathematica url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["Susyno/ref/ListContract"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$]; Null],
+       Delimiter, "\<\"Copy web url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/mathematica/Susyno/ref/\
+ListContract.html"], StandardForm]], "Input", TextClipboardType ->
+              "PlainText"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$];
+        Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[
+            StringJoin[
+            "http://reference.wolfram.com/mathematica/",
+             "Susyno/ref/ListContract", ".html"]], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}]
+    }], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}},
+   "RowsIndexed" -> {}}},
+ CellID->1],
+
+Cell[CellGroupData[{
+
+Cell["ListContract", "ObjectName",
+ CellID->1224892054],
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"ListContract", "[",
+       RowBox[{"tensor", ",", "indexPairs"}], "]"}]], "InlineFormula"],
+     " \[LineSeparator]Efficiently calculates the trace of the sparse ",
+     Cell[BoxData["tensor"], "InlineFormula"],
+     " on the pairs of indices ",
+     Cell[BoxData["indexPairs"], "InlineFormula"]
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->9052147],
+
+Cell[TextData[{
+ Cell[BoxData["tensor"], "InlineFormula"],
+ " is a multidimensional tensor;"
+}], "Notes",
+ CellID->1067943069],
+
+Cell[TextData[{
+ Cell[BoxData["indexPairs"], "InlineFormula"],
+ " should be a list ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{
+    RowBox[{"{",
+     RowBox[{"index1", ",",
+      RowBox[{"index1", "'"}]}], "}"}], ",",
+    RowBox[{"{",
+     RowBox[{"index1", ",",
+      RowBox[{"index1", "'"}]}], "}"}], ",", "..."}], "}"}]], "InlineFormula"],
+ " with the pairs of indices to be contracted. ",
+ Cell[BoxData["indexI"], "InlineFormula"],
+ " will be contracted with ",
+ Cell[BoxData[
+  RowBox[{"indexI", "'"}]], "InlineFormula"],
+ ";"
+}], "Notes",
+ CellID->49030563],
+
+Cell[TextData[{
+ "This method is usually more efficient than a simple sum of the relevant \
+entries when ",
+ Cell[BoxData["tensor"], "InlineFormula"],
+ " is sparse ,i.e. it has many null entries. For ",
+ Cell[BoxData["ListContract"], "InlineFormula"],
+ " to take advantage of this, make sure to first convert  ",
+ Cell[BoxData["tensor"], "InlineFormula"],
+ " with the ",
+ StyleBox["Mathematica",
+  FontSlant->"Italic"],
+ " built-in function ",
+ ButtonBox["SparseArray",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/SparseArray"],
+ ": use ",
+ Cell[BoxData[
+  RowBox[{"SparseArray", "[", "tensor", "]"}]], "InlineFormula"],
+ " instead of just  ",
+ Cell[BoxData["tensor"], "InlineFormula"],
+ "."
+}], "Notes",
+ CellID->438546582]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->163180981],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(1)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->33416],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"tensorA", "=",
+  RowBox[{"Array", "[",
+   RowBox[{"a", ",",
+    RowBox[{"{",
+     RowBox[{"2", ",", "3", ",", "2"}], "}"}]}], "]"}]}]], "Input",
+ CellID->230903725]
+}]],
+
+Cell["Contract the 1st and 3rd indices:", "ExampleText",
+ CellID->4545164],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ListContract", "[",
+  RowBox[{"tensorA", ",",
+   RowBox[{"{",
+    RowBox[{"{",
+     RowBox[{"1", ",", "3"}], "}"}], "}"}]}], "]"}]], "Input",
+ CellID->620694638]
+}]],
+
+Cell["With ...", "ExampleText",
+ CellID->4408224],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"tensorB", "=",
+  RowBox[{"Array", "[",
+   RowBox[{"b", ",",
+    RowBox[{"{",
+     RowBox[{"2", ",", "3", ",", "2"}], "}"}]}], "]"}]}]], "Input",
+ CellID->41515635]
+}]],
+
+Cell["... tensorA.tensorB is a 4-dimensional tensor:", "ExampleText",
+ CellID->237789779],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Dimensions", "[",
+  RowBox[{"tensorA", ".", "tensorB"}], "]"}]], "Input",
+ CellID->639315489]
+}]],
+
+Cell["\<\
+To contract the 1st index with the 4th and the 2nd with the 3rd, do\
+\>", "ExampleText",
+ CellID->2759478],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ListContract", "[",
+  RowBox[{
+   RowBox[{"tensorA", ".", "tensorB"}], ",",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{"1", ",", "4"}], "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"2", ",", "3"}], "}"}]}], "}"}]}], "]"}]], "Input",
+ CellID->7136881]
+}]],
+
+Cell["This is the same as", "ExampleText",
+ CellID->453474875],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Sum", "[",
+  RowBox[{
+   RowBox[{
+    RowBox[{"(",
+     RowBox[{"tensorA", ".", "tensorB"}], ")"}], "[",
+    RowBox[{"[",
+     RowBox[{"i", ",", "j", ",", "j", ",", "i"}], "]"}], "]"}], ",",
+   RowBox[{"{",
+    RowBox[{"i", ",", "2"}], "}"}], ",",
+   RowBox[{"{",
+    RowBox[{"j", ",", "3"}], "}"}]}], "]"}]], "Input",
+ CellID->3530872]
+}]],
+
+Cell["\<\
+While in this case ListContract is slower than the direct method using Sum, \
+if the tensor to be contracted is sparse (i.e., there are many null entries) \
+ListContract might be more efficient. To take advantage of this the tensor to \
+be passed on to ListContract should be SparseArray[tensor] and not just \
+tensor. Take the MSSM example:\
+\>", "ExampleText",
+ CellID->8396752],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"norm", "=",
+   RowBox[{"Sqrt", "[",
+    RowBox[{"3", "/", "5"}], "]"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Q", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"U1", "->",
+      RowBox[{
+       RowBox[{"1", "/", "6"}], " ", "norm"}]}], " ", ",",
+     RowBox[{"SU2", "->",
+      RowBox[{"{", "1", "}"}]}], ",",
+     RowBox[{"SU3", "->",
+      RowBox[{"{",
+       RowBox[{"1", ",", "0"}], "}"}]}], ",",
+     RowBox[{"NFlavours", "\[Rule]", "3"}], ",",
+     RowBox[{"DiscreteSym", "\[Rule]",
+      RowBox[{"-", "1"}]}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"u", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"U1", "->",
+      RowBox[{
+       RowBox[{
+        RowBox[{"-", "2"}], "/", "3"}], " ", "norm"}]}], " ", ",",
+     RowBox[{"SU2", "->",
+      RowBox[{"{", "0", "}"}]}], ",",
+     RowBox[{"SU3", "->",
+      RowBox[{"{",
+       RowBox[{"0", ",", "1"}], "}"}]}], ",",
+     RowBox[{"NFlavours", "\[Rule]", "3"}], ",",
+     RowBox[{"DiscreteSym", "\[Rule]",
+      RowBox[{"-", "1"}]}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"d", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"U1", "\[Rule]",
+      RowBox[{
+       RowBox[{"1", "/", "3"}], " ", "norm"}]}], " ", ",",
+     RowBox[{"SU2", "->",
+      RowBox[{"{", "0", "}"}]}], ",",
+     RowBox[{"SU3", "->",
+      RowBox[{"{",
+       RowBox[{"0", ",", "1"}], "}"}]}], ",",
+     RowBox[{"NFlavours", "\[Rule]", "3"}], ",",
+     RowBox[{"DiscreteSym", "\[Rule]",
+      RowBox[{"-", "1"}]}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"L", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"U1", "\[Rule]",
+      RowBox[{
+       RowBox[{
+        RowBox[{"-", "1"}], "/", "2"}], " ", "norm"}]}], " ", ",",
+     RowBox[{"SU2", "->",
+      RowBox[{"{", "1", "}"}]}], ",",
+     RowBox[{"SU3", "->",
+      RowBox[{"{",
+       RowBox[{"0", ",", "0"}], "}"}]}], ",",
+     RowBox[{"NFlavours", "\[Rule]", "3"}], ",",
+     RowBox[{"DiscreteSym", "\[Rule]",
+      RowBox[{"-", "1"}]}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"e", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"U1", "\[Rule]", " ", "norm"}], " ", ",",
+     RowBox[{"SU2", "->",
+      RowBox[{"{", "0", "}"}]}], ",",
+     RowBox[{"SU3", "->",
+      RowBox[{"{",
+       RowBox[{"0", ",", "0"}], "}"}]}], ",",
+     RowBox[{"NFlavours", "\[Rule]", "3"}], ",",
+     RowBox[{"DiscreteSym", "\[Rule]",
+      RowBox[{"-", "1"}]}]}], "}"}]}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Hu", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"U1", "\[Rule]", " ",
+      RowBox[{
+       RowBox[{"1", "/", "2"}], "norm"}]}], " ", ",",
+     RowBox[{"SU2", "->",
+      RowBox[{"{", "1", "}"}]}], ",",
+     RowBox[{"SU3", "->",
+      RowBox[{"{",
+       RowBox[{"0", ",", "0"}], "}"}]}], ",",
+     RowBox[{"NFlavours", "\[Rule]", "1"}], ",",
+     RowBox[{"DiscreteSym", "\[Rule]", "1"}]}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"Hd", "=",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"U1", "\[Rule]", " ",
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "1"}], "/", "2"}], "norm"}]}], " ", ",",
+      RowBox[{"SU2", "->",
+       RowBox[{"{", "1", "}"}]}], ",",
+      RowBox[{"SU3", "->",
+       RowBox[{"{",
+        RowBox[{"0", ",", "0"}], "}"}]}], ",",
+      RowBox[{"NFlavours", "\[Rule]", "1"}], ",",
+      RowBox[{"DiscreteSym", "\[Rule]", "1"}]}], "}"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"model", "=",
+    RowBox[{"{",
+     RowBox[{
+     "Q", ",", "u", ",", "d", ",", "L", ",", "e", ",", "Hu", ",", "Hd"}],
+     "}"}]}], ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"result", "=",
+   RowBox[{"ShowLagrangian", "[",
+    RowBox[{"model", ",",
+     RowBox[{"Verbose", "\[Rule]", "False"}]}], "]"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{"tensorY", "=",
+  RowBox[{"result", "[",
+   RowBox[{"[", "1", "]"}], "]"}]}]}], "Input",
+ CellID->9972690]
+}]],
+
+Cell["tensorY is a 3-dimensional tensor with the Yukawas:", "ExampleText",
+ CellID->609778014],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Dimensions", "[", "tensorY", "]"}]], "Input",
+ CellID->177162335]
+}]],
+
+Cell["\<\
+Lets try the sum of tensorY[[i1,j1,k1]] tensorY[[k1,j1,i1]] (can't use as \
+loop variables i,j,k,....they are flavours!):\
+\>", "ExampleText",
+ CellID->205901764],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"Sum", "[",
+  RowBox[{
+   RowBox[{
+    RowBox[{"tensorY", "[",
+     RowBox[{"[",
+      RowBox[{"i1", ",", "j1", ",", "k1"}], "]"}], "]"}], " ",
+    RowBox[{"tensorY", "[",
+     RowBox[{"[",
+      RowBox[{"k1", ",", "j1", ",", "i1"}], "]"}], "]"}]}], ",",
+   RowBox[{"{",
+    RowBox[{"j1", ",", "19"}], "}"}], ",",
+   RowBox[{"{",
+    RowBox[{"k1", ",", "19"}], "}"}], ",",
+   RowBox[{"{",
+    RowBox[{"i1", ",", "19"}], "}"}]}], "]"}], "\[IndentingNewLine]",
+ RowBox[{"ListContract", "[",
+  RowBox[{
+   RowBox[{"tensorY", ".", "tensorY"}], ",",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{"1", ",", "4"}], "}"}], ",",
+     RowBox[{"{",
+      RowBox[{"2", ",", "3"}], "}"}]}], "}"}]}], "]"}]}], "Input",
+ CellID->93658760]
+}]],
+
+Cell["ListContract is faster:", "ExampleText",
+ CellID->65108135],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"Timing", "[",
+  RowBox[{"Do", "[",
+   RowBox[{
+    RowBox[{"Sum", "[",
+     RowBox[{
+      RowBox[{
+       RowBox[{"tensorY", "[",
+        RowBox[{"[",
+         RowBox[{"i1", ",", "j1", ",", "k1"}], "]"}], "]"}], " ",
+       RowBox[{"tensorY", "[",
+        RowBox[{"[",
+         RowBox[{"k1", ",", "j1", ",", "i1"}], "]"}], "]"}]}], ",",
+      RowBox[{"{",
+       RowBox[{"j1", ",", "19"}], "}"}], ",",
+      RowBox[{"{",
+       RowBox[{"k1", ",", "19"}], "}"}], ",",
+      RowBox[{"{",
+       RowBox[{"i1", ",", "19"}], "}"}]}], "]"}], ",",
+    RowBox[{"{",
+     RowBox[{"loops", ",", "10"}], "}"}]}], "]"}],
+  "]"}], "\[IndentingNewLine]",
+ RowBox[{"Timing", "[",
+  RowBox[{"Do", "[",
+   RowBox[{
+    RowBox[{"ListContract", "[",
+     RowBox[{
+      RowBox[{"tensorY", ".", "tensorY"}], ",",
+      RowBox[{"{",
+       RowBox[{
+        RowBox[{"{",
+         RowBox[{"1", ",", "4"}], "}"}], ",",
+        RowBox[{"{",
+         RowBox[{"2", ",", "3"}], "}"}]}], "}"}]}], "]"}], ",",
+    RowBox[{"{",
+     RowBox[{"loops", ",", "10"}], "}"}]}], "]"}], "]"}]}], "Input",
+ CellID->427641734]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["TUTORIALS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "TutorialsSection",
+ CellID->250839057],
+
+Cell[TextData[ButtonBox["Susyno Tutorial",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/tutorial/SusynoTutorial"]], "Tutorials",
+ CellID->341631938]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["RELATED LINKS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "RelatedLinksSection",
+ CellID->1584193535],
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox["SparseArray",
+  BaseStyle->"Link",
+  ButtonData->"paclet:ref/SparseArray"]], "InlineFormula"]], "RelatedLinks",
+ CellID->1038487239]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

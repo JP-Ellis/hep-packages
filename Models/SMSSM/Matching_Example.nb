@@ -1,0 +1,228 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["NMSSM<-> SM+Singlet+EWinos Matching", "Section"],
+
+Cell[CellGroupData[{
+
+Cell["Interactive Mode", "Subsection"],
+
+Cell[CellGroupData[{
+
+Cell["Initialisation", "Subsubsection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"<<", "SARAH`"}]], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Start", "[", "\"\<SMSSM\>\"", "]"}]], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ",
+   RowBox[{
+   "load", " ", "definitions", " ", "used", " ", "in", " ", "the", " ",
+    "batch", " ", "mode"}], "*)"}], "\[IndentingNewLine]",
+  RowBox[{"Get", "[",
+   RowBox[{"$sarahCurrentModelDir", "<>", "\"\<Matching_SplitSUSY.m\>\""}],
+   "]"}]}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ",
+   RowBox[{
+   "Initialize", " ", "interactive", " ", "mode", " ", "with", " ", "the",
+    " ", "definitions", " ", "from", " ", "the", " ", "steering", " ", "file",
+     " ", "loaded", " ", "above"}], "*)"}], "\[IndentingNewLine]",
+  RowBox[{"InitMatching", "[",
+   RowBox[{
+    RowBox[{"Parametrisation", "\[Rule]", "$ParametrisationUV"}], ",",
+    RowBox[{"Assumptions", "\[Rule]", "$AssumptionsMatching"}], ",", " ",
+    RowBox[{"SolveTadpoles", "\[Rule]", "$SolveTadpolesUV"}]}],
+   "]"}]}]], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Check for how the mass eigenstates are labeled", "Subsubsection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"?", "M"}]], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]],
+
+Cell[BoxData[
+ RowBox[{"(*",
+  RowBox[{"\[Rule]", " ",
+   RowBox[{
+    RowBox[{"(",
+     RowBox[{
+      RowBox[{"hh", "[", "3", "]"}], ",",
+      RowBox[{"Ah", "[", "3", "]"}], ",",
+      RowBox[{"Hpm", "[", "2", "]"}]}], ")"}], " ", "correspond", " ", "to",
+    " ", "the", " ", "heavy", " ", "doublet"}]}], "*)"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"EFTcoupLO", "[",
+  RowBox[{"{",
+   RowBox[{
+    RowBox[{"hh", "[", "1", "]"}], ",",
+    RowBox[{"hh", "[", "1", "]"}], ",",
+    RowBox[{"hh", "[", "1", "]"}], ",",
+    RowBox[{"hh", "[", "1", "]"}]}], "}"}], "]"}], "\[IndentingNewLine]",
+ RowBox[{"EFTcoupLO", "[",
+  RowBox[{"{",
+   RowBox[{
+    RowBox[{"hh", "[", "2", "]"}], ",",
+    RowBox[{"hh", "[", "2", "]"}], ",",
+    RowBox[{"hh", "[", "2", "]"}], ",",
+    RowBox[{"hh", "[", "2", "]"}]}], "}"}], "]"}]}], "Input"]
+}]],
+
+Cell[BoxData[
+ RowBox[{"(*", " ",
+  RowBox[{"\[Rule]", " ",
+   RowBox[{
+    RowBox[{
+     RowBox[{"hh", "[", "1", "]"}], " ", "is", " ", "the", " ", "singlet",
+     " ", "and", " ",
+     RowBox[{"hh", "[", "2", "]"}], " ", "is", " ", "the", " ", "SM"}], "-",
+    RowBox[{"like", " ", "Higgs"}]}]}], " ", "*)"}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Example: NLO corrections to the singlet-higgs-higgs coupling \
+\>", "Subsubsection"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"EFTcoupLO", "[",
+  RowBox[{"{",
+   RowBox[{
+    RowBox[{"hh", "[", "1", "]"}], ",",
+    RowBox[{"hh", "[", "2", "]"}], ",",
+    RowBox[{"hh", "[", "2", "]"}]}], "}"}], "]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"EFTcoupNLO", "[",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "2", "]"}], ",",
+      RowBox[{"hh", "[", "2", "]"}]}], "}"}], "]"}], "-", "%"}], "//",
+  "FullSimplify"}]}], "Input"]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Batch Mode", "Subsection"],
+
+Cell[BoxData[
+ RowBox[{"(*", " ",
+  RowBox[{
+   RowBox[{
+   "compute", " ", "all", " ", "matching", " ", "conditions", " ", "at", " ",
+    "once"}], ",", " ",
+   RowBox[{"also", " ", "generate", " ", "a", " ", "suitable", " ",
+    RowBox[{"SPheno", ".", "m"}], " ", "in", " ", "the", " ",
+    RowBox[{"SplitSUSY", "/", "NMSSM"}], " ", "directory", " ", "as", " ",
+    "well", " ", "as", " ", "Fortran", " ", "functions", " ", "for", " ",
+    "the", " ", "analytical", " ", "expression", " ", "ins", " ",
+    RowBox[{
+     RowBox[{
+      RowBox[{"Ouput", "/", "SMSSM"}], "/", "Matching"}], "/",
+     "SimpleSplitNMSSM"}]}]}], " ", "*)"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"InitMatching", "[",
+  RowBox[{"InputFile", "\[Rule]", "\"\<Matching_SplitSUSY.m\>\""}],
+  "]"}]], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Create SPheno Output", "Subsection"],
+
+Cell[BoxData[
+ RowBox[{"Quit", "[", "]"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"<<", "SARAH`"}], "\[IndentingNewLine]",
+ RowBox[{"Start", "[",
+  RowBox[{"\"\<SplitSUSY\>\"", ",", "\"\<NMSSM\>\""}], "]"}]}], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"MakeSPheno", "[",
+  RowBox[{
+   RowBox[{
+   "InputFile", "\[Rule]", "\"\<SPhenoEFT_SMSSM_SimpleSplitNMSSM.m\>\""}],
+   ",",
+   RowBox[{"IncludeFlavorKit", "\[Rule]", "False"}]}], "]"}]], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]]
+}]]
+}]]
+}]
+(* End of Notebook Content *)

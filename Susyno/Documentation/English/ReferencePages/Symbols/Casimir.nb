@@ -1,0 +1,302 @@
+(* Content-type: application/mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[{
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"Tutorials \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno Tutorial\"\>":>
+       Documentation`HelpLookup["paclet:Susyno/tutorial/SusynoTutorial"]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"URL \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno/ref/Casimir\"\>":>
+       None, "\<\"Copy Mathematica url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["Susyno/ref/Casimir"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$]; Null],
+       Delimiter, "\<\"Copy web url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/mathematica/Susyno/ref/Casimir.\
+html"], StandardForm]], "Input", TextClipboardType -> "PlainText"]}, Visible ->
+            False]]; SelectionMove[
+         DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$];
+        Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[
+            StringJoin[
+            "http://reference.wolfram.com/mathematica/", "Susyno/ref/Casimir",
+              ".html"]], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}]
+    }], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}},
+   "RowsIndexed" -> {}}},
+ CellID->1],
+
+Cell[CellGroupData[{
+
+Cell["Casimir", "ObjectName",
+ CellID->1224892054],
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"Casimir", "[",
+       RowBox[{"group", ",", " ", "rep"}], "]"}]], "InlineFormula"],
+     " \[LineSeparator]Computes the quadratic Casimir of representation ",
+     Cell[BoxData["rep"], "InlineFormula"],
+     " of ",
+     Cell[BoxData["group"], "InlineFormula"]
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->59836205],
+
+Cell[TextData[{
+ Cell[BoxData["group"], "InlineFormula"],
+ " should a ",
+ ButtonBox["Cartan matrix",
+  BaseStyle->"Link",
+  ButtonData->"paclet:Susyno/ref/CartanMatrix"],
+ ";"
+}], "Notes",
+ CellID->1067943069],
+
+Cell[TextData[{
+ "Each representation ",
+ Cell[BoxData["rep"], "InlineFormula"],
+ " should be a list of non-negative integers (Dynkin coefficients)."
+}], "Notes",
+ CellID->125196071]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->172084995],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(1)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->39933526],
+
+Cell[TextData[{
+ "The usual convention of having the fundamental of SU(n) with a Casimir ",
+ Cell[BoxData[
+  FractionBox[
+   RowBox[{
+    SuperscriptBox["n", "2"], "-", "1"}],
+   RowBox[{"2", "n"}]]], "InlineFormula"],
+ " is respected by this method:"
+}], "ExampleText",
+ CellID->32979335],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Print", "[",
+   RowBox[{"\"\<Casimir of the fundamental of SU(2): \>\"", ",",
+    RowBox[{"Casimir", "[",
+     RowBox[{"SU2", ",",
+      RowBox[{"{", "1", "}"}]}], "]"}]}], "]"}], ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[",
+   RowBox[{"\"\<Casimir of the fundamental of SU(3): \>\"", ",",
+    RowBox[{"Casimir", "[",
+     RowBox[{"SU3", ",",
+      RowBox[{"{",
+       RowBox[{"1", ",", "0"}], "}"}]}], "]"}]}], "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[",
+   RowBox[{"\"\<Casimir of the fundamental of SU(4): \>\"", ",",
+    RowBox[{"Casimir", "[",
+     RowBox[{"SU4", ",",
+      RowBox[{"{",
+       RowBox[{"1", ",", "0", ",", "0"}], "}"}]}], "]"}]}], "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[",
+   RowBox[{"\"\<Casimir of the fundamental of SU(5): \>\"", ",",
+    RowBox[{"Casimir", "[",
+     RowBox[{"SU5", ",",
+      RowBox[{"{",
+       RowBox[{"1", ",", "0", ",", "0", ",", "0"}], "}"}]}], "]"}]}], "]"}],
+  ";"}]}], "Input",
+ CellID->280814282],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]],
+
+Cell["\<\
+C(G), the Casimir of the adjoint representation, can be found using the \
+Adjoint method:\
+\>", "ExampleText",
+ CellID->6164437],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"Print", "[",
+   RowBox[{"\"\<C(G) of SU(2): \>\"", ",",
+    RowBox[{"Casimir", "[",
+     RowBox[{"SU2", ",",
+      RowBox[{"Adjoint", "[", "SU2", "]"}]}], "]"}]}], "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[",
+   RowBox[{"\"\<C(G) of SU(5): \>\"", ",",
+    RowBox[{"Casimir", "[",
+     RowBox[{"SU5", ",",
+      RowBox[{"Adjoint", "[", "SU5", "]"}]}], "]"}]}], "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[",
+   RowBox[{"\"\<C(G) of SO(10): \>\"", ",",
+    RowBox[{"Casimir", "[",
+     RowBox[{"SO10", ",",
+      RowBox[{"Adjoint", "[", "SO10", "]"}]}], "]"}]}], "]"}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Print", "[",
+   RowBox[{"\"\<C(G) of E(6): \>\"", ",",
+    RowBox[{"Casimir", "[",
+     RowBox[{"E6", ",",
+      RowBox[{"Adjoint", "[", "E6", "]"}]}], "]"}]}], "]"}], ";"}]}], "Input",
+ CellID->194792086],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["TUTORIALS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "TutorialsSection",
+ CellID->250839057],
+
+Cell[TextData[ButtonBox["Susyno Tutorial",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/tutorial/SusynoTutorial"]], "Tutorials",
+ CellID->341631938]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["RELATED LINKS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "RelatedLinksSection",
+ CellID->1584193535],
+
+Cell[TextData[ButtonBox["Adjoint",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/ref/Adjoint"]], "RelatedLinks",
+ CellID->1038487239]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

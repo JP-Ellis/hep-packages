@@ -1,0 +1,208 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[
+ RowBox[{"<<", "Susyno`"}]], "Input"]
+}]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"y", "[",
+    RowBox[{"1", ",", "2", ",", "2", ",", "1", ",", "m_", ",", "n_"}], "]"}],
+   ":=",
+   RowBox[{"Y", "[",
+    RowBox[{"m", ",", "n"}], "]"}]}], ";", " ",
+  RowBox[{
+   RowBox[{"y", "[",
+    RowBox[{"1", ",", "2", ",", "3", ",", "1", ",", "m_", ",", "n_"}], "]"}],
+   ":=",
+   RowBox[{"Y2", "[",
+    RowBox[{"m", ",", "n"}], "]"}]}], ";", " ",
+  RowBox[{
+   RowBox[{"y", "[",
+    RowBox[{"1", ",", "2", ",", "2", ",", "1", ",", "m_", ",", "n_"}], "]"}],
+   ":=", "0"}], ";"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"rep16", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"SO10", "->",
+      RowBox[{"{",
+       RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], ",",
+     RowBox[{"NFlavours", "\[Rule]", "3"}], ",",
+     RowBox[{"DiscreteSym", "\[Rule]", "1"}]}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"rep16A", "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"SO10", "->",
+      RowBox[{"{",
+       RowBox[{"0", ",", "0", ",", "0", ",", "0", ",", "1"}], "}"}]}], ",",
+     RowBox[{"NFlavours", "\[Rule]", "3"}], ",",
+     RowBox[{"DiscreteSym", "\[Rule]", "1"}]}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"rep10", "=",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"SO10", "->",
+       RowBox[{"{",
+        RowBox[{"1", ",", "0", ",", "0", ",", "0", ",", "0"}], "}"}]}], ",",
+      RowBox[{"NFlavours", "\[Rule]", "1"}], ",",
+      RowBox[{"DiscreteSym", "\[Rule]", "1"}]}], "}"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{
+      RowBox[{
+       RowBox[{"BetaFunctions1L", "[",
+        RowBox[{"{",
+         RowBox[{"rep10", ",", "rep16", ",", "rep16A"}], "}"}], "]"}], " ", "/.",
+        " ",
+       RowBox[{
+        RowBox[{"y", "[",
+         RowBox[{"1", ",", "2", ",", "2", ",", "1", ",", "m_", ",", "n_"}],
+         "]"}], "\[Rule]",
+        RowBox[{"Y", "[",
+         RowBox[{"m", ",", "n"}], "]"}]}]}], "/.", " ",
+      RowBox[{
+       RowBox[{"y", "[",
+        RowBox[{"1", ",", "2", ",", "3", ",", "1", ",", "m_", ",", "n_"}],
+        "]"}], "\[Rule]",
+       RowBox[{"Y2", "[",
+        RowBox[{"m", ",", "n"}], "]"}]}]}], " ", "/.", " ",
+     RowBox[{
+      RowBox[{"y", "[",
+       RowBox[{"1", ",", "3", ",", "3", ",", "1", ",", "m_", ",", "n_"}],
+       "]"}], "\[Rule]", "0"}]}], "/.", " ",
+    RowBox[{
+     RowBox[{"h", "[",
+      RowBox[{"1", ",", "2", ",", "2", ",", "1", ",", "m_", ",", "n_"}],
+      "]"}], "\[Rule]",
+     RowBox[{"h", "[",
+      RowBox[{"m", ",", "n"}], "]"}]}]}], "/.", " ",
+   RowBox[{
+    RowBox[{"h", "[",
+     RowBox[{"1", ",", "2", ",", "3", ",", "1", ",", "m_", ",", "n_"}], "]"}],
+     "\[Rule]",
+    RowBox[{"h2", "[",
+     RowBox[{"m", ",", "n"}], "]"}]}]}], " ", "/.", " ",
+  RowBox[{
+   RowBox[{"H", "[",
+    RowBox[{"1", ",", "3", ",", "3", ",", "1", ",", "m_", ",", "n_"}], "]"}],
+   "\[Rule]", "0"}]}]}], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"res", "=",
+  RowBox[{"Simplify", "[", "%", "]"}]}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Expand", "[",
+   RowBox[{
+    RowBox[{"Sqrt", "[",
+     RowBox[{"2", " ", "5"}], "]"}],
+    RowBox[{"res", "[",
+     RowBox[{"[",
+      RowBox[{"4", ",", "2"}], "]"}], "]"}]}], "]"}], " ", "/.",
+  RowBox[{
+   RowBox[{"Y2", "[",
+    RowBox[{"a_", ",", "b_"}], "]"}], "\[Rule]",
+   RowBox[{
+    RowBox[{"Y2", "[",
+     RowBox[{"a", ",", "b"}], "]"}], "/",
+    RowBox[{"Sqrt", "[",
+     RowBox[{"2", " ", "5"}], "]"}]}]}]}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"Expand", "[",
+      RowBox[{"res", "[",
+       RowBox[{"[", "11", "]"}], "]"}], "]"}], " ", "/.",
+     RowBox[{
+      RowBox[{"Y", "[",
+       RowBox[{"a_", ",", "b_"}], "]"}], "\[Rule]",
+      RowBox[{
+       RowBox[{"Y", "[",
+        RowBox[{"a", ",", "b"}], "]"}], "/",
+       RowBox[{"Sqrt", "[",
+        RowBox[{"Sqrt", "[",
+         RowBox[{"2", " ", "5"}], "]"}], "]"}]}]}]}], "/.",
+    RowBox[{
+     RowBox[{"Y2", "[",
+      RowBox[{"a_", ",", "b_"}], "]"}], "\[Rule]",
+     RowBox[{
+      RowBox[{"Y2", "[",
+       RowBox[{"a", ",", "b"}], "]"}], "/",
+      RowBox[{"Sqrt", "[",
+       RowBox[{"Sqrt", "[",
+        RowBox[{"2", " ", "5"}], "]"}], "]"}]}]}]}], "/.",
+   RowBox[{
+    RowBox[{"h", "[",
+     RowBox[{"a_", ",", "b_"}], "]"}], "\[Rule]",
+    RowBox[{
+     RowBox[{"h", "[",
+      RowBox[{"a", ",", "b"}], "]"}], "/",
+     RowBox[{"Sqrt", "[",
+      RowBox[{"Sqrt", "[",
+       RowBox[{"2", " ", "5"}], "]"}], "]"}]}]}]}], "/.",
+  RowBox[{
+   RowBox[{"h2", "[",
+    RowBox[{"a_", ",", "b_"}], "]"}], "\[Rule]",
+   RowBox[{
+    RowBox[{"h2", "[",
+     RowBox[{"a", ",", "b"}], "]"}], "/",
+    RowBox[{"Sqrt", "[",
+     RowBox[{"Sqrt", "[",
+      RowBox[{"2", " ", "5"}], "]"}], "]"}]}]}]}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"10", "*", "16", "*", "10"}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ShowLagrangian", "[",
+  RowBox[{"{",
+   RowBox[{"rep10", ",", "rep16", ",", "rep16A"}], "}"}], "]"}]], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]]
+}]
+(* End of Notebook Content *)

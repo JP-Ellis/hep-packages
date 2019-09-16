@@ -1,0 +1,678 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[TextData[{
+ "Example of an EFT matching: High Scale MSSM with low ",
+ Cell[BoxData[
+  FormBox[
+   SubscriptBox["m", "A"], TraditionalForm]],
+  FormatType->"TraditionalForm",ExpressionUUID->
+  "8a97ea17-705e-45e5-8128-47b881dd6001"],
+ " "
+}], "Title"],
+
+Cell[CellGroupData[{
+
+Cell["Start SARAH and load the MSSM model", "Section"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"<<", "SARAH`"}], "\[IndentingNewLine]",
+ RowBox[{"Start", "[", "\"\<MSSM\>\"", "]"}]}], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Interactive Mode", "Section"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"?", "InitMatching"}]], "Input"]
+}]],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ",
+   RowBox[{"notes", " ", "on", " ", "the", " ",
+    RowBox[{"parametrisation", ":", " ", "\[IndentingNewLine]", "  ",
+     RowBox[{
+      RowBox[{
+       RowBox[{"-", " ", "universal"}], " ", "soft"}], "-", "SUSY", "-",
+      RowBox[{"breaking", " ", "parameters"}], " ", "\[IndentingNewLine]",
+      " ", "-", " ",
+      RowBox[{"vanishing", " ", "VEVS"}]}], ":", " ",
+     RowBox[{
+      RowBox[{"neglect", " ", "higher"}], "-",
+      RowBox[{"dimensional", " ", "operators"}], "\[IndentingNewLine]", " ",
+      "-", " ",
+      RowBox[{"only", " ", "contributions", " ", "fron", " ", "third", " ",
+       RowBox[{"slepton", "/", "squark"}], " ", "generation", " ", "as", " ",
+       "well", " ", "as", " ", "and", " ", "degenerate", " ",
+       "electroweakinos", "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"also", ":", "\[IndentingNewLine]", " ",
+        RowBox[{
+         RowBox[{
+          RowBox[{"-", " ", "use"}], " ", "epsUV", " ", "to", " ", "mark",
+          " ", "the", " ", "parameters", " ", "to", " ", "be", " ",
+          "neglected", " ", "at", " ", "the", " ", "matching", " ", "scale"}],
+          "\[IndentingNewLine]", "-", " ",
+         RowBox[{"be", " ", "careful", " ", "with", " ", "re"}], "-",
+         RowBox[{
+         "definitions", " ", "as", " ", "the", " ", "replacement", " ",
+          "rules", " ", "are", " ", "applied", " ",
+          "recursively"}]}]}]}]}]}]}], "\[IndentingNewLine]", "*)"}],
+  "\[IndentingNewLine]",
+  RowBox[{
+   RowBox[{"MyParametrisation", "=",
+    RowBox[{"{", "\[IndentingNewLine]",
+     RowBox[{
+      RowBox[{"vd", "\[Rule]", "epsUV"}], ",", "\[IndentingNewLine]",
+      RowBox[{"vu", "\[Rule]", "epsUV"}], ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"Yu", "[",
+        RowBox[{"a_", ",", "b_"}], "]"}], "\[RuleDelayed]",
+       RowBox[{
+        RowBox[{"Delta", "[",
+         RowBox[{"3", ",", "b"}], "]"}], " ",
+        RowBox[{
+         RowBox[{"Delta", "[",
+          RowBox[{"a", ",", "3"}], "]"}], "/",
+         RowBox[{"Sin", "[", "\[Beta]", "]"}]}], " ",
+        SubscriptBox["Y", "t"]}]}], ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"Yd", "[",
+        RowBox[{"a_", ",", "b1_"}], "]"}], "\[RuleDelayed]",
+       RowBox[{
+        RowBox[{"Delta", "[",
+         RowBox[{"3", ",", "b1"}], "]"}], " ",
+        RowBox[{
+         RowBox[{"Delta", "[",
+          RowBox[{"a", ",", "3"}], "]"}], "/",
+         RowBox[{"Cos", "[", "\[Beta]", "]"}]}], " ",
+        SubscriptBox["Y", "b"]}]}], ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"Ye", "[",
+        RowBox[{"a_", ",", "b_"}], "]"}], "\[RuleDelayed]",
+       RowBox[{
+        RowBox[{"Delta", "[",
+         RowBox[{"3", ",", "b"}], "]"}], " ",
+        RowBox[{
+         RowBox[{"Delta", "[",
+          RowBox[{"a", ",", "3"}], "]"}], "/",
+         RowBox[{"Cos", "[", "\[Beta]", "]"}]}], " ",
+        SubscriptBox["Y", "\[Tau]"]}]}], ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{
+        RowBox[{"T", "[", "Yu", "]"}], "[", "a__", "]"}], "\[RuleDelayed]",
+       RowBox[{
+        RowBox[{"Delta", "[", "a", "]"}], " ",
+        SubscriptBox["m", "SUSY"], " ",
+        RowBox[{"Yu", "[", "a", "]"}]}]}], ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{
+        RowBox[{"T", "[", "Yd", "]"}], "[", "a__", "]"}], "\[RuleDelayed]",
+       RowBox[{
+        RowBox[{"Delta", "[", "a", "]"}], "  ",
+        SubscriptBox["m", "SUSY"], " ", " ",
+        RowBox[{"Yd", "[", "a", "]"}]}]}], ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{
+        RowBox[{"T", "[", "Ye", "]"}], "[", "a__", "]"}], "\[RuleDelayed]",
+       RowBox[{
+        RowBox[{"Delta", "[", "a", "]"}], "  ",
+        SubscriptBox["m", "SUSY"], " ", " ",
+        RowBox[{"Ye", "[", "a", "]"}]}]}], ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"mq2", "[", "a__", "]"}], "\[RuleDelayed]",
+       RowBox[{
+        RowBox[{"Delta", "[", "a", "]"}], "  ",
+        RowBox[{
+         SubscriptBox["m", "SUSY"], " ", "^", "2"}]}]}], ",",
+      "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"mu2", "[", "a__", "]"}], "\[RuleDelayed]",
+       RowBox[{
+        RowBox[{"Delta", "[", "a", "]"}], "  ",
+        RowBox[{
+         SubscriptBox["m", "SUSY"], " ", "^", "2"}]}]}], ",",
+      "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"md2", "[", "a__", "]"}], "\[RuleDelayed]",
+       RowBox[{
+        RowBox[{"Delta", "[", "a", "]"}], "  ",
+        RowBox[{
+         SubscriptBox["m", "SUSY"], " ", "^", "2"}]}]}], ",",
+      "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"me2", "[", "a__", "]"}], "\[RuleDelayed]",
+       RowBox[{
+        RowBox[{"Delta", "[", "a", "]"}], "  ",
+        RowBox[{
+         SubscriptBox["m", "SUSY"], " ", "^", "2"}]}]}], ",",
+      "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"ml2", "[", "a__", "]"}], "\[RuleDelayed]",
+       RowBox[{
+        RowBox[{"Delta", "[", "a", "]"}], "  ",
+        RowBox[{
+         SubscriptBox["m", "SUSY"], " ", "^", "2"}]}]}], ",",
+      "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"conj", "[", "x_", "]"}], "\[Rule]", "x"}], ",",
+      "\[IndentingNewLine]",
+      RowBox[{"MassB", "\[Rule]", " ",
+       SubscriptBox["m", "SUSY"]}], " ", ",", "\[IndentingNewLine]",
+      RowBox[{"MassWB", "\[Rule]",
+       SubscriptBox["m", "SUSY"]}], ",", "\[IndentingNewLine]",
+      RowBox[{"MassG", "\[Rule]", " ",
+       SubscriptBox["m", "SUSY"]}], " ", ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"B", "[", "\[Mu]", "]"}], "\[Rule]", " ",
+       RowBox[{"epsUV", "^", "2"}]}], ",", "\[IndentingNewLine]",
+      RowBox[{"\[Mu]", "\[Rule]", " ",
+       SubscriptBox["m", "SUSY"]}]}], "\[IndentingNewLine]", "}"}]}],
+   ";"}]}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*",
+   RowBox[{"Initialize", " ", "the", " ", "matching", " ", "routines"}], " ",
+   "*)"}], "\[IndentingNewLine]",
+  RowBox[{"InitMatching", "[",
+   RowBox[{
+    RowBox[{"ReadLists", "\[Rule]", "True"}], ",",
+    RowBox[{"Parametrisation", "\[Rule]", "MyParametrisation"}], ",",
+    RowBox[{"SolveTadpoles", "\[Rule]",
+     RowBox[{"{",
+      RowBox[{"mHd2", ",", "mHu2"}], "}"}]}], ",",
+    RowBox[{"Assumptions", "\[Rule]",
+     RowBox[{"{",
+      RowBox[{
+       RowBox[{"\[Beta]", ">", "0"}], ",",
+       RowBox[{"\[Beta]", "<",
+        RowBox[{"Pi", "/", "2"}]}], ",",
+       RowBox[{
+        SubscriptBox["m", "SUSY"], ">", "0"}]}], "}"}]}]}], "]"}]}]], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*",
+   RowBox[{
+   "check", " ", "if", " ", "mass", " ", "matrices", " ", "have", " ", "been",
+     " ", "caluclated", " ", "correctly"}], "*)"}], "\[IndentingNewLine]",
+  RowBox[{
+  "ReplacementMasses", "\[IndentingNewLine]",
+   "ReplacementRotationMatrices"}]}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*",
+   RowBox[{
+    RowBox[{"see", " ", "the", " ", "options", " ", "for", " ", "tree"}], "-",
+    RowBox[{"level", " ", "and", " ", "one"}], "-",
+    RowBox[{"loop", " ", "matching"}]}], "*)"}], "\[IndentingNewLine]",
+  RowBox[{
+   RowBox[{"?", "EFTcoupNLO"}], "\[IndentingNewLine]",
+   RowBox[{"Options", "[", "EFTcoupLO", "]"}], "\[IndentingNewLine]",
+   RowBox[{"Options", "[", "EFTcoupNLO", "]"}]}]}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*",
+   RowBox[{"Tree", "-",
+    RowBox[{"level", " ", "coupling", " ", "of", " ",
+     SubscriptBox["\[Lambda]", "1"]}]}], "*)"}], "\[IndentingNewLine]",
+  RowBox[{
+   RowBox[{
+    RowBox[{"-", "1"}], "/", "6"}],
+   RowBox[{"EFTcoupLO", "[",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}]}], "}"}], "]"}]}]}]], "Input"]
+}]],
+
+Cell[BoxData[
+ RowBox[{"(*",
+  RowBox[{"One", "-",
+   RowBox[{
+   "loop", " ", "contribution", " ", "of", " ", "triangle", " ", "diagrams",
+    " ", "to", " ",
+    SubscriptBox["\[Lambda]", "1"]}]}], "*)"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"-", "1"}], "/", "6"}],
+  RowBox[{"EFTcoupNLO", "[",
+   RowBox[{
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}]}], "}"}], ",",
+    RowBox[{"Topologies", "\[Rule]",
+     RowBox[{"{", "C", "}"}]}]}], "]"}]}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*",
+   RowBox[{
+   "see", " ", "the", " ", "possible", " ", "topology", " ", "selections"}],
+   "*)"}], "\[IndentingNewLine]",
+  RowBox[{"TopoNotation", "//", "MatrixForm"}]}]], "Input"]
+}]],
+
+Cell[BoxData[
+ RowBox[{"(*",
+  RowBox[{
+   RowBox[{
+   "which", " ", "exact", " ", "field", " ", "contributions", " ", "do", " ",
+    "enter", " ", "the", " ", "trianlge", " ",
+    RowBox[{"loop", "?"}]}], " ", "\[Rule]", " ",
+   RowBox[{"use", " ", "the", " ", "debug", " ", "option"}]}],
+  "*)"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"-", "1"}], "/", "6"}],
+  RowBox[{"EFTcoupNLO", "[",
+   RowBox[{
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}]}], "}"}], ",",
+    RowBox[{"Topologies", "\[Rule]",
+     RowBox[{"{", "C", "}"}]}], ",",
+    RowBox[{"Debug", "\[Rule]", "True"}]}], "]"}]}]], "Input"]
+}]],
+
+Cell[BoxData[
+ RowBox[{"(*", " ",
+  RowBox[{
+  "contributions", " ", "from", " ", "heavy", " ", "scalars", " ", "only"}],
+  " ", "*)"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"-", "1"}], "/", "6"}],
+  RowBox[{"EFTcoupNLO", "[",
+   RowBox[{
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}]}], "}"}], ",",
+    RowBox[{"InternalPatterns", "\[Rule]",
+     RowBox[{"{",
+      RowBox[{"S", ",", "SS", ",", "SSS", ",", "SSSS"}], "}"}]}]}],
+   "]"}]}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ",
+   RowBox[{
+   "Box", " ", "diagrams", " ", "without", " ", "using", " ", "analytical",
+    " ", "expressions", " ", "for", " ", "loop", " ", "functions"}], " ",
+   "*)"}], "\[IndentingNewLine]",
+  RowBox[{
+   RowBox[{
+    RowBox[{"-", "1"}], "/", "6"}],
+   RowBox[{"EFTcoupNLO", "[",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{
+       RowBox[{"hh", "[", "1", "]"}], ",",
+       RowBox[{"hh", "[", "1", "]"}], ",",
+       RowBox[{"hh", "[", "1", "]"}], ",",
+       RowBox[{"hh", "[", "1", "]"}]}], "}"}], ",",
+     RowBox[{"Topologies", "\[Rule]",
+      RowBox[{"{", "D", "}"}]}], ",", " ",
+     RowBox[{"LoopReplace", "\[Rule]", "Identity"}]}], "]"}]}]}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ",
+   RowBox[{
+    RowBox[{
+    "The", " ", "C0", " ", "with", " ", "zeros", " ", "only", " ", "is", " ",
+     "due", " ", "to", " ", "the", " ", "light", " ", "Higgs", " ",
+     "doublets", " ", "and", " ", "\[IndentingNewLine]", " ", "would", " ",
+     "have", " ", "been", " ", "neglected", " ", "when", " ", "using", " ",
+     "the", " ", "modified", " ", "loop", " ", "functions", " ",
+     RowBox[{
+      RowBox[{"(",
+       RowBox[{"the", " ", "default", " ", "of", " ", "LoopReplace"}], ")"}],
+      ".", "\[IndentingNewLine]", "we"}], " ", "can", " ", "get", " ", "rid",
+     " ", "of", " ", "this", " ", "by", " ", "explicitly", " ", "excluding",
+     " ", "the", " ", "light", " ", "Higgs", " ",
+     RowBox[{"doublets", ".", " ", "This"}], " ", "will", " ", "also", " ",
+     "slightly", " ", "speed"}], "-",
+    RowBox[{"up", " ", "the", " ",
+     RowBox[{"calculation", ":"}]}]}], "\[IndentingNewLine]", "*)"}],
+  "\[IndentingNewLine]",
+  RowBox[{
+   RowBox[{
+    RowBox[{"-", "1"}], "/", "6"}],
+   RowBox[{"EFTcoupNLO", "[",
+    RowBox[{
+     RowBox[{"{",
+      RowBox[{
+       RowBox[{"hh", "[", "1", "]"}], ",",
+       RowBox[{"hh", "[", "1", "]"}], ",",
+       RowBox[{"hh", "[", "1", "]"}], ",",
+       RowBox[{"hh", "[", "1", "]"}]}], "}"}], ",",
+     RowBox[{"Topologies", "\[Rule]",
+      RowBox[{"{", "D", "}"}]}], ",", " ",
+     RowBox[{"LoopReplace", "\[Rule]", "Identity"}], ",",
+     RowBox[{"ExcludeFields", "\[Rule]",
+      RowBox[{"{",
+       RowBox[{"hh", ",", "Hpm", ",", "Ah"}], "}"}]}]}], "]"}]}]}]], "Input"]
+}]],
+
+Cell[BoxData[
+ RowBox[{"(*", " ",
+  RowBox[{
+   RowBox[{
+   "finally", " ", "calculated", " ", "the", " ", "complete", " ", "one"}],
+   "-",
+   RowBox[{"loop", " ", "effective", " ",
+    SubscriptBox["\[Lambda]", "1"]}]}], " ", "*)"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"lam1", "=",
+  RowBox[{
+   RowBox[{
+    RowBox[{"-", "1"}], "/", "6"}],
+   RowBox[{"EFTcoupNLO", "[",
+    RowBox[{"{",
+     RowBox[{
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}], ",",
+      RowBox[{"hh", "[", "1", "]"}]}], "}"}], "]"}]}]}]], "Input"]
+}]],
+
+Cell[BoxData[
+ RowBox[{"(*", " ",
+  RowBox[{
+  "...", "and", " ", "turn", " ", "it", " ", "into", " ", "a", " ", "fortran",
+    " ", "routine", " ", "to", " ", "use", " ", "it", " ", "in", " ", "your",
+   " ", "external", " ", "code"}], " ", "*)"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"assoc", "=",
+  RowBox[{"GenerateSelfDefinedFuntion", "[",
+   RowBox[{"\"\<EffLambda1\>\"", ",",
+    RowBox[{"lam1", "/.",
+     RowBox[{"{",
+      RowBox[{
+       RowBox[{"\[Beta]", "\[Rule]",
+        RowBox[{"ArcTan", "[", "TanBeta", "]"}]}], ",",
+       RowBox[{
+        SubscriptBox["m", "SUSY"], "\[Rule]", "MSUSY"}], ",",
+       RowBox[{
+        SubscriptBox["Y", "\[Tau]"], "\[Rule]", "Ytau"}], ",",
+       RowBox[{
+        SubscriptBox["Y", "t"], "\[Rule]", "Ytop"}], ",",
+       RowBox[{
+        SubscriptBox["Y", "b"], "\[Rule]", "Ybottom"}]}], "}"}]}]}],
+   "]"}]}]], "Input"]
+}]],
+
+Cell[BoxData[
+ RowBox[{"WriteString", "[",
+  RowBox[{"\"\<EffLambda1.f90\>\"", ",",
+   RowBox[{"assoc", "[", "\"\<SelfDefinedFunction\>\"", "]"}]}],
+  "]"}]], "Input"]
+}]],
+
+Cell[CellGroupData[{
+
+Cell["Batch Mode and SPheno Output", "Section"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", "\[IndentingNewLine]", "  ",
+   RowBox[{
+    RowBox[{
+     RowBox[{"-", " ", "compute"}], " ", "matching", " ", "conditions", " ",
+     "from", " ", "input", " ", "file"}], "\[IndentingNewLine]", " ", "-",
+    " ",
+    RowBox[{
+    "automatically", " ", "generate", " ", "FORTRAN", " ", "functions"}],
+    "\[IndentingNewLine]", " ", "-", " ",
+    RowBox[{"generate", " ", "new", " ",
+     RowBox[{"SPheno", ".", "m"}], " ", "which", " ", "uses", " ", "these",
+     " ", "functions"}]}], " ", "\[IndentingNewLine]", "*)"}],
+  "\[IndentingNewLine]",
+  RowBox[{"InitMatching", "[",
+   RowBox[{
+    RowBox[{"ReadLists", "\[Rule]", "True"}], ",",
+    RowBox[{"InputFile", "\[Rule]", "\"\<Matching_THDMII.m\>\""}]}],
+   "]"}]}]], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]],
+
+Cell[BoxData[
+ RowBox[{"(*", " ",
+  RowBox[{
+  "see", " ", "the", " ", "results", " ", "in", " ", "a", " ", "simple", " ",
+
+   RowBox[{"form", ":", " ",
+    RowBox[{
+    "show", " ", "only", " ", "the", " ", "leading", " ", "stop", " ",
+     "contributions"}]}]}], " ", "*)"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Do", "[", "\[IndentingNewLine]",
+   RowBox[{
+    RowBox[{
+     RowBox[{"Print", "[",
+      RowBox[{
+       RowBox[{
+        RowBox[{"(",
+         RowBox[{"4", "\[Pi]"}], ")"}], "^", "2"}], ",", "\[Delta]", " ", ",",
+        "lam", ",", "\"\<=\>\"", ",",
+       RowBox[{
+        RowBox[{
+         RowBox[{
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"16",
+                 RowBox[{"Pi", "^", "2"}], " ",
+                 RowBox[{"EFTNLO", "[", "lam", "]"}]}], "/.",
+                RowBox[{"g1", "\[Rule]", "0"}]}], "/.",
+               RowBox[{"g2", "\[Rule]", "0"}]}], "/.",
+              RowBox[{
+               RowBox[{"Yd", "[", "__", "]"}], "\[RuleDelayed]", "0"}]}], "/.",
+             RowBox[{
+              RowBox[{"Ye", "[", "__", "]"}], "\[RuleDelayed]", "0"}]}], "/.",
+            RowBox[{
+             RowBox[{"Yu", "[",
+              RowBox[{"3", ",", "3"}], "]"}], "\[Rule]",
+             SubscriptBox["Y", "t"]}]}], "/.",
+           RowBox[{"MuSUSY", "\[Rule]", "\[Mu]"}]}], "/.",
+          RowBox[{"UVscaleQ", "\[Rule]", "m0"}]}], "/.",
+         RowBox[{"Azero", "\[Rule]",
+          RowBox[{"m0", " ",
+           SubscriptBox["X", "t"]}]}]}], "//", "FullSimplify"}]}], "]"}],
+     ";"}], ",", "\[IndentingNewLine]",
+    RowBox[{"{",
+     RowBox[{"lam", ",",
+      RowBox[{"{",
+       RowBox[{
+       "Lambda1", ",", "Lambda2", ",", "Lambda3", ",", "Lambda4", ",",
+        "Lambda5", ",", "Lambda6", ",", "Lambda7"}], "}"}]}], "}"}]}], "]"}],
+  ";"}]], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]],
+
+Cell[BoxData[
+ RowBox[{"(*",
+  RowBox[{"check", " ", "out", " ", "the", " ", "content", " ", "in"}], " ",
+  "*)"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"SetDirectory", "[",
+  RowBox[{"$sarahMatchingDir", "<>", "$NameUV"}],
+  "]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"FileNames", "[", "]"}], "//", "MatrixForm"}]}], "Input"]
+}]],
+
+Cell[BoxData[
+ RowBox[{"(*", " ",
+  RowBox[{
+   RowBox[{
+   "as", " ", "well", " ", "as", " ", "the", " ", "new", " ", "generated",
+    " ",
+    RowBox[{"SPheno", ".", "m"}], " ", "in", " ", "the", " ", "EFT", " ",
+    "model", " ", "directory", " ", "THDM"}], "-", "IInoZ2"}], " ",
+  "*)"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"SetDirectory", "[",
+  RowBox[{"$sarahModelDirInput", "<>", "$SPhenoEFTmodel"}], "]"}]], "Input"]
+}]],
+
+Cell[BoxData[
+ RowBox[{"(*", " ",
+  RowBox[{
+  "see", " ", "the", " ", "content", " ", "of", " ", "the", " ", "new", " ",
+   RowBox[{"SPheno", ".", "m"}]}], " ", "*)"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"ReadString", "[", "\"\<SPhenoEFT_MSSM_HighScaleSUSYlowMA.m\>\"",
+  "]"}]], "Input"]
+}]],
+
+Cell[BoxData[
+ RowBox[{"(*", " ",
+  RowBox[{
+   RowBox[{"quit", " ", "the", " ", "kernel"}], ",", " ",
+   RowBox[{
+   "start", " ", "a", " ", "new", " ", "SARAH", " ", "session", " ",
+    "loading", " ", "the", " ", "EFT", " ", "model", " ", "and", " ", "run",
+    " ", "MakeSPheno", " ", "with", " ", "the", " ", "file", " ", "from", " ",
+     "above"}]}], "*)"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"Quit", "[", "]"}]], "Input"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"<<", "SARAH`"}]], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Start", "[", "\"\<THDM-IInoZ2\>\"", "]"}]], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"MakeSPheno", "[",
+  RowBox[{
+  "InputFile", "\[Rule]", "\"\<SPhenoEFT_MSSM_HighScaleSUSYlowMA.m\>\""}],
+  "]"}]], "Input"],
+
+Cell[CellGroupData[{
+
+
+}]]
+}]]
+}]]
+}]]
+}]
+(* End of Notebook Content *)

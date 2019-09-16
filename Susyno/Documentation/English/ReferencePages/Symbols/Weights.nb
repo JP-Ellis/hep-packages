@@ -1,0 +1,297 @@
+(* Content-type: application/mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[" ", "SymbolColorBar",
+ CellMargins->{{Inherited, Inherited}, {-5, 0}}],
+
+Cell[TextData[{
+ ButtonBox["Mathematica",
+  BaseStyle->{"Link", "LinkTrail"},
+  ButtonData->"paclet:Susyno/guide/Susyno"],
+ StyleBox[" > ", "LinkTrailSeparator"]
+}], "LinkTrail"],
+
+Cell[BoxData[GridBox[{
+   {Cell["SUSYNO PACLET SYMBOL", "PacletNameCell"], Cell[TextData[{
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"Tutorials \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno Tutorial\"\>":>
+       Documentation`HelpLookup["paclet:Susyno/tutorial/SusynoTutorial"]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}],
+     "\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\[ThickSpace]\
+\[ThickSpace]",
+     Cell[BoxData[
+      ActionMenuBox[
+       FrameBox["\<\"URL \[RightGuillemet]\"\>",
+        StripOnInput->False], {"\<\"Susyno/ref/Weights\"\>":>
+       None, "\<\"Copy Mathematica url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell["Susyno/ref/Weights"]}, Visible -> False]];
+        SelectionMove[DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$]; Null],
+       Delimiter, "\<\"Copy web url\"\>":>
+       Module[{DocumentationSearch`Private`nb$},
+        DocumentationSearch`Private`nb$ = NotebookPut[
+           Notebook[{
+             Cell[
+              BoxData[
+               MakeBoxes[
+                Hyperlink[
+                "http://reference.wolfram.com/mathematica/Susyno/ref/Weights.\
+html"], StandardForm]], "Input", TextClipboardType -> "PlainText"]}, Visible ->
+            False]]; SelectionMove[
+         DocumentationSearch`Private`nb$, All, Notebook];
+        FrontEndTokenExecute[DocumentationSearch`Private`nb$, "Copy"];
+        NotebookClose[DocumentationSearch`Private`nb$];
+        Null], "\<\"Go to web url\"\>":>FrontEndExecute[{
+         NotebookLocate[{
+           URL[
+            StringJoin[
+            "http://reference.wolfram.com/mathematica/", "Susyno/ref/Weights",
+              ".html"]], None}]}]},
+       Appearance->None,
+       MenuAppearance->Automatic]],
+      LineSpacing->{1.4, 0}]
+    }], "AnchorBar"]}
+  }]], "AnchorBarGrid",
+ GridBoxOptions->{GridBoxItemSize->{"Columns" -> {
+     Scaled[0.65], {
+      Scaled[0.34]}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}},
+   "RowsIndexed" -> {}}},
+ CellID->1],
+
+Cell[CellGroupData[{
+
+Cell["Weights", "ObjectName",
+ CellID->1224892054],
+
+Cell[BoxData[GridBox[{
+   {"", Cell[TextData[{
+     Cell[BoxData[
+      RowBox[{"Weights", "[",
+       RowBox[{"group", ",", " ", "rep"}], "]"}]], "InlineFormula"],
+     " \[LineSeparator]Computes the weights of the representation ",
+     Cell[BoxData["rep"], "InlineFormula"],
+     " of ",
+     Cell[BoxData["group"], "InlineFormula"]
+    }]]}
+  }]], "Usage",
+ GridBoxOptions->{
+ GridBoxBackground->{
+  "Columns" -> {{None}}, "ColumnsIndexed" -> {}, "Rows" -> {{None}},
+   "RowsIndexed" -> {}}},
+ CellID->982511436]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[Cell[BoxData[
+ ButtonBox[
+  FrameBox[
+   StyleBox[
+    RowBox[{"MORE", " ", "INFORMATION"}], "NotesFrameText"],
+   StripOnInput->False],
+  Appearance->{Automatic, None},
+  BaseStyle->None,
+  ButtonFunction:>(FrontEndExecute[{
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], All, ButtonCell],
+     FrontEndToken["OpenCloseGroup"],
+     FrontEnd`SelectionMove[
+      FrontEnd`SelectedNotebook[], After, CellContents]}]& ),
+  Evaluator->None,
+  Method->"Preemptive"]]]], "NotesSection",
+ CellGroupingRules->{"SectionGrouping", 50},
+ CellID->48419875],
+
+Cell[TextData[{
+ Cell[BoxData["group"], "InlineFormula"],
+ " should be a ",
+ ButtonBox["Cartan matrix",
+  BaseStyle->"Link",
+  ButtonData->"paclet:Susyno/ref/CartanMatrix"],
+ ";"
+}], "Notes",
+ CellID->1067943069],
+
+Cell[TextData[{
+ "Just as in SU(2) where a representation with spin ",
+ Cell[BoxData["s"], "InlineFormula"],
+ " breaks down into subspaces each with a quantum number ",
+ Cell[BoxData["m"], "InlineFormula"],
+ ", in general a representation ",
+ Cell[BoxData["rep"], "InlineFormula"],
+ " of ",
+ Cell[BoxData["group"], "InlineFormula"],
+ " breaks down into subspaces with numbers ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{"m1", ",", "m2", ",", "..."}], "}"}]], "InlineFormula"],
+ ". These are called weights;"
+}], "Notes",
+ CellID->527568177],
+
+Cell[TextData[{
+ "In contrast to SU(2), each subspace with weight ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{"m1", ",", "m2", ",", "..."}], "}"}]], "InlineFormula"],
+ " may have more than one dimension (it can be degenerate). See a Lie Algebra \
+book for more information;"
+}], "Notes",
+ CellID->403473388],
+
+Cell[TextData[{
+ "Given the previous remarks, this function outputs a list ",
+ Cell[BoxData[
+  RowBox[{"{",
+   RowBox[{
+    RowBox[{"{",
+     RowBox[{"w1", ",", "d1"}], "}"}], ",",
+    RowBox[{"{",
+     RowBox[{"w2", ",", "d2"}], "}"}], ",", "..."}], "}"}]], "InlineFormula"],
+ " where the ",
+ Cell[BoxData["w"], "InlineFormula"],
+ "s are the weights and the ",
+ Cell[BoxData["d"], "InlineFormula"],
+ "s their degeneracy. "
+}], "Notes",
+ CellID->217674061]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["EXAMPLES",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "PrimaryExamplesSection",
+ CellTags->"PrimaryExamplesSection",
+ CellID->230642799],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Basic Examples",
+ "\[NonBreakingSpace]\[NonBreakingSpace]",
+ Cell["(1)", "ExampleCount"]
+}], "ExampleSection",
+ CellID->448133782],
+
+Cell["SU(2) example. Consider a doublet [={1}],", "ExampleText",
+ CellID->513681956],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Weights", "[",
+  RowBox[{"SU2", ",",
+   RowBox[{"{", "1", "}"}]}], "]"}]], "Input",
+ CellID->196926373]
+}]],
+
+Cell["\<\
+This tells us that the representation {1} of SU(2) has weights {1} and {-1} \
+with no degeneracy (each space is one dimensional). The pattern (for SU(2) \
+only!) starts to show up. First a representation traditionally labeled by a \
+spin s is in this canonical formalism called {2s}. So there are \
+representations {0}, {1}, {2}, ... Second, the traditional quantum number m \
+is in this canonical formalism called weight {2m}. So instead of \
+representation s=1/2 having m=-1/2, m=1/2 we have representation {1} having \
+weights {-1} and {1}. Just to confirm, the weights of a triplet are...\
+\>", "ExampleText",
+ CellID->320563739],
+
+Cell[CellGroupData[{
+
+Cell["Weights[SU2, {2}]", "Input",
+ CellID->184065572]
+}]],
+
+Cell["A more interesting example is the adjoint [={1,1}] of SU(3):", \
+"ExampleText",
+ CellID->288896476],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Weights", "[",
+  RowBox[{"SU3", ",",
+   RowBox[{"{",
+    RowBox[{"1", ",", "1"}], "}"}]}], "]"}]], "Input",
+ CellID->381111280]
+}]],
+
+Cell["\<\
+There are only 7 distinct weights and one of them, {0,0}, is a two \
+dimensional space. So things check out: the dimension of the SU(3) adjoint is \
+1+1+1+2+1+1+1=8\
+\>", "ExampleText",
+ CellID->303695508],
+
+Cell["\<\
+Note that the Dynkin coefficients of a representation are equal to the first \
+weight that appears (this is a definition - the Dynkin coefficients are the \
+highest weight of the representation):\
+\>", "ExampleText",
+ CellID->26424378],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+  "Print", "[",
+   "\"\<Highest weight of representation {3,5} of the group G(2):\>\"", "]"}],
+   ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"Weights", "[",
+   RowBox[{"G2", ",",
+    RowBox[{"{",
+     RowBox[{"3", ",", "5"}], "}"}]}], "]"}], "[",
+  RowBox[{"[",
+   RowBox[{"1", ",", "1"}], "]"}], "]"}]}], "Input",
+ CellID->503951977]
+}]]
+}]]
+}]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[ButtonBox["TUTORIALS",
+ BaseStyle->None,
+ Appearance->{Automatic, None},
+ Evaluator->None,
+ Method->"Preemptive",
+ ButtonFunction:>(FrontEndExecute[{
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], All, ButtonCell],
+    FrontEndToken["OpenCloseGroup"],
+    FrontEnd`SelectionMove[
+     FrontEnd`SelectedNotebook[], After,
+     CellContents]}]& )]], "TutorialsSection",
+ CellID->250839057],
+
+Cell[TextData[ButtonBox["Susyno Tutorial",
+ BaseStyle->"Link",
+ ButtonData->"paclet:Susyno/tutorial/SusynoTutorial"]], "Tutorials",
+ CellID->341631938]
+}]],
+
+Cell[" ", "FooterCell"]
+}]
+(* End of Notebook Content *)

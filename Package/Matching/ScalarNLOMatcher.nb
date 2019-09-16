@@ -1,0 +1,2653 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"GetMassesAndRotationMatrices", "[", "tadpar_", "]"}], ":=",
+    RowBox[{"Block", "[",
+     RowBox[{
+      RowBox[{"{",
+       RowBox[{
+       "i", ",", "j", ",", "eig", ",", "def", ",", "angles", ",", "ev"}],
+       "}"}], ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{
+       "Print", "[",
+        "\"\<Calculate Expressions for Masses and Rotation Matrices\>\"",
+        "]"}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"realVar", "=",
+        RowBox[{"Join", "[",
+         RowBox[{"realVar", ",",
+          RowBox[{
+           RowBox[{"Select", "[",
+            RowBox[{"$ParametrisationUV", ",",
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"FreeQ", "[",
+                 RowBox[{"realVar", ",",
+                  RowBox[{"#", "[",
+                   RowBox[{"[", "1", "]"}], "]"}]}], "]"}], "\[Equal]",
+                "False"}], " ", "&&", " ",
+               RowBox[{
+                RowBox[{"Head", "[",
+                 RowBox[{"#", "[",
+                  RowBox[{"[", "2", "]"}], "]"}], "]"}], "=!=", "Times"}]}],
+              "&"}]}], "]"}], " ", "/.", " ",
+           RowBox[{
+            RowBox[{"Rule", "[",
+             RowBox[{"a_", ",", "b_"}], "]"}], "\[RuleDelayed]", "b"}]}]}],
+         "]"}]}], ";", "\[IndentingNewLine]",
+       RowBox[{"realVar", "=",
+        RowBox[{"Join", "[",
+         RowBox[{"realVar", ",", "\[IndentingNewLine]",
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{"Cases", "[",
+              RowBox[{"$AssumptionsMatching", ",",
+               RowBox[{
+                RowBox[{"Greater", "[",
+                 RowBox[{"_", ",",
+                  RowBox[{"_Real", "|", "_Integer"}]}], "]"}], "|",
+                RowBox[{"Less", "[",
+                 RowBox[{
+                  RowBox[{"_Real", "|", "_Integer"}], ",", "_"}], "]"}], "|",
+
+                RowBox[{"Element", "[",
+                 RowBox[{"_", ",", "Reals"}], "]"}]}]}], "]"}], " ", "/.",
+             " ",
+             RowBox[{
+              RowBox[{"Greater", "[",
+               RowBox[{"a_", ",",
+                RowBox[{"_Real", "|", "_Integer"}]}], "]"}], "\[RuleDelayed]",
+               "a"}]}], "/.",
+            RowBox[{
+             RowBox[{"Less", "[",
+              RowBox[{
+               RowBox[{"_Real", "|", "_Integer"}], ",", "a_"}], "]"}],
+             "\[RuleDelayed]", "a"}]}], "/.",
+           RowBox[{
+            RowBox[{"Element", "[",
+             RowBox[{"a_", ",", "Reals"}], "]"}], "\[RuleDelayed]", "a"}]}]}],
+          "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"If", "[",
+        RowBox[{
+         RowBox[{"tadpar", "===",
+          RowBox[{"{", "}"}]}], ",", "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"TreeLevelTadpoleSolutions", "=",
+           RowBox[{"{", "}"}]}], ";"}], ",", "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"TreeLevelTadpoleSolutions", "=",
+           RowBox[{
+            RowBox[{"Solve", "[",
+             RowBox[{
+              RowBox[{
+               RowBox[{"TadpoleEquations", "[", "EWSB", "]"}], "\[Equal]",
+               "0"}], ",", "tadpar"}], "]"}], "[",
+            RowBox[{"[", "1", "]"}], "]"}]}], ";"}]}], "\[IndentingNewLine]",
+        "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"Off", "[",
+        StyleBox[
+         RowBox[{"Part", "::", "pkspec1"}], "MessageName"],
+        StyleBox["]", "MessageName"]}],
+       StyleBox[";", "MessageName"],
+       StyleBox["\[IndentingNewLine]", "MessageName"],
+       RowBox[{"(*", " ",
+        RowBox[{"Check", " ", "conventions", " ", "for", " ", "rotation", " ",
+         RowBox[{"matrices", "!"}]}], " ", "*)"}], "\[IndentingNewLine]",
+       RowBox[{"ReplacementRotationMatrices", "=",
+        RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]",
+       RowBox[{"ReplacementMasses", "=",
+        RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]",
+       RowBox[{"For", "[",
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",",
+         RowBox[{"i", "\[LessEqual]",
+          RowBox[{"Length", "[",
+           RowBox[{"PART", "[", "S", "]"}], "]"}]}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{
+             RowBox[{"getGen", "[",
+              RowBox[{
+               RowBox[{"PART", "[", "S", "]"}], "[",
+               RowBox[{"[",
+                RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "===", "1"}],
+            ",", "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"eig", "=",
+              RowBox[{"Simplify", "[",
+               RowBox[{
+                RowBox[{"Sqrt", "[",
+                 RowBox[{"Limit", "[",
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"TreeMass", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"PART", "[", "S", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], ",",
+                    "CurrentStates"}], "]"}], " ", "/.", " ",
+                    "TreeLevelTadpoleSolutions"}], " ", "/.",
+                    "$ParametrisationUV"}], " ", "/.",
+                    "$SimplificationsMatching"}], ",",
+                   RowBox[{"epsUV", "\[Rule]", "0"}]}], "]"}], "]"}], ",",
+                "$AssumptionsMatching"}], "]"}]}], ";", "\[IndentingNewLine]",
+             RowBox[{"ReplacementMasses", "=",
+              RowBox[{"Join", "[",
+               RowBox[{"ReplacementMasses", ",",
+                RowBox[{"{",
+                 RowBox[{
+                  RowBox[{"Mass", "[",
+                   RowBox[{
+                    RowBox[{"PART", "[", "S", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "\[Rule]",
+                  "eig"}], "}"}]}], "]"}]}], ";", "\[IndentingNewLine]",
+             RowBox[{"If", "[",
+              RowBox[{
+               RowBox[{"eig", "\[Equal]", "0"}], ",", "\[IndentingNewLine]",
+               RowBox[{
+                RowBox[{"$SimplificationsMatching", "=",
+                 RowBox[{"Join", "[",
+                  RowBox[{"$SimplificationsMatching", ",",
+                   RowBox[{"{",
+                    RowBox[{
+                    RowBox[{"M", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "S", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "\[Rule]",
+                    "0"}], "}"}]}], "]"}]}], ";"}]}], "\[IndentingNewLine]",
+              "]"}], ";", "\[IndentingNewLine]",
+             RowBox[{"Set", "[",
+              RowBox[{
+               RowBox[{"M", "[",
+                RowBox[{
+                 RowBox[{"PART", "[", "S", "]"}], "[",
+                 RowBox[{"[",
+                  RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], ",", "eig"}],
+              "]"}], ";"}], ",", "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"eig", "=",
+              RowBox[{"Eigensystem", "[",
+               RowBox[{"Limit", "[",
+                RowBox[{
+                 RowBox[{"Simplify", "[",
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"MassMatrix", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "S", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], " ", "/.",
+                    " ", "TreeLevelTadpoleSolutions"}], " ", "/.",
+                    RowBox[{
+                    RowBox[{"RXi", "[", "__", "]"}], "\[Rule]", "0"}]}], " ",
+                    "//.", "$ParametrisationUV"}], " ", "/.",
+                   "$SimplificationsMatching"}], "]"}], ",",
+                 RowBox[{"epsUV", "\[Rule]", "0"}]}], "]"}], "]"}]}], ";",
+             "\[IndentingNewLine]",
+             RowBox[{"If", "[",
+              RowBox[{
+               RowBox[{
+                RowBox[{"Length", "[",
+                 RowBox[{"Intersection", "[",
+                  RowBox[{"eig", "[",
+                   RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], "===", "1"}],
+                ",", "\[IndentingNewLine]",
+               RowBox[{
+                RowBox[{"eig", "=",
+                 RowBox[{"Reverse", "/@", "eig"}]}], ";"}]}], " ",
+              RowBox[{"(*", " ",
+               RowBox[{
+               "in", " ", "order", " ", "to", " ", "get", " ", "the", " ",
+                "identity", " ", "matrix", " ", "for", " ", "trivial", " ",
+                "mixing"}], " ", "*)"}], "\[IndentingNewLine]", "]"}], ";",
+             "\[IndentingNewLine]",
+             RowBox[{"ReplacementRotationMatrices", "=",
+              RowBox[{"Join", "[",
+               RowBox[{"ReplacementRotationMatrices", ",",
+                RowBox[{"{",
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"getMixingMatrix", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "S", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "[",
+                   "a__Integer", "]"}], "\[Rule]",
+                  RowBox[{
+                   RowBox[{"(",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Simplify", "[",
+                    RowBox[{"#", ",", "$AssumptionsMatching"}], "]"}], "&"}],
+                    "/@",
+                    RowBox[{"Normalize", "/@",
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "2", "]"}], "]"}]}]}], ")"}], "[",
+                   RowBox[{"[", "a", "]"}], "]"}]}], "}"}]}], "]"}]}], ";",
+             "\[IndentingNewLine]",
+             RowBox[{"If", "[",
+              RowBox[{
+               RowBox[{
+                RowBox[{"eig", "[",
+                 RowBox[{"[", "2", "]"}], "]"}], "===",
+                RowBox[{"IdentityMatrix", "[",
+                 RowBox[{"getGen", "[",
+                  RowBox[{
+                   RowBox[{"PART", "[", "S", "]"}], "[",
+                   RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "]"}]}],
+               ",", "\[IndentingNewLine]",
+               RowBox[{
+                RowBox[{"$SimplificationsMatching", "=",
+                 RowBox[{"Join", "[",
+                  RowBox[{"$SimplificationsMatching", ",",
+                   RowBox[{"{",
+                    RowBox[{
+                    RowBox[{"getMixingMatrix", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "S", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "\[Rule]",
+                    "Delta"}], "}"}]}], "]"}]}], ";"}]}],
+              "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]",
+             RowBox[{"ReplacementMasses", "=",
+              RowBox[{"Join", "[",
+               RowBox[{"ReplacementMasses", ",",
+                RowBox[{"{",
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"Mass", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "S", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "[",
+                   "a_Integer", "]"}], "\[Rule]",
+                  RowBox[{
+                   RowBox[{"Simplify", "[",
+                    RowBox[{
+                    RowBox[{"Sqrt", "/@",
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "1", "]"}], "]"}]}], ",",
+                    "$AssumptionsMatching"}], "]"}], "[",
+                   RowBox[{"[", "a", "]"}], "]"}]}], "}"}]}], "]"}]}], ";",
+             " ", "\[IndentingNewLine]",
+             RowBox[{"Set", "[",
+              RowBox[{
+               RowBox[{"M", "[",
+                RowBox[{
+                 RowBox[{"PART", "[", "S", "]"}], "[",
+                 RowBox[{"[",
+                  RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], ",",
+               RowBox[{"Simplify", "[",
+                RowBox[{
+                 RowBox[{"Sqrt", "/@",
+                  RowBox[{"eig", "[",
+                   RowBox[{"[", "1", "]"}], "]"}]}], ",",
+                 "$AssumptionsMatching"}], "]"}]}], "]"}], ";",
+             "\[IndentingNewLine]",
+             RowBox[{"If", "[",
+              RowBox[{
+               RowBox[{
+                RowBox[{"Intersection", "[",
+                 RowBox[{"eig", "[",
+                  RowBox[{"[", "1", "]"}], "]"}], "]"}], "===",
+                RowBox[{"{", "0", "}"}]}], ",", "\[IndentingNewLine]",
+               RowBox[{"$SimplificationsMatching", "=",
+                RowBox[{"Join", "[",
+                 RowBox[{"$SimplificationsMatching", ",",
+                  RowBox[{"{",
+                   RowBox[{
+                    RowBox[{"M", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"PART", "[", "S", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "[", "a_", "]"}],
+                    "]"}], "\[Rule]", "0"}], "}"}]}], "]"}]}]}],
+              "\[IndentingNewLine]", "]"}], ";"}]}], "\[IndentingNewLine]",
+           "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"i", "++"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+       "\[IndentingNewLine]",
+       RowBox[{"For", "[",
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",",
+         RowBox[{"i", "\[LessEqual]",
+          RowBox[{"Length", "[",
+           RowBox[{"PART", "[", "F", "]"}], "]"}]}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{
+             RowBox[{"getGen", "[",
+              RowBox[{
+               RowBox[{"PART", "[", "F", "]"}], "[",
+               RowBox[{"[",
+                RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "===", "1"}],
+            ",", "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"eig", "=",
+              RowBox[{"Simplify", "[",
+               RowBox[{
+                RowBox[{"Limit", "[",
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{
+                    RowBox[{"TreeMass", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], ",",
+                    "CurrentStates"}], "]"}], " ", "/.", " ",
+                    "TreeLevelTadpoleSolutions"}], " ", "/.",
+                    "$ParametrisationUV"}], " ", "/.",
+                   "$SimplificationsMatching"}], ",",
+                  RowBox[{"epsUV", "\[Rule]", "0"}]}], "]"}], ",",
+                "$AssumptionsMatching"}], "]"}]}], ";", "\[IndentingNewLine]",
+             RowBox[{"ReplacementMasses", "=",
+              RowBox[{"Join", "[",
+               RowBox[{"ReplacementMasses", ",",
+                RowBox[{"{",
+                 RowBox[{
+                  RowBox[{"Mass", "[",
+                   RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "\[Rule]",
+                  "eig"}], "}"}]}], "]"}]}], ";", "\[IndentingNewLine]",
+             RowBox[{"Set", "[",
+              RowBox[{
+               RowBox[{"M", "[",
+                RowBox[{
+                 RowBox[{"PART", "[", "F", "]"}], "[",
+                 RowBox[{"[",
+                  RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], ",", "eig"}],
+              "]"}], ";", "\[IndentingNewLine]",
+             RowBox[{"If", "[",
+              RowBox[{
+               RowBox[{"eig", "\[Equal]", "0"}], ",", "\[IndentingNewLine]",
+               RowBox[{
+                RowBox[{"$SimplificationsMatching", "=",
+                 RowBox[{"Join", "[",
+                  RowBox[{"$SimplificationsMatching", ",",
+                   RowBox[{"{",
+                    RowBox[{
+                    RowBox[{"M", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "\[Rule]",
+                    "0"}], "}"}]}], "]"}]}], ";"}]}], "\[IndentingNewLine]",
+              "]"}], ";"}], ",", "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"If", "[",
+              RowBox[{
+               RowBox[{
+                RowBox[{"FreeQ", "[",
+                 RowBox[{"massless", ",",
+                  RowBox[{
+                   RowBox[{"PART", "[", "F", "]"}], "[",
+                   RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}]}], "]"}],
+                "\[Equal]", "False"}], ",", "\[IndentingNewLine]",
+               RowBox[{"(*", " ",
+                RowBox[{
+                 RowBox[{"ReplacementMasses", "=",
+                  RowBox[{"Join", "[",
+                   RowBox[{"ReplacementMasses", ",",
+                    RowBox[{"{",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Mass", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "[", "a_",
+                    "]"}], "\[Rule]", "0"}], "}"}]}], "]"}]}], ";"}], " ",
+                "*)"}], "\[IndentingNewLine]",
+               RowBox[{
+                RowBox[{"$SimplificationsMatching", "=",
+                 RowBox[{"Join", "[",
+                  RowBox[{"$SimplificationsMatching", ",",
+                   RowBox[{"{",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"M", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "[", "a_",
+                    "]"}], "\[Rule]", "0"}], "}"}]}], "]"}]}], ";"}], ",",
+               "\[IndentingNewLine]",
+               RowBox[{
+                RowBox[{"Switch", "[",
+                 RowBox[{
+                  RowBox[{"Length", "[",
+                   RowBox[{"Intersection", "[",
+                    RowBox[{"getMixingMatrix", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "]"}],
+                   "]"}], ",", "\[IndentingNewLine]", "1", ",",
+                  "\[IndentingNewLine]",
+                  RowBox[{
+                   RowBox[{"eig", "=",
+                    RowBox[{"Eigensystem", "[",
+                    RowBox[{"Limit", "[",
+                    RowBox[{
+                    RowBox[{"Simplify", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"MassMatrix", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], " ", "/.",
+                    " ", "TreeLevelTadpoleSolutions"}], " ", "/.",
+                    RowBox[{
+                    RowBox[{"RXi", "[", "__", "]"}], "\[Rule]", "0"}]}], " ",
+                    "//.", "$ParametrisationUV"}], " ", "/.",
+                    "$SimplificationsMatching"}], "]"}], ",",
+                    RowBox[{"epsUV", "\[Rule]", "0"}]}], "]"}], "]"}]}], ";",
+                   "\[IndentingNewLine]",
+                   RowBox[{"If", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Length", "[",
+                    RowBox[{"Intersection", "[",
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "]"}], "===",
+                    "1"}], ",", "\[IndentingNewLine]",
+                    RowBox[{
+                    RowBox[{"eig", "=",
+                    RowBox[{"Reverse", "/@", "eig"}]}], ";"}]}], " ",
+                    RowBox[{"(*", " ",
+                    RowBox[{
+                    "in", " ", "order", " ", "to", " ", "get", " ", "the",
+                    " ", "identity", " ", "matrix", " ", "for", " ",
+                    "trivial", " ", "mixing"}], " ", "*)"}],
+                    "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]",
+
+                   RowBox[{"ReplacementRotationMatrices", "=",
+                    RowBox[{"Join", "[",
+                    RowBox[{"ReplacementRotationMatrices", ",",
+                    RowBox[{"{",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"getMixingMatrix", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "[",
+                    RowBox[{"[", "1", "]"}], "]"}], "[", "a__Integer", "]"}],
+                    "\[Rule]",
+                    RowBox[{
+                    RowBox[{"(",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Simplify", "[",
+                    RowBox[{"#", ",", "$AssumptionsMatching"}], "]"}], "&"}],
+                    "/@",
+                    RowBox[{"Normalize", "/@",
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "2", "]"}], "]"}]}]}], ")"}], "[",
+                    RowBox[{"[", "a", "]"}], "]"}]}], "}"}]}], "]"}]}], ";",
+                   "\[IndentingNewLine]",
+                   RowBox[{"If", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "2", "]"}], "]"}], "===",
+                    RowBox[{"IdentityMatrix", "[",
+                    RowBox[{"getGen", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "]"}]}],
+                    ",", "\[IndentingNewLine]",
+                    RowBox[{
+                    RowBox[{"$SimplificationsMatching", "=",
+                    RowBox[{"Join", "[",
+                    RowBox[{"$SimplificationsMatching", ",",
+                    RowBox[{"{",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"getMixingMatrix", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "[",
+                    RowBox[{"[", "1", "]"}], "]"}], "\[Rule]", "Delta"}],
+                    "}"}]}], "]"}]}], ";"}]}], "\[IndentingNewLine]", "]"}],
+                   ";", "\[IndentingNewLine]", " ",
+                   RowBox[{"ReplacementMasses", "=",
+                    RowBox[{"Join", "[",
+                    RowBox[{"ReplacementMasses", ",",
+                    RowBox[{"{",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Mass", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "[",
+                    "a_Integer", "]"}], "\[Rule]",
+                    RowBox[{
+                    RowBox[{"(",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Simplify", "[",
+                    RowBox[{"#", ",", "$AssumptionsMatching"}], "]"}], "&"}],
+                    "/@",
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "1", "]"}], "]"}]}], ")"}], "[",
+                    RowBox[{"[", "a", "]"}], "]"}]}], "}"}]}], "]"}]}], ";",
+                   "\[IndentingNewLine]",
+                   RowBox[{"Set", "[",
+                    RowBox[{
+                    RowBox[{"M", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], ",",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Simplify", "[",
+                    RowBox[{"#", ",", "$AssumptionsMatching"}], "]"}], "&"}],
+                    "/@",
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "1", "]"}], "]"}]}]}], "]"}], ";",
+                   "\[IndentingNewLine]",
+                   RowBox[{"If", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Intersection", "[",
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "1", "]"}], "]"}], "]"}], "===",
+                    RowBox[{"{", "0", "}"}]}], ",", "\[IndentingNewLine]",
+                    RowBox[{"$SimplificationsMatching", "=",
+                    RowBox[{"Join", "[",
+                    RowBox[{"$SimplificationsMatching", ",",
+                    RowBox[{"{",
+                    RowBox[{
+                    RowBox[{"M", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "[", "a_", "]"}],
+                    "]"}], "\[Rule]", "0"}], "}"}]}], "]"}]}]}],
+                    "\[IndentingNewLine]", "]"}], ";"}], ",",
+                  "\[IndentingNewLine]", "2", ",", "\[IndentingNewLine]",
+                  RowBox[{
+                   RowBox[{"eig", "=",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"SingularValueDecomposition", "[",
+                    RowBox[{"Limit", "[",
+                    RowBox[{
+                    RowBox[{"Simplify", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"MassMatrix", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], " ", "/.",
+                    " ", "TreeLevelTadpoleSolutions"}], " ", "/.",
+                    RowBox[{
+                    RowBox[{"RXi", "[", "__", "]"}], "\[Rule]", "0"}]}], " ",
+                    "//.", "$ParametrisationUV"}], "]"}], ",",
+                    RowBox[{"epsUV", "\[Rule]", "0"}]}], "]"}], "]"}], "/.",
+                    " ",
+                    RowBox[{"Conjugate", "\[Rule]", "conj"}]}], "//.",
+                    "$ParametrisationUV"}], "  ", "/.",
+                    "$SimplificationsMatching"}]}], ";",
+                   "\[IndentingNewLine]",
+                   RowBox[{"ReplacementRotationMatrices", "=",
+                    RowBox[{"Join", "[",
+                    RowBox[{"ReplacementRotationMatrices", ",",
+                    RowBox[{"{",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"getMixingMatrix", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "[",
+                    RowBox[{"[", "1", "]"}], "]"}], "[", "a__Integer", "]"}],
+                    "\[Rule]",
+                    RowBox[{
+                    RowBox[{"(",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Simplify", "[",
+                    RowBox[{"#", ",", "$AssumptionsMatching"}], "]"}], "&"}],
+                    "/@",
+                    RowBox[{"Normalize", "/@",
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "1", "]"}], "]"}]}]}], ")"}], "[",
+                    RowBox[{"[", "a", "]"}], "]"}]}], "}"}]}], "]"}]}], ";",
+                   "\[IndentingNewLine]",
+                   RowBox[{"ReplacementRotationMatrices", "=",
+                    RowBox[{"Join", "[",
+                    RowBox[{"ReplacementRotationMatrices", ",",
+                    RowBox[{"{",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"getMixingMatrix", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "[",
+                    RowBox[{"[", "2", "]"}], "]"}], "[", "a__Integer", "]"}],
+                    "\[Rule]",
+                    RowBox[{
+                    RowBox[{"(",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Simplify", "[",
+                    RowBox[{"#", ",", "$AssumptionsMatching"}], "]"}], "&"}],
+                    "/@",
+                    RowBox[{"Normalize", "/@",
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "3", "]"}], "]"}]}]}], ")"}], "[",
+                    RowBox[{"[", "a", "]"}], "]"}]}], "}"}]}], "]"}]}], ";",
+                   "\[IndentingNewLine]",
+                   RowBox[{"If", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "1", "]"}], "]"}], "===",
+                    RowBox[{"IdentityMatrix", "[",
+                    RowBox[{"getGen", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "]"}]}],
+                    ",", "\[IndentingNewLine]",
+                    RowBox[{
+                    RowBox[{"$SimplificationsMatching", "=",
+                    RowBox[{"Join", "[",
+                    RowBox[{"$SimplificationsMatching", ",",
+                    RowBox[{"{",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"getMixingMatrix", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "[",
+                    RowBox[{"[", "1", "]"}], "]"}], "\[Rule]", "Delta"}],
+                    "}"}]}], "]"}]}], ";"}]}], "\[IndentingNewLine]", "]"}],
+                   ";", "\[IndentingNewLine]",
+                   RowBox[{"If", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "3", "]"}], "]"}], "===",
+                    RowBox[{"IdentityMatrix", "[",
+                    RowBox[{"getGen", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "]"}]}],
+                    ",", "\[IndentingNewLine]",
+                    RowBox[{
+                    RowBox[{"$SimplificationsMatching", "=",
+                    RowBox[{"Join", "[",
+                    RowBox[{"$SimplificationsMatching", ",",
+                    RowBox[{"{",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"getMixingMatrix", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "[",
+                    RowBox[{"[", "2", "]"}], "]"}], "\[Rule]", "Delta"}],
+                    "}"}]}], "]"}]}], ";"}]}], "\[IndentingNewLine]", "]"}],
+                   ";", "\[IndentingNewLine]", " ",
+                   RowBox[{"ReplacementMasses", "=",
+                    RowBox[{"Join", "[",
+                    RowBox[{"ReplacementMasses", ",",
+                    RowBox[{"{",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Mass", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "[",
+                    "a_Integer", "]"}], "\[Rule]",
+                    RowBox[{
+                    RowBox[{"Table", "[",
+                    RowBox[{
+                    RowBox[{"Simplify", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "2", "]"}], "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"j", ",", "j"}], "]"}], "]"}], ",",
+                    "$AssumptionsMatching"}], "]"}], ",",
+                    RowBox[{"{",
+                    RowBox[{"j", ",", "1", ",",
+                    RowBox[{"Length", "[",
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}]}], "}"}]}], "]"}],
+                    "[",
+                    RowBox[{"[", "a", "]"}], "]"}]}], "}"}]}], "]"}]}], ";",
+                   " ", "\[IndentingNewLine]",
+                   RowBox[{"Set", "[",
+                    RowBox[{
+                    RowBox[{"M", "[",
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], ",",
+                    RowBox[{"Table", "[",
+                    RowBox[{
+                    RowBox[{"Simplify", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "2", "]"}], "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"j", ",", "j"}], "]"}], "]"}], ",",
+                    "$AssumptionsMatching"}], "]"}], ",",
+                    RowBox[{"{",
+                    RowBox[{"j", ",", "1", ",",
+                    RowBox[{"Length", "[",
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}]}], "}"}]}], "]"}]}],
+                     "]"}], ";", "\[IndentingNewLine]",
+                   RowBox[{"If", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"Intersection", "[",
+                    RowBox[{"Table", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "2", "]"}], "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"j", ",", "j"}], "]"}], "]"}], ",",
+                    RowBox[{"{",
+                    RowBox[{"j", ",", "1", ",",
+                    RowBox[{"Length", "[",
+                    RowBox[{"eig", "[",
+                    RowBox[{"[", "2", "]"}], "]"}], "]"}]}], "}"}]}], "]"}],
+                    "]"}], "===",
+                    RowBox[{"{", "0", "}"}]}], ",", "\[IndentingNewLine]",
+                    RowBox[{"$SimplificationsMatching", "=",
+                    RowBox[{"Join", "[",
+                    RowBox[{"$SimplificationsMatching", ",",
+                    RowBox[{"{",
+                    RowBox[{
+                    RowBox[{"M", "[",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"PART", "[", "F", "]"}], "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "[", "a_", "]"}],
+                    "]"}], "\[Rule]", "0"}], "}"}]}], "]"}]}]}],
+                    "\[IndentingNewLine]", "]"}], ";"}]}],
+                 "\[IndentingNewLine]", "]"}], ";"}]}], "\[IndentingNewLine]",
+               "]"}], ";"}]}], "\[IndentingNewLine]", "]"}], ";",
+          "\[IndentingNewLine]",
+          RowBox[{"i", "++"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+       "\[IndentingNewLine]",
+       RowBox[{"For", "[",
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",",
+         RowBox[{"i", "\[LessEqual]",
+          RowBox[{"Length", "[", "SA`RotationMatricesGaugeSector", "]"}]}],
+         ",", "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{
+             RowBox[{"AssociatedMixingAngles", "[",
+              RowBox[{"SA`RotationMatricesGaugeSector", "[",
+               RowBox[{"[", "i", "]"}], "]"}], "]"}], "=!=",
+             RowBox[{"{", "}"}]}], ",", "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"angles", "=",
+              RowBox[{"AssociatedMixingAngles", "[",
+               RowBox[{"SA`RotationMatricesGaugeSector", "[",
+                RowBox[{"[", "i", "]"}], "]"}], "]"}]}], ";",
+             "\[IndentingNewLine]",
+             RowBox[{"def", "=",
+              RowBox[{
+               RowBox[{"Select", "[",
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"DEFINITION", "[",
+                   RowBox[{"Last", "[", "NameOfStates", "]"}], "]"}], "[",
+                  "GaugeSector", "]"}], ",",
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"FreeQ", "[",
+                    RowBox[{"#", ",",
+                    RowBox[{"SA`RotationMatricesGaugeSector", "[",
+                    RowBox[{"[", "i", "]"}], "]"}]}], "]"}], "\[Equal]",
+                   "False"}], "&"}]}], "]"}], "[",
+               RowBox[{"[", "1", "]"}], "]"}]}], ";", "\[IndentingNewLine]",
+             RowBox[{"eig", "=",
+              RowBox[{"Limit", "[",
+               RowBox[{
+                RowBox[{"Eigensystem", "[",
+                 RowBox[{"Simplify", "[",
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"MassMatrix", "[",
+                    RowBox[{"def", "[",
+                    RowBox[{"[",
+                    RowBox[{"2", ",", "1"}], "]"}], "]"}], "]"}], " ", "/.",
+                    RowBox[{
+                    RowBox[{"RXi", "[", "__", "]"}], "\[Rule]", "0"}]}], " ",
+                   "//.", "$ParametrisationUV"}], "]"}], "]"}], ",",
+                RowBox[{"epsUV", "\[Rule]", "0"}]}], "]"}]}], ";",
+             "\[IndentingNewLine]",
+             RowBox[{"ev", "=",
+              RowBox[{
+               RowBox[{"Normalize", "/@",
+                RowBox[{"eig", "[",
+                 RowBox[{"[", "2", "]"}], "]"}]}], " ", "/.",
+               RowBox[{
+                RowBox[{"Abs", "[", "x_", "]"}], "\[Rule]", "x"}]}]}], ";",
+             "\[IndentingNewLine]",
+             RowBox[{"For", "[",
+              RowBox[{
+               RowBox[{"j", "=", "1"}], ",",
+               RowBox[{"j", "\[LessEqual]",
+                RowBox[{"Length", "[", "angles", "]"}]}], ",",
+               "\[IndentingNewLine]",
+               RowBox[{
+                RowBox[{"$SimplificationsMatching", "=",
+                 RowBox[{"Join", "[",
+                  RowBox[{"$SimplificationsMatching", ",",
+                   RowBox[{"{",
+                    RowBox[{
+                    RowBox[{"angles", "[",
+                    RowBox[{"[", "j", "]"}], "]"}], "\[Rule]",
+                    RowBox[{"(",
+                    RowBox[{
+                    RowBox[{
+                    RowBox[{"getEntryParameter", "[",
+                    RowBox[{
+                    RowBox[{"angles", "[",
+                    RowBox[{"[", "j", "]"}], "]"}], ",", "DependenceSPheno"}],
+                     "]"}], "/.",
+                    RowBox[{"{",
+                    RowBox[{
+                    RowBox[{"SA`RotationMatricesGaugeSector", "[",
+                    RowBox[{"[", "i", "]"}], "]"}], "\[Rule]", "ev"}],
+                    "}"}]}], "/.",
+                    RowBox[{
+                    RowBox[{"A_", "[", "b__Integer", "]"}], ":>",
+                    RowBox[{"A", "[",
+                    RowBox[{"[", "b", "]"}], "]"}]}]}], ")"}]}], "}"}]}],
+                  "]"}]}], ";", "\[IndentingNewLine]",
+                RowBox[{"j", "++"}], ";"}]}], "]"}], ";"}]}],
+           "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"i", "++"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+       "\[IndentingNewLine]",
+       RowBox[{
+       "ExtractExternalIndices", "[", "ReplacementRotationMatrices", "]"}],
+       ";", "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"On", "[",
+        StyleBox[
+         RowBox[{"Part", "::", "pkspec1"}], "MessageName"],
+        StyleBox["]", "MessageName"]}],
+       StyleBox[";", "MessageName"]}]}],
+     StyleBox["\[IndentingNewLine]", "MessageName"],
+     StyleBox["]", "MessageName"]}]}],
+   StyleBox[";", "MessageName"]}], "\[IndentingNewLine]",
+  "\[IndentingNewLine]", "\[IndentingNewLine]",
+  RowBox[{"(*",
+   RowBox[{
+    RowBox[{
+     StyleBox[
+      RowBox[{"PerformMatching", "[",
+       RowBox[{"InputFile_", ",", "read_"}], "]"}], "MessageName"],
+     StyleBox[":=", "MessageName"],
+     RowBox[{"Block", "[",
+      RowBox[{
+       RowBox[{"{", "i", "}"}], ",", "\[IndentingNewLine]",
+       "\[IndentingNewLine]",
+       RowBox[{
+        RowBox[{"Get", "[", "InputFile", "]"}], ";", "\[IndentingNewLine]",
+        "\[IndentingNewLine]",
+        RowBox[{"RunSARAH", "[",
+         RowBox[{"$UVModel", ",", "read"}], "]"}], ";", "\[IndentingNewLine]",
+         "\[IndentingNewLine]",
+        RowBox[{"Print", "[",
+         RowBox[{"StyleForm", "[",
+          RowBox[{
+          "\"\<Calculation Matching conditions for scalar couplings\>\"",
+           ",", "\"\<Section\>\"", ",",
+           RowBox[{"FontSize", "\[Rule]", "12"}]}], "]"}], "]"}], ";",
+        "\[IndentingNewLine]", "\[IndentingNewLine]",
+        RowBox[{"InitMatching", "[", "read", "]"}], ";",
+        "\[IndentingNewLine]", "\[IndentingNewLine]",
+        RowBox[{"(*", "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{
+           RowBox[{"M", "[",
+            RowBox[{"bar", "[", "x_", "]"}], "]"}], ":=",
+           RowBox[{"M", "[", "x", "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{
+           RowBox[{"M", "[",
+            RowBox[{"conj", "[", "x_", "]"}], "]"}], ":=",
+           RowBox[{"M", "[", "x", "]"}]}], ";"}], "\[IndentingNewLine]",
+         "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", "MatchLO", ";",
+         "\[IndentingNewLine]", "MatchNLO", ";"}]}], "\[IndentingNewLine]",
+      "\[IndentingNewLine]", "]"}]}], ";"}], " ", "*)"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"MatchLO", ":=",
+    RowBox[{"Block", "[",
+     RowBox[{
+      RowBox[{"{",
+       RowBox[{"i", ",", "res"}], "}"}], ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"SetOptions", "[",
+        RowBox[{"EFTcoupLO", ",", "\[IndentingNewLine]",
+         RowBox[{"ExcludeFields", "\[Rule]",
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{
+             RowBox[{"Head", "[", "$ExcludeFieldsMatching", "]"}], "===",
+             "List"}], ",", "$ExcludeFieldsMatching", ",",
+            RowBox[{"{", "}"}]}], "]"}]}], ",", "\[IndentingNewLine]",
+         RowBox[{"Debug", "\[Rule]", "False"}], ",", "\[IndentingNewLine]",
+         RowBox[{"SimplifyResults", "\[Rule]", "True"}]}],
+        "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"Print", "[",
+        RowBox[{"\"\<  Tree-Level Matching: \>\"", ",",
+         RowBox[{"Dynamic", "[", "DynamicLO", "]"}], ",", "\"\</\>\"", ",",
+         RowBox[{"Length", "[", "$MatchingConditions", "]"}], ",",
+         "\"\< (\>\"", ",",
+         RowBox[{"Dynamic", "[", "DynamicLOname", "]"}], ",", "\"\<)\>\""}],
+        "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"For", "[",
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",",
+         RowBox[{"i", "\[LessEqual]",
+          RowBox[{"Length", "[", "$MatchingConditions", "]"}]}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"DynamicLO", "=", "i"}], ";", "\[IndentingNewLine]",
+          RowBox[{"DynamicLOname", "=",
+           RowBox[{"$MatchingConditions", "[",
+            RowBox[{"[",
+             RowBox[{"i", ",", "1"}], "]"}], "]"}]}], ";",
+          "\[IndentingNewLine]",
+          RowBox[{"res", "=",
+           RowBox[{
+            RowBox[{
+             RowBox[{"$MatchingConditions", "[",
+              RowBox[{"[",
+               RowBox[{"i", ",", "2"}], "]"}], "]"}], " ", "/.", " ",
+             RowBox[{"Dot", "\[Rule]", "TMP"}]}], "/.",
+            RowBox[{
+             RowBox[{"TMP", "[", "a__", "]"}], "\[RuleDelayed]",
+             RowBox[{"EFTcoupLO", "[",
+              RowBox[{"{", "a", "}"}], "]"}]}]}]}], ";",
+          "\[IndentingNewLine]",
+          RowBox[{"Set", "[",
+           RowBox[{
+            RowBox[{"EFTLO", "[",
+             RowBox[{"$MatchingConditions", "[",
+              RowBox[{"[",
+               RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], ",", "res"}],
+           "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"SA`MatchingResultsLO", "=",
+           RowBox[{"Join", "[",
+            RowBox[{"SA`MatchingResultsLO", ",",
+             RowBox[{"{",
+              RowBox[{"{",
+               RowBox[{
+                RowBox[{"$MatchingConditions", "[",
+                 RowBox[{"[",
+                  RowBox[{"i", ",", "1"}], "]"}], "]"}], ",", "res"}], "}"}],
+              "}"}]}], "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"i", "++"}], ";"}]}], "]"}], ";"}]}], "\[IndentingNewLine]",
+      "]"}]}], ";"}], "\[IndentingNewLine]",
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"MatchNLO", ":=",
+    RowBox[{"Block", "[",
+     RowBox[{
+      RowBox[{"{",
+       RowBox[{"i", ",", "res"}], "}"}], ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"Clear", "[", "CACHE", "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"SetOptions", "[",
+        RowBox[{"EFTcoupNLO", ",", "\[IndentingNewLine]",
+         RowBox[{"InternalPatterns", "\[Rule]",
+          RowBox[{"{", "}"}]}], ",", "\[IndentingNewLine]",
+         RowBox[{"Topologies", "\[Rule]",
+          RowBox[{"{", "}"}]}], ",", "\[IndentingNewLine]",
+         RowBox[{"ExcludeTopologies", "\[Rule]",
+          RowBox[{"{", "OffdiagonalWFRs", "}"}]}], ",", "\[IndentingNewLine]",
+         RowBox[{"Debug", "\[Rule]", "False"}], ",", "\[IndentingNewLine]",
+         RowBox[{"Caching", "\[Rule]", "True"}], ",", "\[IndentingNewLine]",
+         RowBox[{"LoopReplace", "\[Rule]", "AnalyticLoopFunctions"}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{"IncludeTreeLevel", "\[Rule]", "True"}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{"ShiftMSDR", "\[Rule]", "Automatic"}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{"LoopFactor", "\[Rule]",
+          RowBox[{"1", "/",
+           RowBox[{
+            RowBox[{"(",
+             RowBox[{"4", "Pi"}], ")"}], "^", "2"}]}]}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{"GaugeThresholds", "\[Rule]", "True"}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{"ShowProgress", "\[Rule]", "True"}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{"SimplifyResults", "\[Rule]", "True"}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{"ExcludeFields", "\[Rule]",
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{
+             RowBox[{"Head", "[", "$ExcludeFieldsMatching", "]"}], "===",
+             "List"}], ",", "$ExcludeFieldsMatching", ",",
+            RowBox[{"{", "}"}]}], "]"}]}]}], "\[IndentingNewLine]", "]"}],
+       ";", "\[IndentingNewLine]",
+       RowBox[{"Print", "[",
+        RowBox[{"\"\<  One-Loop Matching: \>\"", ",",
+         RowBox[{"Dynamic", "[", "DynamicNLO", "]"}], ",", "\"\</\>\"", ",",
+         RowBox[{"Length", "[", "$MatchingConditions", "]"}], ",",
+         "\"\< (\>\"", ",",
+         RowBox[{"Dynamic", "[", "DynamicNLOname", "]"}], ",", "\"\<)\>\""}],
+        "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"For", "[",
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",",
+         RowBox[{"i", "\[LessEqual]",
+          RowBox[{"Length", "[", "$MatchingConditions", "]"}]}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"DynamicNLO", "=", "i"}], ";", "\[IndentingNewLine]",
+          RowBox[{"DynamicNLOname", "=",
+           RowBox[{"$MatchingConditions", "[",
+            RowBox[{"[",
+             RowBox[{"i", ",", "1"}], "]"}], "]"}]}], ";",
+          "\[IndentingNewLine]",
+          RowBox[{"res", "=",
+           RowBox[{
+            RowBox[{
+             RowBox[{"$MatchingConditions", "[",
+              RowBox[{"[",
+               RowBox[{"i", ",", "2"}], "]"}], "]"}], " ", "/.", " ",
+             RowBox[{"Dot", "\[Rule]", "TMP"}]}], "/.",
+            RowBox[{
+             RowBox[{"TMP", "[", "a__", "]"}], "\[RuleDelayed]",
+             RowBox[{"EFTcoupNLO", "[",
+              RowBox[{"{", "a", "}"}], "]"}]}]}]}], ";",
+          "\[IndentingNewLine]",
+          RowBox[{"SA`MatchingResultsNLO", "=",
+           RowBox[{"Join", "[",
+            RowBox[{"SA`MatchingResultsNLO", ",",
+             RowBox[{"{",
+              RowBox[{"{",
+               RowBox[{
+                RowBox[{"$MatchingConditions", "[",
+                 RowBox[{"[",
+                  RowBox[{"i", ",", "1"}], "]"}], "]"}], ",", "res"}], "}"}],
+              "}"}]}], "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"Set", "[",
+           RowBox[{
+            RowBox[{"EFTNLO", "[",
+             RowBox[{"$MatchingConditions", "[",
+              RowBox[{"[",
+               RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], ",", "res"}],
+           "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"i", "++"}], ";"}]}], "]"}], ";"}]}], "\[IndentingNewLine]",
+      "]"}]}], ";"}], "\[IndentingNewLine]",
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"RunSARAH", "[",
+     RowBox[{"model_", ",", "read_"}], "]"}], ":=",
+    RowBox[{"Block", "[",
+     RowBox[{
+      RowBox[{"{", "output", "}"}], ",", "\[IndentingNewLine]", "    ",
+      RowBox[{
+       RowBox[{"Start", "[", "model", "]"}], ";", "\[IndentingNewLine]",
+       "    ",
+       RowBox[{"ModelOutput", "[",
+        RowBox[{"EWSB", ",",
+         RowBox[{"VerticesForLoops", "->", "True"}], ",",
+         RowBox[{"ReadLists", "\[Rule]", "read"}]}], "]"}], ";",
+       "\[IndentingNewLine]", "MakeCouplingLists", ";"}]}],
+     "\[IndentingNewLine]", "]"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"InitMatching", "[", "opt___", "]"}], ":=",
+   RowBox[{"InitMatchingFunc", "[",
+    RowBox[{
+     RowBox[{
+      RowBox[{"ReadLists", "/.",
+       RowBox[{"{", "opt", "}"}]}], "/.",
+      RowBox[{"Options", "[", "InitMatching", "]"}]}], ",",
+     RowBox[{
+      RowBox[{"Assumptions", "/.",
+       RowBox[{"{", "opt", "}"}]}], "/.",
+      RowBox[{"Options", "[", "InitMatching", "]"}]}], ",",
+     RowBox[{
+      RowBox[{"Parametrisation", " ", "/.",
+       RowBox[{"{", "opt", "}"}]}], "/.", " ",
+      RowBox[{"Options", "[", "InitMatching", "]"}]}], ",",
+     RowBox[{
+      RowBox[{"SolveTadpoles", "/.",
+       RowBox[{"{", "opt", "}"}]}], "/.", " ",
+      RowBox[{"Options", "[", "InitMatching", "]"}]}], ",",
+     RowBox[{
+      RowBox[{"InputFile", "/.", " ",
+       RowBox[{"{", "opt", "}"}]}], "/.",
+      RowBox[{"Options", "[", "InitMatching", "]"}]}]}], "]"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"InitMatchingFunc", "[",
+     RowBox[{
+     "read_", ",", "assumptions_", ",", "par_", ",", "tadpoles_", ",",
+      "input_"}], "]"}], ":=",
+    RowBox[{"Block", "[",
+     RowBox[{
+      RowBox[{"{", "}"}], ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"Print", "[",
+        RowBox[{"StyleForm", "[",
+         RowBox[{
+         "\"\<Initialise Matching Routines\>\"", ",", "\"\<Section\>\"", ",",
+
+          RowBox[{"FontSize", "\[Rule]", "12"}]}], "]"}], "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"(*",
+        RowBox[{"clear", " ", "used", " ", "variables"}], "*)"}],
+       "\[IndentingNewLine]",
+       RowBox[{"ClearAll", "[",
+        RowBox[{
+        "B0", ",", "C0", ",", "D0", ",", "dB0", ",", "dB1", ",",
+         "Generic1LoopAmp"}], "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"TreeLevelTadpoleSolutions", "=",
+        RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]",
+       RowBox[{"(*", " ",
+        RowBox[{
+        "Load", " ", "generic", " ", "loop", " ", "functions", " ", "from",
+         " ", "previous", " ", "calculation"}], " ", "*)"}],
+       "\[IndentingNewLine]",
+       RowBox[{"Get", "[",
+        RowBox[{"ToFileName", "[",
+         RowBox[{
+          RowBox[{"{",
+           RowBox[{"$sarahPackageDir", ",", "\"\<Matching\>\""}], "}"}], ",",
+          "\"\<Generic1LoopEffectiveScalarAmplitudes.m\>\""}], "]"}], "]"}],
+       ";", "\[IndentingNewLine]",
+       RowBox[{"Get", "[",
+        RowBox[{"ToFileName", "[",
+         RowBox[{
+          RowBox[{"{",
+           RowBox[{"$sarahPackageDir", ",", "\"\<Matching\>\""}], "}"}], ",",
+          "\"\<Generic1LoopEffectiveScalarCouplings.m\>\""}], "]"}], "]"}],
+       ";", "\[IndentingNewLine]",
+       RowBox[{"Get", "[",
+        RowBox[{"ToFileName", "[",
+         RowBox[{
+          RowBox[{"{",
+           RowBox[{"$sarahPackageDir", ",", "\"\<Matching\>\""}], "}"}], ",",
+          "\"\<1LoopDiagramsGeneric.m\>\""}], "]"}], "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"Get", "[",
+        RowBox[{"ToFileName", "[",
+         RowBox[{
+          RowBox[{"{",
+           RowBox[{"$sarahPackageDir", ",", "\"\<Matching\>\""}], "}"}], ",",
+          "\"\<LoopFunctions.m\>\""}], "]"}], "]"}], ";",
+       "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"ModelOutput", "[",
+        RowBox[{"EWSB", ",",
+         RowBox[{"VerticesForLoops", "->", "True"}], ",",
+         RowBox[{"ReadLists", "\[Rule]", "read"}]}], "]"}], ";",
+       "\[IndentingNewLine]", "MakeCouplingLists", ";", "\[IndentingNewLine]",
+        "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"If", "[",
+        RowBox[{
+         RowBox[{
+          RowBox[{"Head", "[", "input", "]"}], "===", "String"}], ",", "  ",
+         RowBox[{"(*", " ",
+          RowBox[{"Batch", " ", "Mode"}], " ", "*)"}], "\[IndentingNewLine]",
+
+         RowBox[{
+          RowBox[{"Get", "[",
+           RowBox[{"ToFileName", "[",
+            RowBox[{
+             RowBox[{"{", "$sarahCurrentModelDir", "}"}], ",", "input"}],
+            "]"}], "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{
+             RowBox[{"Head", "[", "$SimplificationsMatching", "]"}], "=!=",
+             "List"}], ",",
+            RowBox[{"$SimplificationsMatching", "=",
+             RowBox[{"{", "}"}]}]}], "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{
+             RowBox[{"Head", "[", "$ParametrisationUV", "]"}], "=!=",
+             "List"}], ",",
+            RowBox[{"$ParametrisationUV", "=",
+             RowBox[{"{", "}"}]}]}], "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{
+             RowBox[{"Head", "[", "$AssumptionsMatching", "]"}], "=!=",
+             "List"}], ",",
+            RowBox[{"$AssumptionsMatching", "=",
+             RowBox[{"Table", "[",
+              RowBox[{
+               RowBox[{
+                RowBox[{"Gauge", "[",
+                 RowBox[{"[",
+                  RowBox[{"i", ",", "4"}], "]"}], "]"}], ">", "0"}], ",",
+               RowBox[{"{",
+                RowBox[{"i", ",", "1", ",",
+                 RowBox[{"Length", "[", "Gauge", "]"}]}], "}"}]}], "]"}]}],
+            ",",
+            RowBox[{"$AssumptionsMatching", "=",
+             RowBox[{"Join", "[",
+              RowBox[{"$AssumptionsMatching", ",",
+               RowBox[{"Table", "[",
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"Gauge", "[",
+                   RowBox[{"[",
+                    RowBox[{"i", ",", "4"}], "]"}], "]"}], ">", "0"}], ",",
+                 RowBox[{"{",
+                  RowBox[{"i", ",", "1", ",",
+                   RowBox[{"Length", "[", "Gauge", "]"}]}], "}"}]}], "]"}]}],
+              "]"}]}]}], "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"$AssumptionsMatching", "=",
+           RowBox[{"Join", "[",
+            RowBox[{"$AssumptionsMatching", ",",
+             RowBox[{"Table", "[",
+              RowBox[{
+               RowBox[{
+                RowBox[{"ToExpression", "[",
+                 RowBox[{
+                  RowBox[{"ToString", "[",
+                   RowBox[{"Gauge", "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "4"}], "]"}], "]"}], "]"}], "<>",
+                  "\"\<Q\>\""}], "]"}], ">", "0"}], ",",
+               RowBox[{"{",
+                RowBox[{"i", ",", "1", ",",
+                 RowBox[{"Length", "[", "Gauge", "]"}]}], "}"}]}], "]"}]}],
+            "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{
+          "GetMassesAndRotationMatrices", "[", "$SolveTadpolesUV", "]"}], ";",
+           "\[IndentingNewLine]",
+          RowBox[{"$MassesMatching", "=",
+           RowBox[{"setMasses", "[", "M", "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"$AllSimplifications", "=",
+           RowBox[{"Join", "[",
+            RowBox[{
+            "$SimplificationsMatching", ",", "$ParametrisationUV", ",", " ",
+             "ReplacementRotationMatrices", ",", "ReplacementMasses", ",",
+             RowBox[{"{",
+              RowBox[{
+               RowBox[{"sum", "[",
+                RowBox[{"a_", ",", "b_", ",", "c_", ",", "d_"}], "]"}], ":>",
+
+               RowBox[{"Sum", "[",
+                RowBox[{"d", ",",
+                 RowBox[{"{",
+                  RowBox[{"a", ",", "b", ",", "c"}], "}"}]}], "]"}]}],
+              "}"}]}], "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"Print", "[",
+           RowBox[{"StyleForm", "[",
+            RowBox[{"\"\<Perform Matching\>\"", ",", "\"\<Section\>\"", ",",
+             RowBox[{"FontSize", "\[Rule]", "12"}]}], "]"}], "]"}], ";",
+          "\[IndentingNewLine]",
+          RowBox[{"SA`MatchingResultsLO", "=",
+           RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"SA`MatchingResultsNLO", "=",
+           RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]", "MatchLO", ";",
+          "\[IndentingNewLine]", "MatchNLO", ";", "\[IndentingNewLine]",
+          RowBox[{"$sarahMatchingDir", "=",
+           RowBox[{"ToFileName", "[",
+            RowBox[{"{",
+             RowBox[{"$sarahCurrentOutputDir", ",", "\"\<Matching\>\""}],
+             "}"}], "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{
+             RowBox[{"FileExistsQ", "[", "$sarahMatchingDir", "]"}], "=!=",
+             "True"}], ",",
+            RowBox[{
+             RowBox[{"CreateDirectory", "[", "$sarahMatchingDir", "]"}],
+             ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"$sarahCurrentMatchingDir", "=",
+           RowBox[{"ToFileName", "[",
+            RowBox[{"{",
+             RowBox[{"$sarahMatchingDir", ",", "$NameUV"}], "}"}], "]"}]}],
+          ";", "\[IndentingNewLine]",
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{
+             RowBox[{"FileExistsQ", "[", "$sarahCurrentMatchingDir", "]"}], "=!=",
+              "True"}], ",", "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{
+             "CreateDirectory", "[", "$sarahCurrentMatchingDir", "]"}], ";"}],
+             ",", "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"DeleteDirectory", "[",
+              RowBox[{"$sarahCurrentMatchingDir", ",",
+               RowBox[{"DeleteContents", "\[Rule]", "True"}]}], "]"}], ";",
+             "\[IndentingNewLine]",
+             RowBox[{
+             "CreateDirectory", "[", "$sarahCurrentMatchingDir", "]"}],
+             ";"}]}], "\[IndentingNewLine]", "]"}], ";",
+          "\[IndentingNewLine]",
+          RowBox[{"Put", "[",
+           RowBox[{"SA`MatchingResultsLO", ",",
+            RowBox[{"ToFileName", "[",
+             RowBox[{
+              RowBox[{"{", "$sarahCurrentMatchingDir", "}"}], ",",
+              "\"\<CouplingsLO.m\>\""}], "]"}]}], "]"}], ";",
+          "\[IndentingNewLine]",
+          RowBox[{"Put", "[",
+           RowBox[{"SA`MatchingResultsNLO", ",",
+            RowBox[{"ToFileName", "[",
+             RowBox[{
+              RowBox[{"{", "$sarahCurrentMatchingDir", "}"}], ",",
+              "\"\<CouplingsNLO.m\>\""}], "]"}]}], "]"}], ";",
+          "\[IndentingNewLine]", "\[IndentingNewLine]",
+          RowBox[{"Print", "[",
+           RowBox[{"StyleForm", "[",
+            RowBox[{"\"\<Write Output\>\"", ",", "\"\<Section\>\"", ",",
+             RowBox[{"FontSize", "\[Rule]", "12"}]}], "]"}], "]"}], ";",
+          "\[IndentingNewLine]", "\[IndentingNewLine]",
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{"$EFTcouplingsToTeX", "===", "True"}], ",",
+            "\[IndentingNewLine]",
+            RowBox[{"WriteEFTcoupsToTeX", ";"}]}], "\[IndentingNewLine]",
+           "]"}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]",
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{"$ExportToSPheno", "===", "True"}], ",",
+            "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"ExportToSPheno", "[",
+              RowBox[{"WriteSPhenoDOTm", "\[Rule]", "True"}], "]"}], ";"}]}],
+           "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]",
+          "\[IndentingNewLine]",
+          RowBox[{"Print", "[",
+           RowBox[{
+           "\"\<Done... Output is written to \>\"", ",",
+            "$sarahCurrentMatchingDir"}], "]"}], ";"}], "\[IndentingNewLine]",
+          ",", "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"$SimplificationsMatching", "=",
+           RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"$ParametrisationUV", "=", "par"}], ";",
+          "\[IndentingNewLine]",
+          RowBox[{"$AssumptionsMatching", "=",
+           RowBox[{"Join", "[",
+            RowBox[{
+             RowBox[{"Table", "[",
+              RowBox[{
+               RowBox[{
+                RowBox[{"Gauge", "[",
+                 RowBox[{"[",
+                  RowBox[{"i", ",", "4"}], "]"}], "]"}], ">", "0"}], ",",
+               RowBox[{"{",
+                RowBox[{"i", ",", "1", ",",
+                 RowBox[{"Length", "[", "Gauge", "]"}]}], "}"}]}], "]"}], ",",
+              "assumptions"}], "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"GetMassesAndRotationMatrices", "[", "tadpoles", "]"}], ";",
+           "\[IndentingNewLine]",
+          RowBox[{"$MassesMatching", "=",
+           RowBox[{"setMasses", "[", "M", "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"$AllSimplifications", "=",
+           RowBox[{"Join", "[",
+            RowBox[{
+            "$SimplificationsMatching", ",", "$ParametrisationUV", ",", " ",
+             "ReplacementRotationMatrices", ",", "ReplacementMasses", ",",
+             RowBox[{"{",
+              RowBox[{
+               RowBox[{"sum", "[",
+                RowBox[{"a_", ",", "b_", ",", "c_", ",", "d_"}], "]"}], ":>",
+
+               RowBox[{"Sum", "[",
+                RowBox[{"d", ",",
+                 RowBox[{"{",
+                  RowBox[{"a", ",", "b", ",", "c"}], "}"}]}], "]"}]}],
+              "}"}]}], "]"}]}], ";"}]}], "\[IndentingNewLine]", "]"}],
+       ";"}]}], "\[IndentingNewLine]", "]"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"Options", "[", "ExportToSPheno", "]"}], "=",
+   RowBox[{"{",
+    RowBox[{
+     RowBox[{"WriteSPhenoDOTm", "\[Rule]", "False"}], ",",
+     RowBox[{"OutputFile", "\[Rule]", "Automatic"}]}], "}"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"ExportToSPheno", "[", "opt___", "]"}], ":=",
+   RowBox[{"ExportToSPhenoFunc", "[",
+    RowBox[{
+     RowBox[{
+      RowBox[{"WriteSPhenoDOTm", "/.",
+       RowBox[{"{", "opt", "}"}]}], "/.",
+      RowBox[{"Options", "[", "WriteSPhenoDOTm", "]"}]}], ",",
+     RowBox[{
+      RowBox[{"OutputFile", "/.",
+       RowBox[{"{", "opt", "}"}]}], "/.",
+      RowBox[{"Options", "[", "ExportToSPheno", "]"}]}]}], "]"}]}],
+  ";"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"ExportToSPhenoFunc", "[",
+     RowBox[{"spheno_", ",", "outfile_"}], "]"}], ":=",
+    RowBox[{"Block", "[",
+     RowBox[{
+      RowBox[{"{",
+       RowBox[{
+       "i", ",", "c", ",", "f", ",", "func", ",", "funcname", ",", "info",
+        ",", "funccall", ",",
+        RowBox[{"ComplexParameters", "=",
+         RowBox[{"{", "}"}]}], ",",
+        RowBox[{"RealParameters", "=",
+         RowBox[{"{", "}"}]}], ",", "sphenofilename", ",", "funcfilename",
+        ",", "funcfile", ",",
+        RowBox[{"opts", "=",
+         RowBox[{"Sequence", "@@",
+          RowBox[{"(",
+           RowBox[{
+            RowBox[{"getOpts", "[", "GenerateSPhenodotm", "]"}], "/.",
+            RowBox[{
+             RowBox[{"opt", "[", "z_", "]"}], "\[RuleDelayed]",
+             RowBox[{"OptionValue", "[", "z", "]"}]}]}], ")"}]}]}]}], "}"}],
+      ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"Print", "[", "\"\<  Writing SPheno Output\>\"", "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"GenerateFortranRoutines", "[", "outfile", "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"If", "[",
+        RowBox[{
+         RowBox[{"spheno", "===", "True"}], ",", "\[IndentingNewLine]",
+         RowBox[{"(*", " ",
+          RowBox[{"GenerateWrapperFile", ";"}], " ", "*)"}],
+         "\[IndentingNewLine]",
+         RowBox[{"GenerateSPhenoFiles", ";"}]}], "\[IndentingNewLine]", "]"}],
+        ";"}]}], "\[IndentingNewLine]", "]"}]}], ";"}], "\[IndentingNewLine]",
+   "\[IndentingNewLine]",
+  RowBox[{"(*", "\[IndentingNewLine]",
+   RowBox[{
+    RowBox[{"GenerateWrapperFile", ":=",
+     RowBox[{"Block", "[",
+      RowBox[{
+       RowBox[{"{",
+        RowBox[{
+        "varsRAW", ",", "vars", ",", "arguments", ",", "real", ",", "complex",
+          ",", "i", ",", "j", ",", "temp", ",", "funcfile"}], "}"}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{
+        RowBox[{"varsRAW", " ", "=", " ",
+         RowBox[{"DeleteCases", "[",
+          RowBox[{
+           RowBox[{"Variables", "@",
+            RowBox[{"Level", "[",
+             RowBox[{"SA`MatchingResultsNLO", ",", " ",
+              RowBox[{"{",
+               RowBox[{
+                RowBox[{"-", "Infinity"}], ",", "Infinity"}], "}"}]}],
+             "]"}]}], ",", "UVscaleQ"}], "]"}]}], ";", "\[IndentingNewLine]",
+
+        RowBox[{"vars", " ", "=", " ",
+         RowBox[{
+          RowBox[{"Join", "[",
+           RowBox[{
+            RowBox[{"Select", "[",
+             RowBox[{"varsRAW", ",",
+              RowBox[{
+               RowBox[{"SymbolQS", "[", "#", "]"}], "&"}]}], "]"}], ",",
+            RowBox[{"Cases", "[",
+             RowBox[{"varsRAW", ",",
+              RowBox[{"_", "[", "__Integer", "]"}]}], "]"}]}], "]"}], "//",
+          "Sort"}]}], ";", "\[IndentingNewLine]",
+        RowBox[{"arguments", " ", "=", " ",
+         RowBox[{"(",
+          RowBox[{
+           RowBox[{
+            RowBox[{"#", "/.",
+             RowBox[{
+              RowBox[{"F_", "[", "___", "]"}], ":>", "F"}]}], "&"}], "/@",
+           "vars"}], ")"}]}], ";", "\[IndentingNewLine]",
+        RowBox[{"real", " ", "=", " ",
+         RowBox[{"Select", "[",
+          RowBox[{"vars", ",", " ",
+           RowBox[{
+            RowBox[{
+             RowBox[{"conj", "[", "#", "]"}], "==", "#"}], "&"}]}], "]"}]}],
+        ";", "\[IndentingNewLine]",
+        RowBox[{"complex", " ", "=", " ",
+         RowBox[{"DeleteCases", "[",
+          RowBox[{
+           RowBox[{"Complement", "[",
+            RowBox[{"vars", ",", "real"}], "]"}], ",", "UVscaleQ"}], "]"}]}],
+        ";", "\[IndentingNewLine]",
+        RowBox[{"varsUVin", "=",
+         RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]",
+        RowBox[{"varsUVout", "=",
+         RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]",
+        RowBox[{"complexUVin", "=",
+         RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]",
+        RowBox[{"complexUVout", "=",
+         RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]",
+        RowBox[{"realUVin", "=",
+         RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]",
+        RowBox[{"For", "[",
+         RowBox[{
+          RowBox[{"i", "=", "1"}], ",",
+          RowBox[{"i", "\[LessEqual]",
+           RowBox[{"Length", "[", "$SPhenoParameterMatching", "]"}]}], ",",
+          "\[IndentingNewLine]",
+          RowBox[{
+           RowBox[{"If", "[",
+            RowBox[{
+             RowBox[{"FreeQ", "[",
+              RowBox[{
+               RowBox[{"$SPhenoParameterMatching", "[",
+                RowBox[{"[", "i", "]"}], "]"}], ",", "EFTcoupNLO"}], "]"}],
+             ",", "\[IndentingNewLine]",
+             RowBox[{
+              RowBox[{"varsUVin", "=",
+               RowBox[{"Join", "[",
+                RowBox[{"varsUVin", ",",
+                 RowBox[{"{",
+                  RowBox[{"DeleteCases", "[",
+                   RowBox[{
+                    RowBox[{"Variables", "@",
+                    RowBox[{"Level", "[",
+                    RowBox[{
+                    RowBox[{"$SPhenoParameterMatching", "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "2"}], "]"}], "]"}], ",", " ",
+                    RowBox[{"{",
+                    RowBox[{
+                    RowBox[{"-", "Infinity"}], ",", "Infinity"}], "}"}]}],
+                    "]"}]}], ",",
+                    RowBox[{
+                    RowBox[{"Transpose", "[", "$SPhenoMINPAR", "]"}], "[",
+                    RowBox[{"[", "2", "]"}], "]"}]}], "]"}], "}"}]}], "]"}]}],
+               ";", "\[IndentingNewLine]",
+              RowBox[{"SPhenoParameters", "=",
+               RowBox[{"Join", "[",
+                RowBox[{"SPhenoParameters", ",",
+                 RowBox[{"{",
+                  RowBox[{"{", "}"}], "}"}]}], "]"}]}], ";",
+              "\[IndentingNewLine]",
+              RowBox[{"If", "[",
+               RowBox[{
+                RowBox[{
+                 RowBox[{"$SPhenoParameterMatching", "[",
+                  RowBox[{"[",
+                   RowBox[{"i", ",", "1"}], "]"}], "]"}], "===",
+                 RowBox[{"conj", "[",
+                  RowBox[{"$SPhenoParameterMatching", "[",
+                   RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}]}], ",",
+                "\[IndentingNewLine]",
+                RowBox[{
+                 RowBox[{"complexUVin", "=",
+                  RowBox[{"Join", "[",
+                   RowBox[{"complexUVin", ",",
+                    RowBox[{"{",
+                    RowBox[{"varsUVin", "[",
+                    RowBox[{"[",
+                    RowBox[{"-", "1"}], "]"}], "]"}], "}"}]}], "]"}]}], ";"}],
+                 ",", "\[IndentingNewLine]",
+                RowBox[{
+                 RowBox[{"realUVin", "=",
+                  RowBox[{"Join", "[",
+                   RowBox[{"realUVin", ",",
+                    RowBox[{"{",
+                    RowBox[{"varsUVin", "[",
+                    RowBox[{"[",
+                    RowBox[{"-", "1"}], "]"}], "]"}], "}"}]}], "]"}]}], ";",
+                 "\[IndentingNewLine]",
+                 RowBox[{"realVar", "=",
+                  RowBox[{"Join", "[",
+                   RowBox[{"realVar", ",",
+                    RowBox[{"{",
+                    RowBox[{"varsUVin", "[",
+                    RowBox[{"[",
+                    RowBox[{"-", "1"}], "]"}], "]"}], "}"}]}], "]"}]}],
+                 ";"}]}], "\[IndentingNewLine]", "]"}], ";"}], ",",
+             "\[IndentingNewLine]",
+             RowBox[{
+              RowBox[{"varsUVout", "=",
+               RowBox[{"Join", "[",
+                RowBox[{"varsUVout", ",",
+                 RowBox[{"{",
+                  RowBox[{"$SPhenoParameterMatching", "[",
+                   RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "}"}]}], "]"}]}],
+              ";"}]}], "\[IndentingNewLine]", "]"}], ";",
+           "\[IndentingNewLine]",
+           RowBox[{"i", "++"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+        "\[IndentingNewLine]", "\[IndentingNewLine]",
+        RowBox[{"funcfile", "=",
+         RowBox[{"ToFileName", "[",
+          RowBox[{
+           RowBox[{"{", "$sarahCurrentMatchingDir", "}"}], ",",
+           "\"\<EFT_wrapper.f90\>\""}], "]"}]}], ";", "\[IndentingNewLine]",
+        RowBox[{"OpenWrite", "[", "funcfile", "]"}], ";",
+        "\[IndentingNewLine]",
+        RowBox[{"WriteString", "[",
+         RowBox[{"funcfile", ",",
+          RowBox[{"\"\<Subroutine EFTwrapper(\>\"", "<>", " ",
+           RowBox[{"Join", "[",
+            RowBox[{"varsUVin", ",", "varsUVout"}], "]"}], " ", "<>",
+           "\"\<) \\n\>\""}]}], "]"}], ";", "\[IndentingNewLine]",
+        RowBox[{"MakeVariableList", "[",
+         RowBox[{"vars", ",", "\"\<\>\"", ",", "funcfile"}], "]"}], ";",
+        "\[IndentingNewLine]",
+        RowBox[{"MakeVariableList", "[",
+         RowBox[{"complexUVin", ",", "\"\<,Intent(in)\>\"", ",", "funcfile"}],
+          "]"}], ";", "\[IndentingNewLine]",
+        RowBox[{"MakeVariableList", "[",
+         RowBox[{
+         "complexUVout", ",", "\"\<,Intent(in)\>\"", ",", "funcfile"}], "]"}],
+         ";", "\[IndentingNewLine]",
+        RowBox[{"MakeVariableList", "[",
+         RowBox[{"realUVin", ",", "\"\<,Intent(in)\>\"", ",", "funcfile"}],
+         "]"}], ";", "\[IndentingNewLine]",
+        RowBox[{"WriteString", "[",
+         RowBox[{"funcfile", ",", "\"\<Implicit None \\n\\n\>\""}], "]"}],
+        ";", "\[IndentingNewLine]", "\[IndentingNewLine]",
+        RowBox[{"For", "[",
+         RowBox[{
+          RowBox[{"i", "=", "1"}], ",",
+          RowBox[{"i", "\[LessEqual]",
+           RowBox[{"Length", "[", "$SPhenoParameterMatching", "]"}]}], ",",
+          "\[IndentingNewLine]",
+          RowBox[{
+           RowBox[{"If", "[",
+            RowBox[{
+             RowBox[{"FreeQ", "[",
+              RowBox[{
+               RowBox[{"$SPhenoParameterMatching", "[",
+                RowBox[{"[", "i", "]"}], "]"}], ",", "EFTcoupNLO"}], "]"}],
+             ",", "\[IndentingNewLine]",
+             RowBox[{
+              RowBox[{"WriteString", "[",
+               RowBox[{"funcfile", ",",
+                RowBox[{
+                 RowBox[{"SPhenoForm", "[",
+                  RowBox[{"$SPhenoParameterMatching", "[",
+                   RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "<>",
+                 "\"\< = \>\"", "<>",
+                 RowBox[{"SPhenoForm", "[",
+                  RowBox[{"$SPhenoParameterMatching", "[",
+                   RowBox[{"[",
+                    RowBox[{"i", ",", "2"}], "]"}], "]"}], "]"}], "<>",
+                 "\"\<\\n\>\""}]}], "]"}], ";"}]}], "\[IndentingNewLine]",
+            "]"}], ";", "\[IndentingNewLine]",
+           RowBox[{"i", "++"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+        RowBox[{"WriteString", "[",
+         RowBox[{"funcfile", ",", "\"\<End Subroutine EFTwrapper \\n\>\""}],
+         "]"}], ";", "\[IndentingNewLine]",
+        RowBox[{"Close", "[", "funcfile", "]"}], ";"}]}],
+      "\[IndentingNewLine]", "]"}]}], ";"}], "\[IndentingNewLine]", "*)"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"GenerateFortranRoutines", "[", "outfile_", "]"}], ":=",
+    RowBox[{"Block", "[",
+     RowBox[{
+      RowBox[{"{",
+       RowBox[{
+       "i", ",", "c", ",", "f", ",", "func", ",", "funcname", ",", "info",
+        ",", "funccall", ",",
+        RowBox[{"ComplexParameters", "=",
+         RowBox[{"{", "}"}]}], ",",
+        RowBox[{"RealParameters", "=",
+         RowBox[{"{", "}"}]}], ",", "sphenofilename", ",", "funcfilename",
+        ",", "funcfile", ",",
+        RowBox[{"opts", "=",
+         RowBox[{"Sequence", "@@",
+          RowBox[{"(",
+           RowBox[{
+            RowBox[{"getOpts", "[", "GenerateSPhenodotm", "]"}], "/.",
+            RowBox[{
+             RowBox[{"opt", "[", "z_", "]"}], "\[RuleDelayed]",
+             RowBox[{"OptionValue", "[", "z", "]"}]}]}], ")"}]}]}]}], "}"}],
+      ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"SetOptions", "[",
+        RowBox[{"GenerateSPhenodotm", ",",
+         RowBox[{
+         "\"\<BoundaryHighScale\>\"", "\[Rule]", "SA`MatchingResultsNLO"}]}],
+        "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"SA`ListFuncCalls", "=",
+        RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]",
+       RowBox[{"SA`ListFuncFiles", "=",
+        RowBox[{"{", "}"}]}], ";", "\[IndentingNewLine]",
+       RowBox[{"For", "[",
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",",
+         RowBox[{"i", "\[LessEqual]",
+          RowBox[{"Length", "[", "SA`MatchingResultsNLO", "]"}]}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"c", "=",
+           RowBox[{"SA`MatchingResultsNLO", "[",
+            RowBox[{"[", "i", "]"}], "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"func", "=",
+           RowBox[{"c", "[",
+            RowBox[{"[", "2", "]"}], "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"funcname", "=",
+           RowBox[{"\"\<EFTcoupling\>\"", "<>",
+            RowBox[{"ToString", "[", "i", "]"}]}]}], ";",
+          "\[IndentingNewLine]",
+          RowBox[{"info", "=",
+           RowBox[{"GenerateSelfDefinedFuntion", "[",
+            RowBox[{"funcname", ",", "func", ",", "opts"}], "]"}]}], ";",
+          "\[IndentingNewLine]",
+          RowBox[{"funccall", "=",
+           RowBox[{"funcname", "<>", "\"\<[\>\"", "<>",
+            RowBox[{"ListToString", "[",
+             RowBox[{"info", "[", "\"\<Arguments\>\"", "]"}], "]"}], "<>",
+            "\"\<]\>\""}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"SA`ListFuncCalls", "=",
+           RowBox[{"Join", "[",
+            RowBox[{"SA`ListFuncCalls", ",",
+             RowBox[{"{",
+              RowBox[{"{",
+               RowBox[{
+                RowBox[{"SA`MatchingResultsNLO", "[",
+                 RowBox[{"[",
+                  RowBox[{"i", ",", "1"}], "]"}], "]"}], ",", "funccall"}],
+               "}"}], "}"}]}], "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"ComplexParameters", "=",
+           RowBox[{"Union", "[",
+            RowBox[{"ComplexParameters", ",",
+             RowBox[{"info", "[", "\"\<ComplexParameters\>\"", "]"}]}],
+            "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"RealParameters", "=",
+           RowBox[{"Union", "[",
+            RowBox[{"RealParameters", ",",
+             RowBox[{"info", "[", "\"\<RealParameters\>\"", "]"}]}], "]"}]}],
+          ";", "\[IndentingNewLine]",
+          RowBox[{"sphenofilename", "=",
+           RowBox[{
+           "\"\<SPhenoEFT_\>\"", "<>", "ModelName", "<>", "\"\<_\>\"", "<>",
+            "$NameUV", "<>", "\"\<.f90\>\""}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{"outfile", "===", "Automatic"}], ",",
+            "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"funcfilename", "=",
+              RowBox[{
+              "funcname", "<>", "\"\<_\>\"", "<>", "sphenofilename"}]}],
+             ";"}], ",", "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"funcfilename", "=", "outfile"}], ";"}]}],
+           "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"funcfile", "=",
+           RowBox[{"ToFileName", "[",
+            RowBox[{
+             RowBox[{"{", "$sarahCurrentMatchingDir", "}"}], ",",
+             "funcfilename"}], "]"}]}], ";", "\[IndentingNewLine]",
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{"FileExistsQ", "[", "funcfile", "]"}], ",",
+            RowBox[{
+             RowBox[{"If", "[",
+              RowBox[{
+               RowBox[{"OptionValue", "[", "\"\<Backup\>\"", "]"}], ",",
+               RowBox[{
+                RowBox[{"RenameFile", "[",
+                 RowBox[{"funcfile", ",",
+                  RowBox[{"funcfile", "<>", "\"\<.bkp_\>\"", "<>",
+                   RowBox[{"ToString", "[",
+                    RowBox[{
+                    RowBox[{"AbsoluteTime", "[", "]"}], "//", "Round"}],
+                    "]"}]}]}], "]"}], ";",
+                RowBox[{"DeleteFile", "[", "funcfile", "]"}], ";"}], ",",
+               RowBox[{
+                RowBox[{"DeleteFile", "[", "funcfile", "]"}], ";"}]}], "]"}],
+             ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"CreateFile", "[", "funcfile", "]"}], ";",
+          "\[IndentingNewLine]",
+          RowBox[{"SA`ListFuncFiles", "=",
+           RowBox[{"Join", "[",
+            RowBox[{"SA`ListFuncFiles", ",",
+             RowBox[{"{", "funcfile", "}"}]}], "]"}]}], ";",
+          "\[IndentingNewLine]",
+          RowBox[{"WriteString", "[",
+           RowBox[{"funcfile", ",",
+            RowBox[{"info", "[", "\"\<SelfDefinedFunction\>\"", "]"}]}],
+           "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"Close", "[", "funcfile", "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"i", "++"}], ";"}]}], "]"}], ";"}]}], "\[IndentingNewLine]",
+      "]"}]}], ";"}], "\[IndentingNewLine]",
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{
+   RowBox[{"WriteEFTcoupsToTeX", ":=",
+    RowBox[{"Block", "[",
+     RowBox[{
+      RowBox[{"{", "i", "}"}], ",", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"Print", "[", "\"\<  Writing LaTeX Output\>\"", "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"Off", "[",
+        StyleBox[
+         RowBox[{"Part", "::", "pkspec1"}], "MessageName"],
+        StyleBox["]", "MessageName"]}],
+       StyleBox[";", "MessageName"],
+       StyleBox["\[IndentingNewLine]", "MessageName"],
+       RowBox[{"Off", "[",
+        RowBox[{"SetDelayed", "::", "write"}], "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"MAXTEXLENGTH", "=", "50"}], ";", "\[IndentingNewLine]",
+       "CreateTeXForm", ";", "\[IndentingNewLine]",
+       RowBox[{"FirstLevel", "=", "True"}], ";", "\[IndentingNewLine]",
+       RowBox[{"clines", "=", "1"}], ";", "\[IndentingNewLine]",
+       "\[IndentingNewLine]",
+       RowBox[{"TeXFile", "=",
+        RowBox[{"OpenWrite", "[",
+         RowBox[{"ToFileName", "[",
+          RowBox[{"$sarahCurrentMatchingDir", ",",
+           RowBox[{
+           "\"\<MatchingConditions_\>\"", "<>", "ModelName", "<>",
+            "\"\<_\>\"", "<>", "$NameUV", "<>", "\"\<.tex\>\""}]}], "]"}],
+         "]"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",", "\"\<\\\\documentclass[A4]{article} \\n\>\""}], "]"}],
+        ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\usepackage{amsmath}\\n\>\""}], "]"}],
+        ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\usepackage[T1]{fontenc}\\n\>\""}],
+        "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\usepackage{amssymb}\\n\>\""}], "]"}],
+        ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\usepackage{feynmp}\\n\>\""}], "]"}],
+       ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\usepackage{hyperref}\\n\>\""}],
+        "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\usepackage{longtable}\\n\>\""}],
+        "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",", "\"\<\\\\DeclareGraphicsRule{*}{mps}{*}{}\\n\>\""}],
+        "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",", "\"\<\\\\graphicspath{{./Diagrams/}}\\n\>\""}], "]"}],
+        ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",", "\"\<\\\\newcommand{\\\\Tr}{\\\\mbox{Tr}}\\n\>\""}],
+        "]"}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\textwidth 18cm\\n\>\""}], "]"}], ";",
+        "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\oddsidemargin -1.0cm\\n\>\""}],
+        "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\evensidemargin -1.0cm\\n\>\""}],
+        "]"}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",",
+         "\"\<\\\\renewcommand{\\\\arraystretch}{1.3} \\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",", "\"\<\\\\setlength{\\\\parindent}{0em} \\n\>\""}],
+        "]"}], ";", "\n", "\[IndentingNewLine]", "\[IndentingNewLine]",
+       "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\begin{document}\\n\>\""}], "]"}],
+       ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", " ",
+         RowBox[{
+         "\"\<\\\\title{\>\"", "<>", "ModelNameLaTeX", " ", "<>", " ",
+          "\"\<\\\\\\\\ Matching of Scalar Couplings to an effective theory} \
+\\n\\n\>\""}]}], "]"}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", " ",
+         RowBox[{
+         "\"\<\\\\author{SARAH \>\"", "<>", "SA`Version", "<>",
+          "\"\<} \\n\>\""}]}], "]"}], ";", "\[IndentingNewLine]",
+       "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\< \\\\maketitle \\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\< \\\\vspace{10cm} \\n\>\""}], "]"}], ";",
+        "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", " ",
+         RowBox[{
+         "\"\<This file was automatically generated by SARAH version \>\"", "<>",
+           "SA`Version", "<>", "\"\<.  \\\\\\\\ \\n\>\""}]}], "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",", " ",
+         "\"\<Package Homepage: sarah.hepforge.org \\\\\\\\ \\n\>\""}], "]"}],
+        ";", "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\< \\\\pagebreak \\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\< \\\\tableofcontents \\n\>\""}], "]"}],
+       ";", "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\< \\\\pagebreak \\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\allowdisplaybreaks\\n\>\""}], "]"}],
+       ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",",
+         "\"\<\\\\section{Parametrisation and Assumptions}\\n\>\""}], "]"}],
+       ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",",
+         "\"\<\\\\subsection{Parametrisation in the UV}\\n\>\""}], "]"}], ";",
+        "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\begin{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"For", "[",
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",",
+         RowBox[{"i", "\[LessEqual]",
+          RowBox[{"Length", "[", "$ParametrisationUV", "]"}]}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"WriteString", "[",
+           RowBox[{"TeXFile", ",",
+            RowBox[{
+             RowBox[{"TeXOutput", "[",
+              RowBox[{
+               RowBox[{
+                RowBox[{"$ParametrisationUV", "[",
+                 RowBox[{"[",
+                  RowBox[{"i", ",", "1"}], "]"}], "]"}], "/.",
+                RowBox[{"Pattern", "\[Rule]", "pattern"}]}], " ", "/.",
+               RowBox[{
+                RowBox[{"pattern", "[",
+                 RowBox[{"a_", ",", "b_"}], "]"}], "\[Rule]", "a"}]}], "]"}],
+             "<>", "\"\<\\\\quad & = \\\\quad \>\"", " ", "<>",
+             RowBox[{"TeXOutput", "[",
+              RowBox[{
+               RowBox[{"$ParametrisationUV", "[",
+                RowBox[{"[",
+                 RowBox[{"i", ",", "2"}], "]"}], "]"}], "/.",
+               RowBox[{"Delta", "\[Rule]", "KroneckerDelta"}]}], "]"}], "<>",
+             "\"\<\\\\\\\\ \\n\>\""}]}], "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"i", "++"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\end{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",",
+         "\"\<\\\\subsection{Assumptions at the Matching Scale}\\n\>\""}],
+        "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\begin{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"For", "[",
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",",
+         RowBox[{"i", "\[LessEqual]",
+          RowBox[{"Length", "[", "$AssumptionsMatching", "]"}]}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"Switch", "[",
+           RowBox[{
+            RowBox[{"Head", "[",
+             RowBox[{"$AssumptionsMatching", "[",
+              RowBox[{"[",
+               RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], ",",
+            "\[IndentingNewLine]", "Greater", ",", "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"WriteString", "[",
+              RowBox[{"TeXFile", ",",
+               RowBox[{
+                RowBox[{"TeXOutput", "[",
+                 RowBox[{"$AssumptionsMatching", "[",
+                  RowBox[{"[",
+                   RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "<>",
+                "\"\<\\\\quad & > \\\\quad \>\"", " ", "<>",
+                RowBox[{"TeXOutput", "[",
+                 RowBox[{"$AssumptionsMatching", "[",
+                  RowBox[{"[",
+                   RowBox[{"i", ",", "2"}], "]"}], "]"}], "]"}], "<>",
+                "\"\<\\\\\\\\ \\n\>\""}]}], "]"}], ";"}], ",",
+            "\[IndentingNewLine]", "Smaller", ",", "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"WriteString", "[",
+              RowBox[{"TeXFile", ",",
+               RowBox[{
+                RowBox[{"TeXOutput", "[",
+                 RowBox[{"$AssumptionsMatching", "[",
+                  RowBox[{"[",
+                   RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "<>",
+                "\"\<\\\\quad & > \\\\quad \>\"", " ", "<>",
+                RowBox[{"TeXOutput", "[",
+                 RowBox[{"$AssumptionsMatching", "[",
+                  RowBox[{"[",
+                   RowBox[{"i", ",", "2"}], "]"}], "]"}], "]"}], "<>",
+                "\"\<\\\\\\\\ \\n\>\""}]}], "]"}], ";"}], ",",
+            "\[IndentingNewLine]", "_", ",", "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"WriteString", "[",
+              RowBox[{"TeXFile", ",",
+               RowBox[{
+                RowBox[{"TeXOutput", "[",
+                 RowBox[{"$AssumptionsMatching", "[",
+                  RowBox[{"[", "i", "]"}], "]"}], "]"}], "<>",
+                "\"\<\\\\\\\\ \\n\>\""}]}], "]"}], ";"}]}],
+           "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"i", "++"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\end{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",",
+         "\"\<\\\\subsection{Simplifications at the Matching Scale}\\n\>\""}],
+         "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\begin{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"For", "[",
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",",
+         RowBox[{"i", "\[LessEqual]",
+          RowBox[{"Length", "[", "$SimplificationsMatching", "]"}]}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{
+             RowBox[{"FreeQ", "[",
+              RowBox[{
+               RowBox[{"ReplacementRotationMatrices", "/.",
+                RowBox[{
+                 RowBox[{"Rule", "[",
+                  RowBox[{
+                   RowBox[{"a_", "[", "c__", "]"}], ",", "b_"}], "]"}],
+                 "\[RuleDelayed]", "a"}]}], ",",
+               RowBox[{"$SimplificationsMatching", "[",
+                RowBox[{"[",
+                 RowBox[{"i", ",", "1"}], "]"}], "]"}]}], "]"}], " ", "&&",
+             " ",
+             RowBox[{
+              RowBox[{"Head", "[",
+               RowBox[{"$SimplificationsMatching", "[",
+                RowBox[{"[",
+                 RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "=!=", "M"}], "&&",
+              " ",
+             RowBox[{
+              RowBox[{"Head", "[",
+               RowBox[{"Head", "[",
+                RowBox[{"$SimplificationsMatching", "[",
+                 RowBox[{"[",
+                  RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "]"}], "=!=",
+              "M"}], " ", "&&", " ",
+             RowBox[{"FreeQ", "[",
+              RowBox[{"SA`Angles", ",",
+               RowBox[{"$SimplificationsMatching", "[",
+                RowBox[{"[",
+                 RowBox[{"i", ",", "1"}], "]"}], "]"}]}], "]"}]}], ",",
+            "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"WriteString", "[",
+              RowBox[{"TeXFile", ",",
+               RowBox[{
+                RowBox[{"TeXOutput", "[",
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"$SimplificationsMatching", "[",
+                    RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "/.",
+                   RowBox[{"Pattern", "\[Rule]", "pattern"}]}], " ", "/.",
+                  RowBox[{
+                   RowBox[{"pattern", "[",
+                    RowBox[{"a_", ",", "b_"}], "]"}], "\[Rule]", "a"}]}],
+                 "]"}], "<>", "\"\<\\\\quad & \\\\to \\\\quad \>\"", " ", "<>",
+                RowBox[{"TeXOutput", "[",
+                 RowBox[{"$SimplificationsMatching", "[",
+                  RowBox[{"[",
+                   RowBox[{"i", ",", "2"}], "]"}], "]"}], "]"}], "<>",
+                "\"\<\\\\\\\\ \\n\>\""}]}], "]"}], ";"}]}],
+           "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"i", "++"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\end{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",",
+         "\"\<\\\\subsection{Calculated Masses at the Matching \
+Scale}\\n\>\""}], "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\begin{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"For", "[",
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",",
+         RowBox[{"i", "\[LessEqual]",
+          RowBox[{"Length", "[", "ReplacementMasses", "]"}]}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"If", "[",
+           RowBox[{
+            RowBox[{
+             RowBox[{"Head", "[",
+              RowBox[{"ReplacementMasses", "[",
+               RowBox[{"[",
+                RowBox[{"i", ",", "2"}], "]"}], "]"}], "]"}], "===", "Part"}],
+             ",", "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"WriteString", "[",
+              RowBox[{"TeXFile", ",",
+               RowBox[{
+                RowBox[{"TeXOutput", "[",
+                 RowBox[{
+                  RowBox[{"ReplacementMasses", "[",
+                   RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "/.",
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"Mass", "[", "a_", "]"}], "[", "b_", "]"}], ":>",
+
+                   RowBox[{"Mass", "[", "a", "]"}]}]}], "]"}], "<>",
+                "\"\<\\\\quad & \\\\to \\\\quad \\\\{\>\"", " ", "<>",
+                RowBox[{"TeXOutput", "[",
+                 RowBox[{"ReplacementMasses", "[",
+                  RowBox[{"[",
+                   RowBox[{"i", ",", "2", ",", "1"}], "]"}], "]"}], "]"}],
+                "<>", "\"\<\\\\}\\\\\\\\ \\n\>\""}]}], "]"}], ";"}], ",",
+            "\[IndentingNewLine]",
+            RowBox[{
+             RowBox[{"WriteString", "[",
+              RowBox[{"TeXFile", ",",
+               RowBox[{
+                RowBox[{"TeXOutput", "[",
+                 RowBox[{
+                  RowBox[{"ReplacementMasses", "[",
+                   RowBox[{"[",
+                    RowBox[{"i", ",", "1"}], "]"}], "]"}], "/.",
+                  RowBox[{
+                   RowBox[{
+                    RowBox[{"Mass", "[", "a_", "]"}], "[", "b_", "]"}], ":>",
+
+                   RowBox[{"Mass", "[", "a", "]"}]}]}], "]"}], "<>",
+                "\"\<\\\\quad & \\\\to \\\\quad \>\"", " ", "<>",
+                RowBox[{"TeXOutput", "[",
+                 RowBox[{"ReplacementMasses", "[",
+                  RowBox[{"[",
+                   RowBox[{"i", ",", "2"}], "]"}], "]"}], "]"}], "<>",
+                "\"\<\\\\\\\\ \\n\>\""}]}], "]"}], ";"}]}],
+           "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"i", "++"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\end{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",",
+         "\"\<\\\\subsection{Calculated Rotation Matrices at the Matching \
+Scale}\\n\>\""}], "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\begin{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"For", "[",
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",",
+         RowBox[{"i", "\[LessEqual]",
+          RowBox[{"Length", "[", "ReplacementRotationMatrices", "]"}]}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"WriteString", "[",
+           RowBox[{"TeXFile", ",",
+            RowBox[{
+             RowBox[{"TeXOutput", "[",
+              RowBox[{
+               RowBox[{"ReplacementRotationMatrices", "[",
+                RowBox[{"[",
+                 RowBox[{"i", ",", "1"}], "]"}], "]"}], "/.",
+               RowBox[{
+                RowBox[{"A_", "[", "b__", "]"}], "\[Rule]", "A"}]}], "]"}],
+             "<>", "\"\<\\\\quad & \\\\to \\\\quad \>\"", " ", "<>",
+             RowBox[{"StringReplace", "[",
+              RowBox[{
+               RowBox[{"TeXOutput", "[",
+                RowBox[{
+                 RowBox[{"ReplacementRotationMatrices", "[",
+                  RowBox[{"[",
+                   RowBox[{"i", ",", "2", ",", "1"}], "]"}], "]"}], "//",
+                 "MatrixForm"}], "]"}], ",",
+               RowBox[{"{",
+                RowBox[{
+                 RowBox[{
+                 "\"\<\\\\left\\\\Big\>\"", "\[Rule]", "\"\<\\\\left\>\""}],
+                 ",",
+                 RowBox[{
+                 "\"\<\\\\right\\\\Big\>\"", "\[Rule]",
+                  "\"\<\\\\right\>\""}]}], "}"}]}], "]"}], "<>",
+             "\"\<\\\\\\\\ \\n\>\""}]}], "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"i", "++"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\end{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\section{Results}\\n\>\""}], "]"}],
+       ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",",
+         "\"\<\\\\subsection{Tree-Level Matching Conditions}\\n\>\""}], "]"}],
+        ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\begin{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"For", "[",
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",",
+         RowBox[{"i", "\[LessEqual]",
+          RowBox[{"Length", "[", "SA`MatchingResultsLO", "]"}]}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"WriteString", "[",
+           RowBox[{"TeXFile", ",",
+            RowBox[{
+             RowBox[{"TeXOutput", "[",
+              RowBox[{"SA`MatchingResultsLO", "[",
+               RowBox[{"[",
+                RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "<>",
+             "\"\<\\\\quad & = \\\\quad \>\"", " ", "<>",
+             RowBox[{"TeXOutput", "[",
+              RowBox[{"SA`MatchingResultsLO", "[",
+               RowBox[{"[",
+                RowBox[{"i", ",", "2"}], "]"}], "]"}], "]"}], "<>",
+             "\"\<\\\\\\\\ \\n\>\""}]}], "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"i", "++"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\end{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{
+        "TeXFile", ",", "\"\<\\\\subsection{One-Loop Shifts}\\n\>\""}], "]"}],
+        ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\begin{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"For", "[",
+        RowBox[{
+         RowBox[{"i", "=", "1"}], ",",
+         RowBox[{"i", "\[LessEqual]",
+          RowBox[{"Length", "[", "SA`MatchingResultsLO", "]"}]}], ",",
+         "\[IndentingNewLine]",
+         RowBox[{
+          RowBox[{"WriteString", "[",
+           RowBox[{"TeXFile", ",",
+            RowBox[{"\"\<\\\\Delta\>\"", "<>",
+             RowBox[{"TeXOutput", "[",
+              RowBox[{"SA`MatchingResultsNLO", "[",
+               RowBox[{"[",
+                RowBox[{"i", ",", "1"}], "]"}], "]"}], "]"}], "<>",
+             "\"\<\\\\quad & = \\\\quad \>\"", " ", "<>",
+             RowBox[{"TeXOutput", "[",
+              RowBox[{"SA`MatchingResultsNLO", "[",
+               RowBox[{"[",
+                RowBox[{"i", ",", "2"}], "]"}], "]"}], "]"}], "<>",
+             "\"\<\\\\\\\\ \\n\>\""}]}], "]"}], ";", "\[IndentingNewLine]",
+          RowBox[{"i", "++"}], ";"}]}], "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\end{align}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]", "\[IndentingNewLine]",
+       RowBox[{"WriteString", "[",
+        RowBox[{"TeXFile", ",", "\"\<\\\\end{document}\\n\>\""}], "]"}], ";",
+       "\[IndentingNewLine]",
+       RowBox[{"Close", "[", "TeXFile", "]"}], ";", "\[IndentingNewLine]",
+       RowBox[{"On", "[",
+        StyleBox[
+         RowBox[{"Part", "::", "pkspec1"}], "MessageName"],
+        StyleBox["]", "MessageName"]}],
+       StyleBox[";", "MessageName"],
+       StyleBox["\[IndentingNewLine]", "MessageName"],
+       RowBox[{"On", "[",
+        RowBox[{"SetDelayed", "::", "write"}], "]"}]}]}],
+     "\[IndentingNewLine]", "]"}]}], ";"}],
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]",
+ RowBox[{
+  RowBox[{"(*", "\[IndentingNewLine]",
+   RowBox[{
+    RowBox[{
+     RowBox[{"Options", "[", "EFTcoupLO", "]"}], "=",
+     RowBox[{"{",
+      RowBox[{"Simplifications", "\[Rule]",
+       RowBox[{"{", "}"}]}], "}"}]}], ";", "\[IndentingNewLine]",
+    RowBox[{
+     RowBox[{"Options", "[", "EFTcoupNLO", "]"}], "=",
+     RowBox[{"{", "\[IndentingNewLine]",
+      RowBox[{
+       RowBox[{"Simplifications", "\[Rule]",
+        RowBox[{"{", "}"}]}], ",", "\[IndentingNewLine]",
+       RowBox[{"Topologies", "\[Rule]",
+        RowBox[{"{", "}"}]}], ",", "\[IndentingNewLine]",
+       RowBox[{"ExcludeTopologies", "\[Rule]",
+        RowBox[{"{", "OffdiagonalWFRs", "}"}]}], ",", "\[IndentingNewLine]",
+       RowBox[{"ExcludeFields", "\[Rule]",
+        RowBox[{"{", "}"}]}], ",", "\[IndentingNewLine]",
+       RowBox[{"GaugeThresholds", "\[Rule]", "True"}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{"ShiftMSDR", "\[Rule]", "Automatic"}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{"SimplifyResults", "\[Rule]", "True"}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{"ExplicitLoopFunctions", "\[Rule]", "True"}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{"Debug", "\[Rule]", "False"}]}], "\[IndentingNewLine]",
+      "}"}]}], ";", "\[IndentingNewLine]",
+    RowBox[{
+     RowBox[{"EFTcoupLO", "[",
+      RowBox[{
+       RowBox[{"{", "fields__", "}"}], ",", "opt___"}], "]"}], ":=",
+     RowBox[{"eftLOwrapper", "[",
+      RowBox[{
+       RowBox[{"{", "fields", "}"}], ",",
+       RowBox[{
+        RowBox[{"Simplifications", "/.",
+         RowBox[{"{", "opt", "}"}]}], "/.",
+        RowBox[{"Options", "[", "EFTcoupLO", "]"}]}]}], "]"}]}], ";",
+    "\[IndentingNewLine]",
+    RowBox[{
+     RowBox[{"EFTcoupNLO", "[",
+      RowBox[{
+       RowBox[{"{", "fields__", "}"}], ",", "opt___"}], "]"}], ":=",
+     RowBox[{"eftNLOwrapper", "[",
+      RowBox[{
+       RowBox[{"{", "fields", "}"}], ",", "\[IndentingNewLine]",
+       RowBox[{
+        RowBox[{"Simplifications", "/.",
+         RowBox[{"{", "opt", "}"}]}], "/.",
+        RowBox[{"Options", "[", "EFTcoupNLO", "]"}]}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{
+        RowBox[{"Topologies", "/.",
+         RowBox[{"{", "opt", "}"}]}], "/.",
+        RowBox[{"Options", "[", "EFTcoupNLO", "]"}]}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{
+        RowBox[{"ExcludeTopologies", "/.",
+         RowBox[{"{", "opt", "}"}]}], "/.",
+        RowBox[{"Options", "[", "EFTcoupNLO", "]"}]}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{
+        RowBox[{"ExcludeFields", "/.",
+         RowBox[{"{", "opt", "}"}]}], "/.",
+        RowBox[{"Options", "[", "EFTcoupNLO", "]"}]}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{
+        RowBox[{"GaugeThresholds", "/.",
+         RowBox[{"{", "opt", "}"}]}], "/.",
+        RowBox[{"Options", "[", "EFTcoupNLO", "]"}]}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{
+        RowBox[{"ShiftMSDR", "/.",
+         RowBox[{"{", "opt", "}"}]}], "/.",
+        RowBox[{"Options", "[", "EFTcoupNLO", "]"}]}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{
+        RowBox[{"SimplifyResults", "/.",
+         RowBox[{"{", "opt", "}"}]}], "/.",
+        RowBox[{"Options", "[", "EFTcoupNLO", "]"}]}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{
+        RowBox[{"ExplicitLoopFunctions", "/.",
+         RowBox[{"{", "opt", "}"}]}], "/.",
+        RowBox[{"Options", "[", "EFTcoupNLO", "]"}]}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{
+        RowBox[{"Debug", "/.",
+         RowBox[{"{", "opt", "}"}]}], "/.",
+        RowBox[{"Options", "[", "EFTcoupNLO", "]"}]}]}],
+      "\[IndentingNewLine]", "]"}]}], ";", "\[IndentingNewLine]",
+    RowBox[{
+     RowBox[{"eftLOwrapper", "[",
+      RowBox[{
+       RowBox[{"{", "fields__", "}"}], ",", "simp_"}], "]"}], ":=",
+     RowBox[{"Block", "[",
+      RowBox[{
+       RowBox[{"{", "LocalSimplifications", "}"}], ",", "\[IndentingNewLine]",
+       RowBox[{
+        RowBox[{"Off", "[",
+         StyleBox[
+          RowBox[{"Part", "::", "pkspec1"}], "MessageName"],
+         StyleBox["]", "MessageName"]}],
+        StyleBox[";", "MessageName"], "\[IndentingNewLine]",
+        RowBox[{"LocalSimplifications", "=",
+         RowBox[{"Join", "[",
+          RowBox[{"simp", ",", "$AllSimplifications"}], "]"}]}], ";",
+        "\[IndentingNewLine]",
+        RowBox[{"On", "[",
+         StyleBox[
+          RowBox[{"Part", "::", "pkspec1"}], "MessageName"],
+         StyleBox["]", "MessageName"]}],
+        StyleBox[";", "MessageName"], "\[IndentingNewLine]",
+        RowBox[{"Clear", "[",
+         RowBox[{"CACHE", ",", "Lambda"}], "]"}], ";", "\[IndentingNewLine]",
+
+        RowBox[{"SetOptions", "[",
+         RowBox[{"getLambda", ",",
+          RowBox[{"Assumptions", "->", "LocalSimplifications"}], ",", "    ",
+
+          RowBox[{"\"\<Masses\>\"", "->",
+           RowBox[{"setMasses", "[", "M", "]"}]}], ",", "  ",
+          RowBox[{"\"\<Topologies\>\"", "->",
+           RowBox[{"{", "T", "}"}]}], ",",
+          RowBox[{"\"\<ExcludeTopologies\>\"", "\[Rule]",
+           RowBox[{"{",
+            RowBox[{"OffdiagonalWFRs", ",", "DiagonalWFRs"}], "}"}]}], ",",
+          "    ",
+          RowBox[{"MSDR", "->", "0"}], ",", "   ",
+          RowBox[{"\"\<IncludeGaugeThresholds\>\"", " ", "->", " ", "False"}],
+           ",",
+          RowBox[{"\"\<Progress\>\"", "\[Rule]", "False"}]}], "]"}], ";",
+        "\[IndentingNewLine]",
+        RowBox[{"Return", "[",
+         RowBox[{"Simplify", "[",
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{
+              RowBox[{
+               RowBox[{
+                RowBox[{"getLambda", "[",
+                 RowBox[{"{", "fields", "}"}], "]"}], "/.", " ",
+                RowBox[{"epsUV", "\[Rule]", "0"}]}], "//.",
+               RowBox[{
+                RowBox[{"Den", "[",
+                 RowBox[{"0", ",", "0"}], "]"}], ":>", "0"}]}], "/.",
+              RowBox[{
+               RowBox[{"Den", "[",
+                RowBox[{"a_", ",", "b_"}], "]"}], ":>",
+               RowBox[{"1", "/",
+                RowBox[{"(",
+                 RowBox[{"a", "-", "b"}], ")"}]}]}]}], "//.",
+             RowBox[{
+              RowBox[{"Inf", "[", "___", "]"}], ":>", "0"}]}], "//.",
+            "LocalSimplifications"}], ",", "$AssumptionsMatching"}], "]"}],
+         "]"}], ";"}]}], "\[IndentingNewLine]", "]"}]}], ";",
+    "\[IndentingNewLine]", "\[IndentingNewLine]",
+    RowBox[{
+     RowBox[{"eftNLOwrapper", "[",
+      RowBox[{
+       RowBox[{"{", "fields__", "}"}], ",", "simp_", ",", "top_", ",",
+       "extop_", ",", "exclude_", ",", "gt_", ",", "msdr_", ",", "simpres_",
+       ",", "replloops_", ",", "debug_"}], "]"}], ":=",
+     RowBox[{"Block", "[",
+      RowBox[{
+       RowBox[{"{",
+        RowBox[{"LocalSimplifications", ",", "temp"}], "}"}], ",",
+       "\[IndentingNewLine]",
+       RowBox[{
+        RowBox[{"Off", "[",
+         StyleBox[
+          RowBox[{"Part", "::", "pkspec1"}], "MessageName"],
+         StyleBox["]", "MessageName"]}],
+        StyleBox[";", "MessageName"], "\[IndentingNewLine]",
+        RowBox[{"LocalSimplifications", "=",
+         RowBox[{"Join", "[",
+          RowBox[{"simp", ",", "$AllSimplifications"}], "]"}]}], ";",
+        "\[IndentingNewLine]",
+        RowBox[{"On", "[",
+         StyleBox[
+          RowBox[{"Part", "::", "pkspec1"}], "MessageName"],
+         StyleBox["]", "MessageName"]}],
+        StyleBox[";", "MessageName"],
+        StyleBox["\[IndentingNewLine]", "MessageName"],
+        RowBox[{"Clear", "[",
+         RowBox[{"CACHE", ",", "Lambda"}], "]"}], ";", "\[IndentingNewLine]",
+
+        RowBox[{"SetOptions", "[",
+         RowBox[{"getLambda", ",", "\t", "\[IndentingNewLine]",
+          RowBox[{"Assumptions", "->", "LocalSimplifications"}], ",", "   ",
+          "\[IndentingNewLine]", " ",
+          RowBox[{"\"\<Masses\>\"", "->",
+           RowBox[{"setMasses", "[", "M", "]"}]}], ",", "    ",
+          "\[IndentingNewLine]",
+          RowBox[{"\"\<Topologies\>\"", "\[Rule]", "top"}], ",",
+          "\[IndentingNewLine]",
+          RowBox[{"\"\<ExcludeTopologies\>\"", "\[Rule]", " ", "extop"}], ",",
+           "\[IndentingNewLine]", " ",
+          RowBox[{"MSDR", "\[Rule]",
+           RowBox[{"If", "[",
+            RowBox[{
+             RowBox[{"msdr", "===", "Automatic"}], ",",
+             RowBox[{"If", "[",
+              RowBox[{"SupersymmetricModel", ",", "1", ",", "0"}], "]"}], ",",
+              "msdr"}], "]"}]}], ",", "   ", "\[IndentingNewLine]",
+          RowBox[{"\"\<IncludeGaugeThresholds\>\"", " ", "->", " ", "gt"}],
+          ",", "  ", "\[IndentingNewLine]",
+          RowBox[{"ExcludeLoopFields", "\[Rule]", "exclude"}], ",",
+          "\[IndentingNewLine]",
+          RowBox[{"\"\<LoopReplace\>\"", "\[Rule]",
+           RowBox[{"If", "[",
+            RowBox[{"replloops", ",", "getAnalyticLoops", ",", "Identity"}],
+            "]"}]}], ",", "\[IndentingNewLine]",
+          RowBox[{"\"\<Debug\>\"", "\[Rule]", "debug"}], ",",
+          "\[IndentingNewLine]",
+          RowBox[{"\"\<Progress\>\"", "\[Rule]", "True"}]}],
+         "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]",
+        RowBox[{"temp", "=",
+         RowBox[{
+          RowBox[{
+           RowBox[{
+            RowBox[{
+             RowBox[{"getLambda", "[",
+              RowBox[{"{", "fields", "}"}], "]"}], "/.", " ",
+             RowBox[{"epsUV", "\[Rule]", "0"}]}], "//.",
+            RowBox[{
+             RowBox[{"Den", "[",
+              RowBox[{"0", ",", "0"}], "]"}], ":>", "0"}]}], "/.",
+           RowBox[{
+            RowBox[{"Den", "[",
+             RowBox[{"a_", ",", "b_"}], "]"}], ":>",
+            RowBox[{"1", "/",
+             RowBox[{"(",
+              RowBox[{"a", "-", "b"}], ")"}]}]}]}], "//.",
+          RowBox[{
+           RowBox[{"Inf", "[", "___", "]"}], ":>", "0"}]}]}], " ", ";",
+        "\[IndentingNewLine]",
+        RowBox[{"If", "[",
+         RowBox[{"simpres", ",", "\[IndentingNewLine]",
+          RowBox[{
+           RowBox[{"Return", "[",
+            RowBox[{"Simplify", "[",
+             RowBox[{
+              RowBox[{"temp", "//.", "LocalSimplifications"}], ",",
+              "$AssumptionsMatching"}], "]"}], "]"}], ";"}], ",",
+          "\[IndentingNewLine]",
+          RowBox[{
+           RowBox[{"Return", "[",
+            RowBox[{"temp", "//.", "LocalSimplifications"}], "]"}], ";"}]}],
+         "\[IndentingNewLine]", "]"}], ";"}]}], "\[IndentingNewLine]",
+      "]"}]}], ";"}], "\[IndentingNewLine]", "*)"}]}]}], "Input",
+ InitializationCell->True]
+}]
+(* End of Notebook Content *)
