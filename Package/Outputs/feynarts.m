@@ -1014,8 +1014,12 @@ WriteString[outputfile,"\n\n"];
 
 WriteString[outputfile,"M$CouplingMatrices= {\n"];
 For[i=1,i<Length[M$CouplingMatrices],
-WriteString[outputfile, ToString[InputForm[M$CouplingMatrices[[i]]]]<>",\n "];
-i++;];
+    WriteString[
+      outputfile,
+      StringReplace[ToString[InputForm[M$CouplingMatrices[[i]]]]<>",\n ", "\"" -> ""]
+    ];
+    i++;
+];
 WriteString[outputfile, ToString[InputForm[Last[M$CouplingMatrices]]]<>"\n "];
 WriteString[outputfile,"}\n"];
 WriteString[outputfile, "\n \n"];
