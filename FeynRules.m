@@ -17,6 +17,17 @@
 (*Main call to the package*)
 
 
+If[!ValueQ[$FeynRulesPath],
+   $FeynRulesPath = DirectoryName[$InputFileName];
+   Echo[$FeynRulesPath, "Using $FeynRulesPath = "];
+]
+
+If[!ValueQ[FR$Parallel],
+   FR$Parallel = False;
+   Echo[FR$Parallel, "Using FR$Parallel = "];
+];
+
+
 (* If the package is already loaded, then it will not be loaded again *)
 
 If[FR$Loaded =!= True, 
