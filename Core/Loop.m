@@ -161,7 +161,7 @@ ParameterRenormalization[]:=Flatten[Block[{bare, ren, Inds,MyPattern,bare2,ren2,
 ];
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*Tadpole renormalization*)
 
 
@@ -173,8 +173,11 @@ ParameterRenormalization[]:=Flatten[Block[{bare, ren, Inds,MyPattern,bare2,ren2,
 (*This produces a list of rules allowing to replace the fields with a vev by temself and a tadpole*)
 
 
-TadpoleRenormalization[]:=Block[{tadrep={},vevtmp,vevfi,tadrules,vevkk,vevll},
+TadpoleRenormalization[]:=Block[{tadrep={},vevtmp,vevfi,tadrules,vevkk,vevll,realparam,vevfi2,vevre,zerorule},
+zerorule[x_]:=x->0;
 tadrep={};
+tadrules={};
+realparam=Cases[Join[Flatten[EParamList[[1;;,2,1;;,2]],1],IParamList],{__,False,_}][[1;;,1]];
 For[vevkk=1,vevkk<=Length[M$vevs],vevkk++,
   (*get the properties of the field with the vev*)
   vevtmp=Cases[M$ClassesDescription,_?(Not[FreeQ[#,If[Depth[M$vevs[[vevkk,1]]]>1,ClassName->Head[M$vevs[[vevkk,1]]],ClassName->M$vevs[[vevkk,1]]]]]&)];
@@ -185,6 +188,7 @@ For[vevkk=1,vevkk<=Length[M$vevs],vevkk++,
   (*the field after replacing it by its definition*)
   vevfi=M$vevs[[vevkk,1]]/.(Definitions/.vevtmp[[1,2]]);
   (*switch depending how many physical fields appear in vevfi*)
+  Print[InputForm[vevfi]];
   Switch[Length[Cases[vevfi,_?FieldQ,\[Infinity]]],
     1,tadrules=Cases[vevfi,_?FieldQ,\[Infinity]][[1]];,
     (*shift the scalar or the pseudo scalar depending if the vev has a real or imaginary coefficient*)
@@ -198,14 +202,51 @@ For[vevkk=1,vevkk<=Length[M$vevs],vevkk++,
          tadrules=Cases[vevfi,_?FieldQ,\[Infinity]][[1]];
        ];
      ],
-    _,Print[Style["Error : Unphysical fields with a vev are assumed to depend on 2 fields at most for the renormalization of the tadpole",Red]];Abort[]];
-tadrules=Cases[{ExpandIndices[tadrules,FlavorExpand->True]},_?FieldQ,\[Infinity]];
-  For[vevll=1,vevll<=Length[tadrules],vevll++,
+    _,vevfi2=Cases[vevfi,_?FieldQ,\[Infinity]];
+    Print["in last case"];
+    If[And@@(SelfConjugateQ/@vevfi2),
+    Print["In if sc"];
+    tadrules=Append[tadrules,({#/.M$vevs[[vevkk,2]]->0,#/.(zerorule/@vevfi2)}&)[Simplify[Re[vevfi],Assumptions->(((#\[Element]Reals)&)/@Join[vevfi2,realparam])]]];
+    tadrules=Append[tadrules,({#/.M$vevs[[vevkk,2]]->0,#/.(zerorule/@vevfi2)}&)[Simplify[Im[vevfi],Assumptions->(((#\[Element]Reals)&)/@Join[vevfi2,realparam])]]];
+    Print[InputForm[tadrules]];(*
+       If[Im[Coefficient[vevfi,M$vevs[[vevkk,2]]]]===0&&Not[Re[Coefficient[vevfi,M$vevs[[vevkk,2]]]]===0],
+          tadrules=Simplify[Re[vevfi],Assumptions\[Rule](((#\[Element]Reals)&)/@Join[vevfi2,realparam])]/.M$vevs[[vevkk,2]]\[Rule]0;
+          Print[InputForm[tadrules]];,
+          If[Re[Coefficient[vevfi,M$vevs[[vevkk,2]]]]===0&&Not[Im[Coefficient[vevfi,M$vevs[[vevkk,2]]]]===0],
+             tadrules=Simplify[Im[vevfi],Assumptions\[Rule](((#\[Element]Reals)&)/@Join[vevfi2,realparam])]/.M$vevs[[vevkk,2]]\[Rule]0;,
+             Print[Style["Error : cannot connect vev to fields",Red]];
+             Abort[]]
+             ];*)
+       ,
+       Print[Style["Error : Unphysical fields with a vev are assumed to depend on selfconjugated fields  for the renormalization of the tadpole",Red]];
+       Abort[]
+       ];];
+(*tadrules=Cases[{ExpandIndices[tadrules,FlavorExpand->True]},_?FieldQ,\[Infinity]];*)
+  (*For[vevll=1,vevll<=Length[tadrules],vevll++,
     tadrep=Append[tadrep,tadrules[[vevll]]->tadrules[[vevll]]-FR$CT*FR$deltat[tadrules[[vevll]]]/( Union[
     Cases[M$ClassesDescription,{c___,ClassName->tadrules[[vevll]],b___}:>(Mass/.{c,b})[[1]],2],
     Cases[M$ClassesDescription,{c___,ClassMembers->{xx___,tadrules[[vevll]],yy___},b___}:>(Mass/.{c,b})[[-Length[{yy}]-1,1]],2]][[1]])^2];
-  ];
+  ];*)
 ];
+Print["after for"];
+Print[InputForm[tadrules]];
+vevfi2=Union[Cases[tadrules,_?FieldQ,\[Infinity]]];
+Print[InputForm[vevfi2]];
+tadrules=Solve[(#[[1]]==#[[2]]&)/@tadrules,vevfi2];
+If[Length[tadrules]=!=1,
+   Print[Style["Error : no unique solution for the renormalization of the tadpole",Red]];
+   Abort[]];
+Print["t1"];
+Print[InputForm[tadrules]];
+tadrules=DeleteCases[tadrules[[1]],Rule[_,0]];
+Print[InputForm[tadrules]];
+Print["t2"];
+For[vevll=1,vevll<=Length[tadrules],vevll++,
+    tadrep=Append[tadrep,tadrules[[vevll,1]]->tadrules[[vevll,1]]-FR$CT*FR$deltat[tadrules[[vevll,1]]]/( Union[
+    Cases[M$ClassesDescription,{c___,ClassName->tadrules[[vevll,1]],b___}:>(Mass/.{c,b})[[1]],2],
+    Cases[M$ClassesDescription,{c___,ClassMembers->{xx___,tadrules[[vevll,1]],yy___},b___}:>(Mass/.{c,b})[[-Length[{yy}]-1,1]],2]][[1]])^2];
+  ];
+  Print[InputForm[tadrep]];
 tadrep
 ];
 
