@@ -1,15 +1,16 @@
-static void Explore(void *voidregion, cSamples *samples, cint depth, cint flags);
+static void Explore(void *voidregion, cSamples *samples, cint depth,
+                    cint flags);
 
 static void Split(void *voidregion, int depth);
 
-#include "Sobol.c"
 #include "ChiSquare.c"
+#include "Explore.c"
+#include "FindMinimum.c"
+#include "Integrate.c"
 #include "Rule.c"
 #include "Sample.c"
-#include "FindMinimum.c"
-#include "Explore.c"
+#include "Sobol.c"
 #include "Split.c"
-#include "Integrate.c"
 
 #if KOROBOV_MINDIM > SOBOL_MINDIM
 #define MINDIM KOROBOV_MINDIM
@@ -27,4 +28,3 @@ static void Split(void *voidregion, int depth);
 #undef MAXDIM
 #define MAXDIM NDIM
 #endif
-

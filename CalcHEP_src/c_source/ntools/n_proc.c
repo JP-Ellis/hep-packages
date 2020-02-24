@@ -1,3 +1,3 @@
 #include "n_proc.h"
 
-int nPROCSS=4;
+int nPROCSS = 4;

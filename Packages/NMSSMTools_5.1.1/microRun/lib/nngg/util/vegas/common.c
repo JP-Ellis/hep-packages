@@ -1,7 +1,7 @@
-#include "Sobol.c"
 #include "ChiSquare.c"
 #include "Grid.c"
 #include "Integrate.c"
+#include "Sobol.c"
 
 #define MINDIM SOBOL_MINDIM
 

@@ -6,9 +6,7 @@
 #ifndef __SHOWGRPH_
 #define __SHOWGRPH_
 
-
-extern void showgraphs(char  upr);
-/*  upr:=1(process),2(Q_diagrams) */ 
-
+extern void showgraphs(char upr);
+/*  upr:=1(process),2(Q_diagrams) */
 
 #endif

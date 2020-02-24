@@ -5,44 +5,40 @@
 #define STRSIZ 4096
 #endif
 
-
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include "getmem.h"
 #include <ctype.h>
 #include <stdarg.h>
-#include "getmem.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #ifndef MAX
-#define MAX(a,b)        (((a) > (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #endif
 
 #ifndef MIN
-#define MIN(a,b)        (((a) < (b)) ? (a) : (b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #endif
 
 #ifndef ABS
-#define ABS(x)          (((x) < 0 ? -(x) : (x)))
+#define ABS(x) (((x) < 0 ? -(x) : (x)))
 #endif
 
+#ifndef SEEK_SET
+#include <unistd.h>
+#endif
 
-#ifndef SEEK_SET 
-#include<unistd.h>
-#endif 
+extern void (*diskerror)(void);
+extern int f_printf(FILE *fp, char *format, ...);
+extern size_t f_write(void *ptr, size_t size, size_t n, FILE *fp);
 
-extern   void (*diskerror) (void);
-extern   int f_printf(FILE *fp,char * format, ... );
-extern   size_t f_write(void *ptr,size_t size,size_t n,FILE *fp);
-
-extern  char * trim(char *);
+extern char *trim(char *);
 
 #define strlen(x) (long)strlen(x)
 
-    extern int  setLockFile(char * fname);
-    extern void unLockFile(int id); 
-    extern int writeLockFile(char * fname);
-    extern void sortie(int code);  
-
+extern int setLockFile(char *fname);
+extern void unLockFile(int id);
+extern int writeLockFile(char *fname);
+extern void sortie(int code);
 
 #endif

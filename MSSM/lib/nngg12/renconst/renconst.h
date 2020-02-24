@@ -8,5 +8,3 @@
 	double complex dMTR241(4,4)
 	common /renconst/ dpaap, dpaz0, dpazZ, dpww, dpzz, dpzzp, dZg
 	common /renconst/ dZw3, dZw3b, dMTR142, dMTR240, dMTR241
-
-

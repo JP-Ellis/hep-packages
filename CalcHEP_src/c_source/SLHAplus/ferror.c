@@ -1,4 +1,3 @@
-#include"SLHAplus.h"
+#include "SLHAplus.h"
 
-int FError=0;
-
+int FError = 0;

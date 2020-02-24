@@ -1,37 +1,36 @@
-#include"../../include/micromegas.h"
-#include"../../include/micromegas_aux.h"
+#include "../../include/micromegas.h"
+#include "../../include/micromegas_aux.h"
 #include "pmodel.h"
 
-int LilithMDL(char*fname)
-{
-  unsigned int i, npart=0;
+int LilithMDL(char *fname) {
+  unsigned int i, npart = 0;
 
   double CU, Cb, Ctau, CW, CZ, Cgamma, Cg;
 
-  char *parts[4]={"h1","h2","h3","ha"};
-  FILE*f; 
-  f=fopen(fname,"w");
-  
+  char *parts[4] = {"h1", "h2", "h3", "ha"};
+  FILE *f;
+  f = fopen(fname, "w");
+
   fprintf(f, "<?xml version=\"1.0\"?>\n");
   fprintf(f, "<lilithinput>\n");
 
-  for(i=0; i<4; i++) 
-  {
+  for (i = 0; i < 4; i++) {
     double mass = pMass(parts[i]);
-    if(mass < 123 || mass > 128) continue;
-    
+    if (mass < 123 || mass > 128)
+      continue;
+
     ++npart;
 
     // compute invisible and undetected branching ratios
     double invBR = 0., undBR = 0.;
     double w;
     txtList L;
-    w=pWidth((char*)parts[i], &L);
+    w = pWidth((char *)parts[i], &L);
 
-    if(Mcdm1 < 0.5*mass) {
+    if (Mcdm1 < 0.5 * mass) {
       char invdecay[50];
       char cdmName[50];
-//      sortOddParticles(cdmName);
+      //      sortOddParticles(cdmName);
       strcpy(invdecay, CDM1);
       strcat(invdecay, ",");
       strcat(invdecay, CDM1);
@@ -42,13 +41,13 @@ int LilithMDL(char*fname)
             findBr(L, "G G") - findBr(L, "m M") - findBr(L, "A Z1") -
             findBr(L, "u U") - findBr(L, "d D") - findBr(L, "s S");
 
-    CU =   slhaVal("REDCOUP",0.,2,1+i,1);
-    Cb =   slhaVal("REDCOUP",0.,2,1+i,3);
-    Ctau = slhaVal("REDCOUP",0.,2,1+i,2);
-    CW =   slhaVal("REDCOUP",0.,2,1+i,4);
-    CZ =   slhaVal("REDCOUP",0.,2,1+i,5);
-    Cg=    slhaVal("REDCOUP",0.,2,1+i,6);
-    Cgamma=slhaVal("REDCOUP",0.,2,1+i,7);
+    CU = slhaVal("REDCOUP", 0., 2, 1 + i, 1);
+    Cb = slhaVal("REDCOUP", 0., 2, 1 + i, 3);
+    Ctau = slhaVal("REDCOUP", 0., 2, 1 + i, 2);
+    CW = slhaVal("REDCOUP", 0., 2, 1 + i, 4);
+    CZ = slhaVal("REDCOUP", 0., 2, 1 + i, 5);
+    Cg = slhaVal("REDCOUP", 0., 2, 1 + i, 6);
+    Cgamma = slhaVal("REDCOUP", 0., 2, 1 + i, 7);
 
     fprintf(f, "  <reducedcouplings part=\"%s\">\n", parts[i]);
     fprintf(f, "    <mass>%f</mass>\n", mass);
@@ -60,7 +59,7 @@ int LilithMDL(char*fname)
     fprintf(f, "    <C to=\"ZZ\">%f</C>\n", CZ);
     fprintf(f, "    <C to=\"gammagamma\">%f</C>\n", Cgamma);
     fprintf(f, "    <C to=\"gg\">%f</C>\n", Cg);
-//    fprintf(f, "    <C to=\"Zgamma\">%f</C>\n", 1.);
+    //    fprintf(f, "    <C to=\"Zgamma\">%f</C>\n", 1.);
     fprintf(f, "    <precision>%s</precision>\n", "BEST-QCD");
     fprintf(f, "    <extraBR>\n");
     fprintf(f, "      <BR to=\"invisible\">%f</BR>\n", invBR);

@@ -27,7 +27,6 @@
 #define MASS4 0
 #define CHARGE4 0
 
-
 #define TYPE5 PHOTON
 #define MASS5 0
 #define CHARGE5 0
@@ -35,7 +34,7 @@
 * The combinatorial factor for identical particles in the final state:
 * 1/n! for n identical particles, 1 otherwise
 
-#define IDENTICALFACTOR 5D-1
+#define IDENTICALFACTOR 5D - 1
 
 * Possibly a colour factor, e.g.
 * - an additional averaging factor if any of the incoming particles
@@ -51,7 +50,7 @@
 * defined in terms of sqrtS, the CMS energy.
 
 c#define BREMSSTRAHLUNG
-#define ESOFTMAX .1D0*sqrtS
+#define ESOFTMAX .1D0 * sqrtS
 
 * Possibly some wave-function renormalization
 * (e.g. if calculating in the background-field method)
@@ -63,4 +62,3 @@ c#define WF_RENORMALIZATION (nW*dWFW1 + nZ*dWFZ1)
 * Include the kinematics-dependent part of the code
 
 #include "2to2.F"
-

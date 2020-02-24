@@ -167,4 +167,3 @@
 *	common
 *
 	common /ffregul/ mudim2,divergence,lambda2
-

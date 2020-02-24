@@ -1,11 +1,10 @@
 /*
-	ltproto.h.in
-		provides all low-level prototypes for linking a C++ program
-		that uses clooptools.h with the (Fortran) LoopTools library
-		this file is part of LoopTools
-		last modified 28 Jun 04 th
+        ltproto.h.in
+                provides all low-level prototypes for linking a C++ program
+                that uses clooptools.h with the (Fortran) LoopTools library
+                this file is part of LoopTools
+                last modified 28 Jun 04 th
 */
-
 
 #define A0 a0sub_
 #define CA0 ca0sub_
@@ -64,8 +63,9 @@
 #define CDcache cdbase_
 #define cdbase_(pos) double_complex(cdbase_[pos - 1].r, cdbase_[pos - 1].i)
 
-typedef struct { double re, im; } dcomplex;
-
+typedef struct {
+  double re, im;
+} dcomplex;
 
 #ifdef __cplusplus
 extern "C" {
@@ -91,49 +91,40 @@ void CB11(dcomplex *, const dcomplex *, const dcomplex *, const dcomplex *);
 void DB11(dcomplex *, const double *, const double *, const double *);
 void CDB11(dcomplex *, const dcomplex *, const dcomplex *, const dcomplex *);
 
-void C0(dcomplex *,
-  const double *, const double *, const double *,
-  const double *, const double *, const double *);
-void CC0(dcomplex *,
-  const dcomplex *, const dcomplex *, const dcomplex *,
-  const dcomplex *, const dcomplex *, const dcomplex *);
-void C0i(dcomplex *, const int *,
-  const double *, const double *, const double *,
-  const double *, const double *, const double *);
-void CC0i(dcomplex *, const int *,
-  const dcomplex *, const dcomplex *, const dcomplex *,
-  const dcomplex *, const dcomplex *, const dcomplex *);
-int Cget(
-  const double *, const double *, const double *,
-  const double *, const double *, const double *);
-int CCget(
-  const dcomplex *, const dcomplex *, const dcomplex *,
-  const dcomplex *, const dcomplex *, const dcomplex *);
+void C0(dcomplex *, const double *, const double *, const double *,
+        const double *, const double *, const double *);
+void CC0(dcomplex *, const dcomplex *, const dcomplex *, const dcomplex *,
+         const dcomplex *, const dcomplex *, const dcomplex *);
+void C0i(dcomplex *, const int *, const double *, const double *,
+         const double *, const double *, const double *, const double *);
+void CC0i(dcomplex *, const int *, const dcomplex *, const dcomplex *,
+          const dcomplex *, const dcomplex *, const dcomplex *,
+          const dcomplex *);
+int Cget(const double *, const double *, const double *, const double *,
+         const double *, const double *);
+int CCget(const dcomplex *, const dcomplex *, const dcomplex *,
+          const dcomplex *, const dcomplex *, const dcomplex *);
 
-void D0(dcomplex *,
-  const double *, const double *, const double *, const double *,
-  const double *, const double *,
-  const double *, const double *, const double *, const double *);
-void CD0(dcomplex *,
-  const dcomplex *, const dcomplex *, const dcomplex *, const dcomplex *,
-  const dcomplex *, const dcomplex *,
-  const dcomplex *, const dcomplex *, const dcomplex *, const dcomplex *);
-void D0i(dcomplex *, const int *,
-  const double *, const double *, const double *, const double *,
-  const double *, const double *,
-  const double *, const double *, const double *, const double *);
-void CD0i(dcomplex *, const int *,
-  const dcomplex *, const dcomplex *, const dcomplex *, const dcomplex *,
-  const dcomplex *, const dcomplex *,
-  const dcomplex *, const dcomplex *, const dcomplex *, const dcomplex *);
-int Dget(
-  const double *, const double *, const double *, const double *,
-  const double *, const double *,
-  const double *, const double *, const double *, const double *);
-int CDget(
-  const dcomplex *, const dcomplex *, const dcomplex *, const dcomplex *,
-  const dcomplex *, const dcomplex *,
-  const dcomplex *, const dcomplex *, const dcomplex *, const dcomplex *);
+void D0(dcomplex *, const double *, const double *, const double *,
+        const double *, const double *, const double *, const double *,
+        const double *, const double *, const double *);
+void CD0(dcomplex *, const dcomplex *, const dcomplex *, const dcomplex *,
+         const dcomplex *, const dcomplex *, const dcomplex *, const dcomplex *,
+         const dcomplex *, const dcomplex *, const dcomplex *);
+void D0i(dcomplex *, const int *, const double *, const double *,
+         const double *, const double *, const double *, const double *,
+         const double *, const double *, const double *, const double *);
+void CD0i(dcomplex *, const int *, const dcomplex *, const dcomplex *,
+          const dcomplex *, const dcomplex *, const dcomplex *,
+          const dcomplex *, const dcomplex *, const dcomplex *,
+          const dcomplex *, const dcomplex *);
+int Dget(const double *, const double *, const double *, const double *,
+         const double *, const double *, const double *, const double *,
+         const double *, const double *);
+int CDget(const dcomplex *, const dcomplex *, const dcomplex *,
+          const dcomplex *, const dcomplex *, const dcomplex *,
+          const dcomplex *, const dcomplex *, const dcomplex *,
+          const dcomplex *);
 
 void ffini();
 
@@ -154,4 +145,3 @@ extern dcomplex Ccache[], CCcache[], Dcache[], CDcache[];
 #ifdef __cplusplus
 }
 #endif
-

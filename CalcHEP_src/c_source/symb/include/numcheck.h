@@ -3,5 +3,4 @@
 
 extern int numcheck(void);
 
-
 #endif

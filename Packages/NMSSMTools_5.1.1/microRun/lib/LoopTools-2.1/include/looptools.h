@@ -3,7 +3,6 @@
 * this file is part of LoopTools
 * last modified 1 Jul 04 th
 
-
 #ifndef __LOOPTOOLS_H__
 #define __LOOPTOOLS_H__
 

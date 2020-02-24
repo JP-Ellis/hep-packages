@@ -1,8 +1,5 @@
-* types.h
-* real-based type declarations
-* this file is part of LoopTools
-* last modified 9 Jul 12 th
-
+*types.h *real - based type declarations *this file is part of LoopTools *last
+                     modified 9 Jul 12 th
 
 #ifndef TYPES_H
 #define TYPES_H
@@ -18,4 +15,3 @@
 #define Sqrtc(c) sqrt(ToComplex(c))
 
 #endif
-

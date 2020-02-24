@@ -1,5 +1,5 @@
 : 
-  CALCHEP=  
+  CALCHEP=/home/josh/src/physics/MicrOmegas/CalcHEP_src 
 #--------------------
 
 if(test $# -ne 1) then 

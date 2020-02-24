@@ -1,17 +1,15 @@
 /*
-	decl.h
-		Type declarations
-		this file is part of Vegas
-		last modified 16 Jul 04 th
+        decl.h
+                Type declarations
+                this file is part of Vegas
+                last modified 16 Jul 04 th
 */
 
-
+#include <limits.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-#include <limits.h>
-
 
 /* to compile with a non-gnu cc, set the following to fixed values */
 #ifndef NDIM
@@ -20,7 +18,6 @@
 #ifndef NCOMP
 #define NCOMP ncomp_
 #endif
-
 
 #define VERBOSE (flags & 3)
 #define LAST (flags & 4)
@@ -32,7 +29,6 @@
 #define NBINS 128
 
 #define MAXGRIDS 10
-
 
 typedef enum { false, true } bool;
 
@@ -51,12 +47,12 @@ typedef const int cint;
 typedef const long clong;
 
 typedef /*long*/ double real;
-	/* Switching to long double is not as trivial as it
-	   might seem here.  sqrt, erf, exp, pow need to be
-	   replaced by their long double versions (sqrtl, ...),
-	   printf formats need to be updated similarly, and
-	   ferrying long doubles to Mathematica is of course
-	   quite another matter, too. */
+/* Switching to long double is not as trivial as it
+   might seem here.  sqrt, erf, exp, pow need to be
+   replaced by their long double versions (sqrtl, ...),
+   printf formats need to be updated similarly, and
+   ferrying long doubles to Mathematica is of course
+   quite another matter, too. */
 
 typedef const real creal;
 
@@ -71,6 +67,4 @@ typedef struct {
 
 typedef const Cumulants cCumulants;
 
-
 typedef const void (*Integrand)(ccount *, creal *, ccount *, real *);
-

@@ -27,11 +27,10 @@
 #endif
 
 #ifndef k
-#define k(i) (8*i+1)
-#define s(i) (8*i+3)
-#define e(i) (8*i+3+Hel(i))
-#define ec(i) (8*i+3-Hel(i))
-#define Spinor(i,s,om) (s*2*Hel(i)+16*i+om+5)
-#define DottedSpinor(i,s,om) (s*2*Hel(i)+16*i+om+7)
+#define k(i) (8 * i + 1)
+#define s(i) (8 * i + 3)
+#define e(i) (8 * i + 3 + Hel(i))
+#define ec(i) (8 * i + 3 - Hel(i))
+#define Spinor(i, s, om) (s * 2 * Hel(i) + 16 * i + om + 5)
+#define DottedSpinor(i, s, om) (s * 2 * Hel(i) + 16 * i + om + 7)
 #endif
-

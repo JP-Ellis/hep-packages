@@ -4,7 +4,6 @@
 * this file is part of FormCalc
 * last modified 28 Sep 12 th
 
-
 #ifndef USER_H
 #define USER_H
 * declarations for the whole file (e.g. preprocessor defs)
@@ -22,4 +21,3 @@ c#include "opp.h"
 #include "model.h"
 
 #endif
-

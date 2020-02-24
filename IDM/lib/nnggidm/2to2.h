@@ -3,7 +3,6 @@
 * this file is part of FormCalc
 * last modified 25 Apr 04 th
 
-
 #include "model.h"
 
 	double precision preflux, flux, sqrtS, Pout
@@ -11,4 +10,3 @@
 	logical reset
 	common /var2to2/ preflux, flux, sqrtS, Pout,
      &    helicities, reset
-

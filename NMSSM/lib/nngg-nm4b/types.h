@@ -1,8 +1,5 @@
-* types.h
-* real-based type declarations
-* this file is part of FormCalc
-* last modified 17 Jul 12 th
-
+*types.h *real - based type declarations *this file is part of FormCalc *last
+                     modified 17 Jul 12 th
 
 #ifndef TYPES_H
 #define TYPES_H
@@ -19,4 +16,3 @@
 #define marker double precision
 
 #endif
-

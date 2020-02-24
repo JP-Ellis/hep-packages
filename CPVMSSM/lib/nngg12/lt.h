@@ -1,9 +1,9 @@
 #define MAXDIGITS 9
 
 #if QEXT == DBLE
-#define XREAL REAL*8
+#define XREAL REAL * 8
 #else
-#define XREAL REAL*16
+#define XREAL REAL * 16
 #endif
 
 #define cc0 1
@@ -66,4 +66,3 @@
 #define dd2233 44
 #define dd2333 45
 #define dd3333 46
-

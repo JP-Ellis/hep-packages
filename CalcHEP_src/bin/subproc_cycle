@@ -1,5 +1,5 @@
 : 
-  CALCHEP=  
+  CALCHEP=/home/josh/src/physics/MicrOmegas/CalcHEP_src 
 #---------------
 #======================================
 bin=$CALCHEP/bin

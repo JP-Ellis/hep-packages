@@ -1,9 +1,9 @@
-#include "Sobol.c"
 #include "ChiSquare.c"
-#include "Grid.c"
-#include "Sample.c"
 #include "Fluct.c"
+#include "Grid.c"
 #include "Integrate.c"
+#include "Sample.c"
+#include "Sobol.c"
 
 #define MINDIM SOBOL_MINDIM
 
@@ -13,4 +13,3 @@
 #undef MAXDIM
 #define MAXDIM NDIM
 #endif
-

@@ -1,2 +1,2 @@
 extern int FError;
-int  FError=0;
+int FError = 0;

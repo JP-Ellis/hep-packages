@@ -23,7 +23,6 @@
 	integer*8 JK
 	parameter (JK = 256)
 
-
 #ifndef SPEC_M
 
 #define SPEC_M 65
@@ -39,32 +38,38 @@
 #define SPEC_EY 75
 #define SPEC_EZ 76
 
-#define k(i) (nvec*(i-1)+1)
-#define s(i) (nvec*(i-1)+3)
-#define e(i) (nvec*(i-1)+3+Hel(i))
-#define ec(i) (nvec*(i-1)+3-Hel(i))
-#define Spinor(i,s,d) (s*Hel(i)+nvec*(i-1)+d+5)
+#define k(i) (nvec * (i - 1) + 1)
+#define s(i) (nvec * (i - 1) + 3)
+#define e(i) (nvec * (i - 1) + 3 + Hel(i))
+#define ec(i) (nvec * (i - 1) + 3 - Hel(i))
+#define Spinor(i, s, d) (s * Hel(i) + nvec * (i - 1) + d + 5)
 
-#define MomEncoding(f,i) iand(f,JK-1)*JK**(i-1)
+#define MomEncoding(f, i) iand(f, JK - 1) * JK **(i - 1)
 
-#define signbit(i) ibits(i,31,1)
-#define IndexDelta(i,j) signbit(ieor(i,j)-1)
-#define Digit(i) char(i+48)
-#define Polar(r,theta) r*exp(cI*degree*theta)
+#define signbit(i) ibits(i, 31, 1)
+#define IndexDelta(i, j) signbit(ieor(i, j) - 1)
+#define Digit(i) char(i + 48)
+#define Polar(r, theta) r *exp(cI *degree *theta)
 
-#define Error(err,msg) call m_(err, __LINE__, __FILE__, msg)
+#define Error(err, msg) call m_(err, __LINE__, __FILE__, msg)
 #define Warning(msg) call m_(0, 0, __FILE__, msg)
 #define INFO print *,
-#define DEB(a,x) print *, a, x
-#define LOOP(var,from,to,step) do var = from, to, step
+#define DEB(a, x) print *, a, x
+#define LOOP(var, from, to, step)                                              \
+  do                                                                           \
+  var = from, to, step
 #define ENDLOOP(var) enddo
-#define TEST(i,b) if( btest(i,b) ) then
-#define ENDTEST(i,b) endif
+#define TEST(i, b)                                                             \
+  if (btest(i, b))                                                             \
+  then
+#define ENDTEST(i, b) endif
 
 #define BIT_RESET 0
 #define BIT_LOOP 1
-#define BIT_HEL(i) (5*(LEGS-i)+Hel(i)+2)
-#define LOOP_HEL(h) do h = -2, 2
+#define BIT_HEL(i) (5 * (LEGS - i) + Hel(i) + 2)
+#define LOOP_HEL(h)                                                            \
+  do                                                                           \
+  h = -2, 2
 #define ENDLOOP_HEL(h) enddo
 
 #define INI_S(seq) call clearcache
@@ -72,16 +77,17 @@
 #define DEINI(seq) call restorecache
 
 #ifdef PARALLEL
-#define PREP(h,he, v,ve, a,ae, s,se) call sqmeprep(h,he, v,ve, a,ae, s,se)
+#define PREP(h, he, v, ve, a, ae, s, se)                                       \
+  call sqmeprep(h, he, v, ve, a, ae, s, se)
 #define EXEC(f, res, flags) call sqmeexec(f, res, flags)
 #define SYNC(res) call sqmesync(res)
 #else
-#define PREP(h,he, v,ve, a,ae, s,se)
+#define PREP(h, he, v, ve, a, ae, s, se)
 #define EXEC(f, res, flags) call f(res, flags)
 #define SYNC(res)
 #endif
 
-#define Cut(c,m) (m)*(c)
+#define Cut(c, m) (m) * (c)
 
 #define CUT_MIN 1
 #define CUT_MAX 2
@@ -99,4 +105,3 @@
 #define CUT_MREM_PRAP 16385
 
 #endif
-

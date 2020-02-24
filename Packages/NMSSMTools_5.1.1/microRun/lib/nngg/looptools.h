@@ -3,7 +3,6 @@
 * this file is part of LoopTools
 * last modified 16 Dec 99 th
 
-
 #ifndef _LT_GLOBAL_DEFS_
 #define _LT_GLOBAL_DEFS_
 
@@ -96,4 +95,3 @@
 	external C0i, D0i
 	external Cget, Dget, getcachelast
 	external getmudim, getdelta, getlambda
-

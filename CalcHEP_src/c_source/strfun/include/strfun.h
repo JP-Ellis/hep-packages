@@ -9,7 +9,7 @@ extern int wrt_sf__(FILE *mode);
 
 extern int initStrFun(int mode);
 
-extern void strFunName(int i, char * mess);
+extern void strFunName(int i, char *mess);
 
 extern double sf_mass[2];
 extern double sf_be[2];

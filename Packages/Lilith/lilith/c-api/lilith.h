@@ -27,13 +27,12 @@
 
 #include <Python.h>
 
-PyObject* initialize_lilith(char* );
-PyObject* lilith_readuserinput(PyObject* , char*);
-PyObject* lilith_readuserinput_fromfile(PyObject* , char*);
+PyObject *initialize_lilith(char *);
+PyObject *lilith_readuserinput(PyObject *, char *);
+PyObject *lilith_readuserinput_fromfile(PyObject *, char *);
 
-float lilith_computelikelihood(PyObject*);
-float lilith_exp_ndf(PyObject*);
-void lilith_likelihood_output(PyObject*, char*, int);
-void lilith_mu_output(PyObject*, char*, int);
-void lilith_couplings_output(PyObject*, char*);
-
+float lilith_computelikelihood(PyObject *);
+float lilith_exp_ndf(PyObject *);
+void lilith_likelihood_output(PyObject *, char *, int);
+void lilith_mu_output(PyObject *, char *, int);
+void lilith_couplings_output(PyObject *, char *);

@@ -1,25 +1,24 @@
-#include"pmodel.h"
-#include"pmodel_aux.h"
-#include"../../include/micromegas_aux.h"
-#include"../../include/micromegas.h"
+#include "../../include/micromegas.h"
+#include "../../include/micromegas_aux.h"
+#include "pmodel.h"
+#include "pmodel_aux.h"
 
-#define xxxSUGRAc  sphenoSUGRAc
-#define xxxSUGRA   sphenoSUGRA
-#define xxxsugra_  sphenosugra_
+#define xxxSUGRAc sphenoSUGRAc
+#define xxxSUGRA sphenoSUGRA
+#define xxxsugra_ sphenosugra_
 #include "sugrac.inc"
 
-#define xxxAMSBc  sphenoAMSBc
-#define xxxAMSB   sphenoAMSB
-#define xxxamsb_  sphenoamsb_
+#define xxxAMSBc sphenoAMSBc
+#define xxxAMSB sphenoAMSB
+#define xxxamsb_ sphenoamsb_
 #include "amsb.inc"
 
-
-#define xxxEwsbMSSMc  sphenoEwsbMSSMc
-#define xxxEwsbMSSM   sphenoEwsbMSSM
-#define xxxewsbmssm_  sphenoewsbmssm_
+#define xxxEwsbMSSMc sphenoEwsbMSSMc
+#define xxxEwsbMSSM sphenoEwsbMSSM
+#define xxxewsbmssm_ sphenoewsbmssm_
 #include "pmssm.inc"
 
-#define xxxSUGRAnuhc  sphenoSUGRAnuhc
-#define xxxSUGRAnuh   sphenoSUGRAnuh 
-#define xxxsugranuhs_  sphenosugranuh_
+#define xxxSUGRAnuhc sphenoSUGRAnuhc
+#define xxxSUGRAnuh sphenoSUGRAnuh
+#define xxxsugranuhs_ sphenosugranuh_
 #include "sugracHiggs.inc"

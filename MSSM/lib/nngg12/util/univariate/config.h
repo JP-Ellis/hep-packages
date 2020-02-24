@@ -7,4 +7,3 @@
 * the maximum number of components of the integrand vector
 
 #define MAXCOMP 4
-

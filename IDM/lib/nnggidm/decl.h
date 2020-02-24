@@ -3,7 +3,6 @@
 * this file is part of FormCalc
 * last modified 2 Sep 12 th
 
-
 #ifndef DECL_H
 #define DECL_H
 
@@ -19,10 +18,9 @@ c#define MW2 MW**2
 
 * declarations for every subroutine
 
-#include "user.h"
-#include "util.h"
 #include "looptools.h"
 #include "renconst.h"
+#include "user.h"
+#include "util.h"
 
 #endif
-

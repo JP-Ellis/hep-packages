@@ -4,19 +4,18 @@
 #include "physics.h"
 #include "pvars.h"
 
-#define VAR_NAME_SIZE_EXT  20 
+#define VAR_NAME_SIZE_EXT 20
 
-typedef struct
-   {
-      char    alias[VAR_NAME_SIZE_EXT];
-      double  tmpvalue;
-      int     num; 
-      int     used;
-   }  singlevardescription;
+typedef struct {
+  char alias[VAR_NAME_SIZE_EXT];
+  double tmpvalue;
+  int num;
+  int used;
+} singlevardescription;
 
 extern singlevardescription *vararr;
 extern int nProcessVar;
 
-extern int  initvararray(int nsub, char key, polyvars * vardef_ext);
+extern int initvararray(int nsub, char key, polyvars *vardef_ext);
 
 #endif

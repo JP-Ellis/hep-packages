@@ -1,28 +1,23 @@
-#include"../../include/micromegas.h"
-#include"../../include/micromegas_aux.h"
+#include "../../include/micromegas.h"
+#include "../../include/micromegas_aux.h"
 #include "pmodel.h"
 
-int LilithMDL(char*fname)
-{
-  unsigned int i, npart=0;
+int LilithMDL(char *fname) {
+  unsigned int i, npart = 0;
 
   double MH;
-  double CU=1, Cb=1, Ctau=1, CV=0, Cgamma, Cg;
-  double Mcp=findValW("Mcp"), Mbp=findValW("Mbp"), Mtp=findValW("Mtp");
+  double CU = 1, Cb = 1, Ctau = 1, CV = 0, Cgamma, Cg;
+  double Mcp = findValW("Mcp"), Mbp = findValW("Mbp"), Mtp = findValW("Mtp");
   double LGGSM, LAASM;
-  double vev = 2*findValW("MW")*findValW("SW")/findValW("EE");
-  FILE*f;
-  
+  double vev = 2 * findValW("MW") * findValW("SW") / findValW("EE");
+  FILE *f;
 
-  char *parts[1]={"h"};
-
+  char *parts[1] = {"h"};
 
   double mass = pMass("h");
-  if(mass > 123 &&  mass < 128) 
-  {
+  if (mass > 123 && mass < 128) {
+    f = fopen(fname, "w");
 
-    f=fopen(fname,"w");
-  
     fprintf(f, "<?xml version=\"1.0\"?>\n");
     fprintf(f, "<lilithinput>\n");
 
@@ -30,12 +25,12 @@ int LilithMDL(char*fname)
     double invBR = 0., undBR = 0.;
     double w;
     txtList L;
-    w=pWidth("h", &L);
+    w = pWidth("h", &L);
 
-    if(Mcdm1 < 0.5*mass) {
+    if (Mcdm1 < 0.5 * mass) {
       char invdecay[50];
       char cdmName[50];
-//      sortOddParticles(cdmName);
+      //      sortOddParticles(cdmName);
       strcpy(invdecay, CDM1);
       strcat(invdecay, ",");
       strcat(invdecay, aCDM1);
@@ -49,15 +44,15 @@ int LilithMDL(char*fname)
             findBr(L, "G G") - findBr(L, "m M") - findBr(L, "A Z") -
             findBr(L, "u U") - findBr(L, "d D") - findBr(L, "s S");
 
-    LGGSM=lGGhSM(mass, alphaQCD(mass)/M_PI, Mcp, Mbp, Mtp, vev);
-    LAASM=lAAhSM(mass, alphaQCD(mass)/M_PI, Mcp, Mbp, Mtp, vev);
-    CU=1;
-    Cb=1; 
-    Ctau=1;
-    CV=1;
-    Cgamma = findValW("LAAH")/LAASM;
-    Cg = findValW("LGGH")/LGGSM;
-           
+    LGGSM = lGGhSM(mass, alphaQCD(mass) / M_PI, Mcp, Mbp, Mtp, vev);
+    LAASM = lAAhSM(mass, alphaQCD(mass) / M_PI, Mcp, Mbp, Mtp, vev);
+    CU = 1;
+    Cb = 1;
+    Ctau = 1;
+    CV = 1;
+    Cgamma = findValW("LAAH") / LAASM;
+    Cg = findValW("LGGH") / LGGSM;
+
     fprintf(f, "  <reducedcouplings part=\"%s\">\n", "h");
     fprintf(f, "    <mass>%f</mass>\n", mass);
     fprintf(f, "    <C to=\"uu\">%f</C>\n", CU);
@@ -67,7 +62,7 @@ int LilithMDL(char*fname)
     fprintf(f, "    <C to=\"VV\">%f</C>\n", CV);
     fprintf(f, "    <C to=\"gammagamma\">%f</C>\n", Cgamma);
     fprintf(f, "    <C to=\"gg\">%f</C>\n", Cg);
-//    fprintf(f, "    <C to=\"Zgamma\">%f</C>\n", 1.);
+    //    fprintf(f, "    <C to=\"Zgamma\">%f</C>\n", 1.);
     fprintf(f, "    <precision>%s</precision>\n", "BEST-QCD");
     fprintf(f, "    <extraBR>\n");
     fprintf(f, "      <BR to=\"invisible\">%f</BR>\n", invBR);
@@ -78,17 +73,15 @@ int LilithMDL(char*fname)
     fclose(f);
     return 1;
   }
-  
-  return 0;
 
+  return 0;
 }
 
-int lilithmdl_(char*fname,int len)
-{
-   char * cname=malloc(len+2);
-   int err;
-   fName2c(fname,cname,len);
-   err= LilithMDL(cname);
-   free(cname);
-   return err; 
+int lilithmdl_(char *fname, int len) {
+  char *cname = malloc(len + 2);
+  int err;
+  fName2c(fname, cname, len);
+  err = LilithMDL(cname);
+  free(cname);
+  return err;
 }
