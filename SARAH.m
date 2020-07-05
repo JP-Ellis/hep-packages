@@ -20,7 +20,9 @@
 
 
 (* ::Input::Initialization:: *)
-Remove[JLink`Fields];
+(* Remove[JLink`Fields]; *)
+Unprotect[f, i, m, o, dims, a];
+Remove[f, i, m, o, dims, a];
 BeginPackage["Susyno`LieGroups`"]
 {M,f,m2,y,s,name,result,i,E6,g2,f4,n,j,k,weight,index,w,x,Adjoint,input,w,x,x$,ex,el,DimR,delta,dim,m,matrix,up,down,dim1,dim2,col,begin,b1,b2,b3,Casimir,b,e,b$,res,n2,v,RepMatrices,rep,Invariants,a,x1,x2,c,x3,y1,x1$,x2$,y1$,conj,expr,j1,j2,j3,res1,res2,var1,var2,var3,weights,l1,end,groups,group,max,adjoint,cas,ConjugateIrrep,DynkinIndex,repsWithSizeN,CongruencyClass, sR,TriangularAnomalyValue,InvariantsBaseMethod,reps,vector,i1,pos,dims,r, v1, v2,Conjugations,r1,r2,SU3, dt,ReduceRepProduct};
 EndPackage[]
@@ -84,14 +86,14 @@ Block[{$Path={$sarahPackageDir}},
 <<mathSumMatrizes`;
 <<mathParticleProp`;
 <<init`;
-<<error`; 
+<<error`;
 
 <<vertex`;
 <<numerik`;
 <<more`;
 <<deriveModel`;
 
-<<loopCorrections`; 
+<<loopCorrections`;
 
 <<TwoLoopEffPot`;
 <<Unitarity`;
@@ -99,7 +101,7 @@ Block[{$Path={$sarahPackageDir}},
 <<wilson`;
 Get[ToFileName[$sarahSPhenoPackageDir,"SPheno.m"]];
 <<processes`;
-<<checkModel`; 
+<<checkModel`;
 
 << TwoLoopPole`;
 
@@ -118,27 +120,27 @@ Block[{$Path=ToFileName[{$sarahPackageDir,"Outputs"}]},
 ];
 
 Block[{$Path=ToFileName[{$sarahPackageDir,"Lagrangian"}]},
-<<lagrange`; 
-<<inputLag`; 
-<<mixings`; 
-<<ghosts`; 
+<<lagrange`;
+<<inputLag`;
+<<mixings`;
+<<ghosts`;
 <<tadpoles`;
 ];
 
 Block[{$Path=ToFileName[{$sarahPackageDir,"Matching"}]},
-<<ScalarNLOMatcher`; 
+<<ScalarNLOMatcher`;
 ];
 
 
 Block[{$Path=ToFileName[{$sarahPackageDir,"RGEs"}]},
 <<mathRGEs`;
-<<nonSUSYrges`; 
+<<nonSUSYrges`;
 <<genericRGEs`;
 <<OutputRGEs`;
 ];
 
 Block[{$Path=ToFileName[{$sarahPackageDir,"GroupTheory"}]},
-<<linkSusyno`; 
+<<linkSusyno`;
 <<grouptheory`;
 <<young`;
 
@@ -278,7 +280,7 @@ If[FileExistsQ[$sarahCurrentOutputMainDir]=!=True,CreateDirectory[$sarahCurrentO
 
 SetOptions[MakeSPheno,Eigenstates->Last[NameOfStates]];
 
-InitSusyno; 
+InitSusyno;
 
 InitFields;
 InitParameters;
@@ -308,7 +310,7 @@ CalcVectorBoson;
 CalcGaugeTransformations;
 CalcLagrangian;
 If[AddDiracGauginos===True,CheckAdjoints;];
-CalcMixedLagrangian; 
+CalcMixedLagrangian;
 parameters = DeleteCases[parameters,x_? ((FreeQ[RemoveParameters,#[[1]]]==False)&)];
 CheckHiggsStates;
 CleanUpGaugeConstants;
