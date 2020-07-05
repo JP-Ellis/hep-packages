@@ -40,7 +40,8 @@ AllRGEs=Flatten[{ BetaBij, BetaTijk,BetaVEV,BetaGauge,BetaYijk,BetaMFij,BetaLijk
 ];,
 AllRGEs=Flatten[set,1];
 ];
-AllParameters=Transpose[AllRGEs][[1]]/. A_[i1,___]->A;
+(* Fix mN[i2,i2] not being converted to just mN *)
+AllParameters=Transpose[AllRGEs][[1]]/. A_[i1|i2,___]->A;
 
 subParScale={};
 AllParametersEx={};
@@ -148,7 +149,7 @@ Switch[Length[dim],
 	jj3++;];
 	jj2++;];
 	jj1++;];
-	
+
 ];
 ];
 i++;];
