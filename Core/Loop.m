@@ -4,7 +4,7 @@
 (*This file contains all the routines necessary for the extraction of the counterterm Lagrangian.*)
 
 
-(* ::Section::Closed:: *)
+(* ::Section:: *)
 (*Field renormalization*)
 
 
@@ -61,7 +61,7 @@ RenField[field_,inds__List]:=Block[{rfield=field,NewIndices,FreeIndices, ColorIn
         (#[[1]][Sequence@@DeleteCases[Append[DeleteCases[FreeIndices,Index[ffla,_]],Index[#[[2]],NewIndices]],Index[FlavorIndex,_]]]/.#[[1]][]->#[[1]])&/@MixList)]
   ]; 
 
-  If[AntiFieldQ[field]===True,result=result/.{rfield->field,FR$deltaZ[args__]->Conjugate[FR$deltaZ[args]],ProjP[a_,b_]->ProjM[b,a],ProjM[a_,b_]->ProjP[b,a]}];
+  If[AntiFieldQ[field]===True,result=result/.{rfield->field,FR$deltaZ[argx__]->Conjugate[FR$deltaZ[argx]],ProjP[a_,b_]->ProjM[b,a],ProjM[a_,b_]->ProjP[b,a]}];
 
   (* Return the result *)
 result];
@@ -93,8 +93,8 @@ FieldRenormalization[]:=Block[{MyModule,MyRuleDelayed},
   (* Antifields *)
   If[SelfConjugateQ[#]=!=True,
     antibare=If[FermionQ[#]===True && GhostFieldQ[#]=!=True,bare/.#->HC[#].Ga[0],bare/.#->anti[#]];
-    antiren=ren/.{fi_?(FieldQ[#]===True&)[args__]->(anti[fi])[args],fi_?(FieldQ[#]===True&)->anti[fi]}/.{
-      FR$deltaZ[args__]->Conjugate[FR$deltaZ[args]],ProjP[a_,b_]->ProjM[b,a],ProjM[a_,b_]->ProjP[b,a]}/.
+    antiren=ren/.{fi_?(FieldQ[#]===True&)[argx__]->(anti[fi])[argx],fi_?(FieldQ[#]===True&)->anti[fi]}/.{
+      FR$deltaZ[argx__]->Conjugate[FR$deltaZ[argx]],ProjP[a_,b_]->ProjM[b,a],ProjM[a_,b_]->ProjP[b,a]}/.
       Conjugate[FR$deltaZ[{fi_?(AntiFieldQ[#]===True&),gi_?(AntiFieldQ[#]===True&)},rest_List,opt___]]->Conjugate[FR$deltaZ[{anti[fi],anti[gi]},rest,opt]];
   ];
 
@@ -382,19 +382,19 @@ CreateDeltaParams[delta_,OptionsPattern[]]:= Block[{Iprm,Iinds={},Pindices, Pdes
 ];
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Main routine for the perturbative expansion of any renormalization constant*)
 
 
-PerturbativelyExpand[FR$del_[args__],ExpOrder_List]:=Block[{NewOrder,param,Pindx,CTType,MyTable,MyPattern,dummy,dummy2,resu,Prules,newparam,
+PerturbativelyExpand[FR$del_[argx__],ExpOrder_List]:=Block[{NewOrder,param,Pindx,CTType,MyTable,MyPattern,dummy,dummy2,resu,Prules,newparam,
   PrmToRenomList,deltaFuncList,deltaParamList,deltaOrderList},
 
   (* Initialization *)
   NewOrder=If[MatrixQ[ExpOrder],ExpOrder,{ExpOrder}];
   PrmToRenomList=Flatten[Union[MassList[[2,All,2]],MR$ParameterList,(ParameterName/.MR$ParameterRules[#])&/@MR$ParameterList]]/.Rule[a_,b_]:>b;
-  param=FR$del[args]/.FR$del[{prm_},__]->prm/.FR$del[args]->MR$Null;
+  param=FR$del[argx]/.FR$del[{prm_},__]->prm/.FR$del[argx]->MR$Null;
   newparam=param;
-  Pindx=FR$del[args]/.FR$del[_List,Indx_List]->Indx/.FR$del[args]->MR$Null;
+  Pindx=FR$del[argx]/.FR$del[_List,Indx_List]->Indx/.FR$del[argx]->MR$Null;
   Prules=If[ListQ[MR$ParameterRules[param]],MR$ParameterRules[param],List[]];
   Prules=ParameterName/.Prules/.ParameterName->{};
   If[Not[ListQ[Prules]],Prules={param->Prules}];
@@ -405,11 +405,11 @@ PerturbativelyExpand[FR$del_[args__],ExpOrder_List]:=Block[{NewOrder,param,Pindx
   (* 2. deltaParamList: list of the parameters associated to each coefficient *)
   (* 3. deltaOrderList: place of each coefficient in the series *)
   deltaFuncList=Drop[Flatten[
-    MyTable[FR$del[dummy][NewOrder[[All,1]]],Sequence@@(List[#[[1]],0,#[[2]]] &/@NewOrder)]/.MyTable->Table],1]/.FR$del[dummy]->FR$del[args];
+    MyTable[FR$del[dummy][NewOrder[[All,1]]],Sequence@@(List[#[[1]],0,#[[2]]] &/@NewOrder)]/.MyTable->Table],1]/.FR$del[dummy]->FR$del[argx];
   deltaParamList=(#/.FR$del[fld_List,inds_List,opt___][ord_List]:> 
     Symbol[StringJoin[CTType,opt, Sequence@@(ToString[#]&/@fld),Sequence@@(ToString[#]&/@ord)]][Sequence@@Flatten[inds]])&/@deltaFuncList;
   deltaParamList=If[deltaFuncList=!={},deltaParamList/.fff_[]->fff,{}];
-  deltaOrderList=deltaFuncList/.FR$del[args][orde_List]->orde;
+  deltaOrderList=deltaFuncList/.FR$del[argx][orde_List]->orde;
   deltaFuncList=#/.FR$del[fi_List,inds_List,opt___][orde_List]:>FR$del[fi,{MyPattern[ids,BlankNullSequence[]]},opt][Sequence@@orde]&/@deltaFuncList;
 
   (* We now add the series coefficient to the various parameter lists, if they are not in it already *)
@@ -441,7 +441,7 @@ PerturbativelyExpand[FR$del_[args__],ExpOrder_List]:=Block[{NewOrder,param,Pindx
   resu=Expand[Normal[Series[FR$del[dummy][Sequence@@NewOrder[[All,1]]],Sequence@@(List[#[[1]],0,#[[2]]]&/@NewOrder)]]];
   resu=resu/.{FR$del[dummy][__]->0,Derivative[aa__][FR$del[dummy]][__]->FR$del[dummy][aa]};
   resu=resu/.(Rule[#[[1]],#[[1]]/(2 Pi)]&/@NewOrder)/.(Rule[Power[#[[1]],n_],Power[#[[1]],n]*Factorial[n]]&/@NewOrder);
-  resu=resu/.FR$del[dummy]->FR$del[args];
+  resu=resu/.FR$del[dummy]->FR$del[argx];
   If[param=!=newparam,resu=resu/.param->newparam];
 resu];
 
@@ -450,7 +450,7 @@ resu];
 (*Extraction of the counterterm Lagrangian*)
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*ExtractCounterterms*)
 
 
@@ -500,8 +500,8 @@ ExtractCounterterms[lagr_,ExpOrder_List]:=Block[{NewOrder,ExpLag,WaveFunctions,P
 
   (* Expansion of the renormalization constants *)
   Print["Renormalization constant perturbative expansion..."];
-  ExpLag = Expand[# /. FR$deltaZ[args__] :> PerturbativelyExpand[FR$deltaZ[args], NewOrder]] &/@ ExpLag;
-  ExpLag = Expand[# /. FR$delta[args__] :> PerturbativelyExpand[FR$delta[args], NewOrder]] &/@ ExpLag; 
+  ExpLag = Expand[# /. FR$deltaZ[argx__] :> PerturbativelyExpand[FR$deltaZ[argx], NewOrder]] &/@ ExpLag;
+  ExpLag = Expand[# /. FR$delta[argx__] :> PerturbativelyExpand[FR$delta[argx], NewOrder]] &/@ ExpLag; 
 
   (* Rejecting all terms which have an higher order *)
   ExpLag=Plus@@ExpLag;
@@ -516,7 +516,7 @@ ExtractCounterterms[lagr_,ExpOrder_List]:=Block[{NewOrder,ExpLag,WaveFunctions,P
   ExpLag=DeleteCases[ExpLag,0];
 
   (* Formatting *)
-  ExpLag=ExpLag/.M$DeltaToParameters/.aa_?(MemberQ[M$RenormalizationConstants,#]&)[args1_?(Head[#]===List&),args___]:>aa[Sequence@@Join[args1,args]];
+  ExpLag=ExpLag/.M$DeltaToParameters/.aa_?(MemberQ[M$RenormalizationConstants,#]&)[argx1_?(Head[#]===List&),argx___]:>aa[Sequence@@Join[argx1,argx]];
 
   (* Outputting *)
   Print["Done."];
